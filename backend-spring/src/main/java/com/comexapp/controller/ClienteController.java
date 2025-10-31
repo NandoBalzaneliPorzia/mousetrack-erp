@@ -15,7 +15,7 @@ public class ClienteController {
     @Autowired
     private ClienteRepository clienteRepository;
 
-    @GetMapping
+    @GetMapping({"", "/"})
     public ResponseEntity<List<Cliente>> listarClientes() {
         List<Cliente> clientes = clienteRepository.findAll();
         return ResponseEntity.ok(clientes);
