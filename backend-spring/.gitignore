@@ -1,0 +1,6 @@
+# .gitignore
+/backend-spring/target/
+/proxy-server/target/
+*.class
+*.log
+.vscode/
