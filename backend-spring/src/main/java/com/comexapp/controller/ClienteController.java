@@ -8,14 +8,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")          // <<< classe mapeia só /api
+@RequestMapping({"/api/clientes", "/api/clientes/"})
 @CrossOrigin(origins = "*")
 public class ClienteController {
 
     @Autowired
     private ClienteRepository clienteRepository;
 
-    @GetMapping({"/clientes", "/clientes/"})   // <<< método mapeia /clientes e /clientes/
+    @GetMapping
     public ResponseEntity<List<Cliente>> listarClientes() {
         List<Cliente> clientes = clienteRepository.findAll();
         return ResponseEntity.ok(clientes);
