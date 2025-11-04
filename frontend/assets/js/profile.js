@@ -22,7 +22,7 @@ form.addEventListener('submit', async (e) => {
 
   try {
     // Atualiza telefone
-    await fetch(`http://localhost:8088/api/usuarios/${usuarioId}`, {
+    await fetch(api(`/api/usuarios/${usuarioId}`), {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ telefone: telefone.value })
@@ -30,7 +30,7 @@ form.addEventListener('submit', async (e) => {
 
     // Atualiza senha (caso o campo tenha sido preenchido)
     if (senha.value.trim() !== "") {
-      await fetch(`http://localhost:8088/api/usuarios/${usuarioId}/senha`, {
+      await fetch(api(`/api/usuarios/${usuarioId}/senha`), {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ novaSenha: senha.value })

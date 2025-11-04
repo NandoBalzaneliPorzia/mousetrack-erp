@@ -80,7 +80,7 @@ genBtn.addEventListener('click', () => {
 // ---- CARREGAR CLIENTES ----
 async function carregarClientes() {
   try {
-    const resp = await fetch('http://localhost:8080/api/clientes');
+    const resp = await fetch(api('/api/clientes'));
     if (!resp.ok) throw new Error('Falha ao obter clientes');
     const clientes = await resp.json();
 
@@ -126,7 +126,7 @@ form.addEventListener('submit', async (e) => {
   setFeedback('Enviando…');
 
   try {
-    const response = await fetch('http://localhost:8080/api/usuarios', {
+    const response = await fetch(api('/api/usuarios'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

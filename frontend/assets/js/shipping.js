@@ -58,7 +58,7 @@ modalItems.forEach(item => {
     data.tipo = form.id === 'formAereo' ? 'aereo' : 'maritmo';
 
     try {
-      const response = await fetch('http://localhost:8088/api/shipping/pdf', {
+      const response = await fetch(api('/api/shipping/pdf'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
