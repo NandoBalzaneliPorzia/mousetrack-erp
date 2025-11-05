@@ -9,21 +9,9 @@
   <link rel="stylesheet" href="assets/css/sidebar.css">
   <link rel="stylesheet" href="assets/css/repository.css">
 </head>
-<body>
-  <aside class="sidebar">
-    <div class="logo-block">LOGO</div>
-    <nav class="menu">
-      <a href="profile.html"    class="menu-item"><img src="assets/img/icons/usuario.svg" alt=""><span class="menu-label">Informações pessoais</span></a>
-      <a href="shipping.html"   class="menu-item"><img src="assets/img/icons/caminhao.svg" alt=""><span class="menu-label">Shipping</span></a>
-      <a href="forms.html"      class="menu-item"><img src="assets/img/icons/documento.svg" alt=""><span class="menu-label">Formulário processos</span></a>
-      <a href="board.html"      class="menu-item"><img src="assets/img/icons/tetris.svg" alt=""><span class="menu-label">Quadro processos</span></a>
-      <a href="repository.html" class="menu-item is-active"><img src="assets/img/icons/pasta.svg" alt=""><span class="menu-label">Repositório</span></a>
-      <a href="tracking.html"   class="menu-item"><img src="assets/img/icons/caixa.svg" alt=""><span class="menu-label">Rastreamento</span></a>
-      <a href="#"               class="menu-item"><img src="assets/img/icons/cadeado.svg" alt=""><span class="menu-label">Acesso</span></a>
-      <a href="#"               class="menu-item"><img src="assets/img/icons/comentario.svg" alt=""><span class="menu-label">Chat</span></a>
-      <a href="#"               class="menu-exit"><img src="assets/img/icons/sair.svg" alt=""><span class="menu-label">Sair</span></a>
-    </nav>
-  </aside>
+<body data-page="repository">
+
+  <div id="sidebarMount"></div>
 
   <main class="page-with-sidebar">
     <header class="repo-header">
@@ -55,6 +43,8 @@
   </main>
 
   <script src="assets/js/api.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/nav.js"></script>
   <script src="assets/js/repository-doc.js"></script>
 </body>
 </html>

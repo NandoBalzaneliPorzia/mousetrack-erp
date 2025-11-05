@@ -64,7 +64,7 @@
 }
 
 /* “Sair” colado embaixo */
-.menu-exit{ margin-top: auto; padding-bottom: 12px; }
+.menu-item.exit { margin-top: auto; padding-bottom: 12px; }
 
 /* rótulos aparecem só no expandido */
 .menu-label{
@@ -96,8 +96,8 @@
 .menu-item:focus,
 .menu-item:focus-visible,
 .menu-item:active,
-.menu-exit:focus,
-.menu-exit:focus-visible{
+.menu-item.exit:focus,
+.menu-item.exit:focus-visible {
   outline: none !important;
   box-shadow: none !important;
   background-image: none !important;
@@ -105,3 +105,15 @@
 
 /* conteúdo após sidebar */
 .page-with-sidebar{ margin-left: var(--sidebar-w); }
+
+.menu-logo img {
+  width: 100px;
+  margin: 20px auto 30px;
+  display: block;
+}
+
+/* foco acessível sem empurrar nada */
+.menu-item:focus-visible {
+  outline: 2px solid #EAF6F2;
+  outline-offset: 2px;
+}

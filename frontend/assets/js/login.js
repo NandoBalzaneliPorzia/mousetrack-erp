@@ -1,34 +1,48 @@
-const form = document.getElementById('loginForm');
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('loginForm');
+  const submitBtn = form.querySelector('button[type="submit"]');
 
-form.addEventListener('submit', async (e) => {
-  e.preventDefault();
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-  const email = document.getElementById('email').value.trim();
-  const senha = document.getElementById('senha').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const senha = document.getElementById('senha').value.trim();
 
-  try {
-    const res = await fetch(api("/api/login"), {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, senha })
-    });
+    // UX: evita duplo clique
+    submitBtn.disabled = true;
 
-    const data = await res.json().catch(() => null);
+    try {
+      const res = await fetch(api('/api/login'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, senha })
+      });
 
-    if (res.ok) {
-      // Salva o ID do usuário logado
-      if (data?.id) localStorage.setItem('usuarioId', data.id);
+      // tenta ler JSON; se falhar, usa objeto vazio
+      let data = {};
+      try { data = await res.json(); } catch (_) {}
 
-      alert(data?.message || "Login realizado com sucesso!");
+      if (res.ok) {
+        // Backend retorna { mensagem, id }
+        if (data && typeof data.id !== 'undefined') {
+          localStorage.setItem('usuarioId', String(data.id));
+        } else {
+          console.warn('Resposta sem id:', data);
+        }
 
-      // Redireciona para a página de perfil
-      window.location.href = "/profile.html";
-    } else {
-      alert(data?.erro || "Email ou senha inválidos");
+        alert(data.mensagem || 'Login realizado com sucesso!');
+        // Redireciona após login
+        window.location.href = 'profile.html'; // ou 'access.html' se preferir
+        return;
+      }
+
+      // Erro de autenticação/validação
+      alert(data.erro || `Falha no login (${res.status})`);
+    } catch (err) {
+      console.error('Erro na requisição:', err);
+      alert('Erro ao conectar ao servidor.');
+    } finally {
+      submitBtn.disabled = false;
     }
-  } catch (err) {
-    console.error("Erro na requisição:", err);
-    alert("Erro ao tentar se conectar com o servidor.");
-  }
+  });
 });
-
