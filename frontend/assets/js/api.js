@@ -16,8 +16,8 @@
 })();
 
 // -------------------- ROTAS DO FRONT --------------------
-const LOGIN_PATH = '/login.html';
-const HOME_PATH  = '/profile.html';
+const LOGIN_PATH = '/frontend/login.html';
+const HOME_PATH  = '/frontend/profile.html';
 
 // -------------------- SESSÃO (mínima, sem JWT) --------------------
 window.session = {
