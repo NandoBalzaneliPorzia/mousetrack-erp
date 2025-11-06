@@ -3,6 +3,7 @@ package com.comexapp.service;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.comexapp.model.Usuario;
 import com.comexapp.repository.UsuarioRepository;
@@ -11,40 +12,32 @@ import com.comexapp.repository.UsuarioRepository;
 public class AuthService {
 
     private final UsuarioRepository usuarioRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public AuthService(UsuarioRepository usuarioRepository) {
+    public AuthService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
-    // ✅ Método novo para buscar usuário pelo email
     public Usuario buscarPorEmail(String email) {
-        return usuarioRepository.findByEmail(email).orElse(null);
+        Optional<Usuario> opt = usuarioRepository.findByEmail(email);
+        return opt.orElse(null);
     }
 
-    public boolean validarLogin(String email, String senha) {
-        System.out.println("🔍 Tentando login com email: " + email);
-
-        Optional<Usuario> optUser = usuarioRepository.findByEmail(email);
-
-        if (optUser.isPresent()) {
-            Usuario user = optUser.get();
-            System.out.println("✅ Usuário encontrado: " + user.getEmail());
-            System.out.println("🔐 Usuário está ativo? " + user.isAtivo());
-
-            // Mostra senhas para depuração
-            System.out.println("Senha digitada: " + senha);
-            System.out.println("Senha no banco: " + user.getSenhaHash());
-
-            // Comparação simples (sem hash)
-            boolean senhaConfere = senha.equals(user.getSenhaHash());
-
-            System.out.println("🔑 Senha válida? " + senhaConfere);
-
-            return user.isAtivo() && senhaConfere;
+    public boolean validarLogin(String email, String senhaDigitada) {
+        Optional<Usuario> opt = usuarioRepository.findByEmail(email);
+        if (opt.isEmpty()) {
+            System.out.println("❌ Usuário não encontrado.");
+            return false;
         }
 
-        System.out.println("❌ Usuário não encontrado.");
-        return false;
+        Usuario user = opt.get();
+        System.out.println("Senha hash no banco: " + user.getSenhaHash());
+
+        boolean senhaConfere = passwordEncoder.matches(senhaDigitada, user.getSenhaHash());
+        System.out.println("🔑 Senha válida? " + senhaConfere);
+
+        return user.isAtivo() && senhaConfere;
     }
 }

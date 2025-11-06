@@ -1,10 +1,9 @@
 package com.comexapp.config;
 
 import java.util.concurrent.atomic.AtomicLong;
-
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.comexapp.model.Usuario;
 import com.comexapp.model.TipoUsuario;
@@ -14,29 +13,33 @@ import com.comexapp.repository.UsuarioRepository;
 public class DataLoader implements CommandLineRunner {
 
     private final UsuarioRepository usuarioRepository;
-    private static final AtomicLong clienteIdCounter = new AtomicLong(1);
+    private final PasswordEncoder passwordEncoder;
 
-    public DataLoader(UsuarioRepository usuarioRepository) {
+    public DataLoader(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
-    public void run(String... args) {
-        if (usuarioRepository.findByEmail("teste@empresa.com").isEmpty()) {
-            Usuario user = new Usuario();
-            user.setEmail("teste@empresa.com");
-            user.setNome("Usuário Teste");
-            user.setTipoUsuario(TipoUsuario.admin);
-            user.setAtivo(true);
+    public void run(String... args) throws Exception {
+        AtomicLong clienteIdCounter = new AtomicLong(1000);
 
-            // gera clienteId automático
-            user.setClienteId(clienteIdCounter.getAndIncrement());
+        usuarioRepository.findByEmail("teste@empresa.com").ifPresentOrElse(
+            u -> System.out.println("✅ Usuário de teste já existe"),
+            () -> {
+                Usuario user = new Usuario();
+                user.setEmail("teste@empresa.com");
+                user.setNome("Usuário Teste");
+                user.setTipoUsuario(TipoUsuario.admin);
+                user.setAtivo(true);
+                user.setClienteId(clienteIdCounter.getAndIncrement());
 
-            // seta a senha hash existente
-            user.setSenhaHash("$2a$10$YpTllmxeuFbH0G8zv7vZtuf4pB8iG5YchEpKU8VxLknac8W7vJHjK");
+                // defina aqui a senha que você quer usar no login
+                user.setSenhaHash(passwordEncoder.encode("123456"));
 
-            usuarioRepository.save(user);
-            System.out.println("✅ Usuário de teste criado: teste@empresa.com / senha já definida");
-        }
+                usuarioRepository.save(user);
+                System.out.println("✅ Usuário de teste criado: teste@empresa.com / 123456");
+            }
+        );
     }
 }

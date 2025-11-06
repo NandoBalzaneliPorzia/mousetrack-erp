@@ -13,6 +13,9 @@ public class Cliente {
     @Column(nullable = false, unique = true)
     private String nome;
 
+    @Column(length = 50)
+    private String cnpj;
+
     // Getters e Setters
     public Long getId() {
         return id;
@@ -28,5 +31,13 @@ public class Cliente {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public String getCnpj() {
+        return cnpj;
+    }
+
+    public void setCnpj(String cnpj) {
+        this.cnpj = cnpj;
     }
 }

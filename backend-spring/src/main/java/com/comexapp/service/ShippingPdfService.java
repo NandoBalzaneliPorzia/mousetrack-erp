@@ -1,8 +1,12 @@
 package com.comexapp.service;
 
 import com.comexapp.DTO.ShippingInstructionDTO;
-import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.PdfWriter;
+import com.lowagie.text.Document;
+import com.lowagie.text.Element;
+import com.lowagie.text.Font;
+import com.lowagie.text.PageSize;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.pdf.PdfWriter;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
@@ -17,8 +21,9 @@ public class ShippingPdfService {
             PdfWriter.getInstance(document, out);
             document.open();
 
-            Font titleFont = new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD);
-            Font normal = new Font(Font.FontFamily.HELVETICA, 12);
+            // OpenPDF usa Font.HELVETICA em vez de FontFamily.HELVETICA
+            Font titleFont = new Font(Font.HELVETICA, 18, Font.BOLD);
+            Font normal    = new Font(Font.HELVETICA, 12, Font.NORMAL);
 
             Paragraph title = new Paragraph("Shipping Instruction (" + si.getTipo().toUpperCase() + ")", titleFont);
             title.setAlignment(Element.ALIGN_CENTER);
