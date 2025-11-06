@@ -16,35 +16,31 @@
 })();
 
 // -------------------- ROTAS DO FRONT --------------------
-const LOGIN_PATH = '/frontend/login.html';
-const HOME_PATH  = '/frontend/profile.html';
+// Sua tela de login é index.html (não existe login.html)
+const LOGIN_PATH = '/index.html';
+const HOME_PATH  = '/profile.html';
 
 // -------------------- SESSÃO (mínima, sem JWT) --------------------
 window.session = {
   get user() {
-    try {
-      return JSON.parse(localStorage.getItem('user') || 'null');
-    } catch {
-      return null;
-    }
+    try { return JSON.parse(localStorage.getItem('user') || 'null'); } catch { return null; }
   },
   set user(u) {
-    if (u) {
-      localStorage.setItem('user', JSON.stringify(u));
-    } else {
-      localStorage.removeItem('user');
-    }
+    if (u) localStorage.setItem('user', JSON.stringify(u));
+    else   localStorage.removeItem('user');
   },
-  logout() {
-    this.user = null;
-    location.href = LOGIN_PATH;
-  }
+  logout() { this.user = null; location.href = LOGIN_PATH; }
 };
 
 // -------------------- GUARD AUTOMÁTICO --------------------
 (function guard() {
   const p = (location.pathname || '').toLowerCase();
-  const isLogin = p.endsWith('/login') || p.endsWith('/login.html');
+
+  // considera raiz e index como "página de login"
+  const isRootOrIndex =
+    p === '/' || p === '' || p.endsWith('/index') || p.endsWith('/index.html');
+
+  const isLogin = isRootOrIndex;
 
   // Se já logado e abriu o login → vai pra home
   if (isLogin && session.user) {
@@ -64,14 +60,11 @@ window.handleLoginResponse = function (res, data, email) {
     alert((data && data.erro) || `Falha no login (${res.status})`);
     return;
   }
-
-  // backend retorna { id, mensagem, ... }
+  // backend retorna { id, ... }
   if (data && typeof data.id !== 'undefined') {
     session.user = { id: data.id, email };
   }
-
-  // Redireciona para página privada (profile.html)
-  location.href = HOME_PATH;
+  location.href = HOME_PATH; // -> /profile.html
 };
 
 // -------------------- LOGOUT GLOBAL (botão opcional) --------------------
