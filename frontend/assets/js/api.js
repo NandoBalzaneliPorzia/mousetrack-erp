@@ -32,6 +32,23 @@ window.session = {
   logout() { this.user = null; location.href = LOGIN_PATH; }
 };
 
+// ---------- Helpers globais usados em outras páginas ----------
+/** Garante usuário logado; se não houver, redireciona e aborta a execução. */
+window.requireAuth = function requireAuth() {
+  const u = session.user;
+  if (!u) {
+    // Volta pro login e interrompe a execução do restante da página
+    location.replace(LOGIN_PATH);
+    throw new Error('[auth] Usuário não autenticado');
+  }
+  return u;
+};
+
+/** Retorna o id do usuário salvo na sessão. */
+window.getUsuarioId = function getUsuarioId() {
+  return session.user?.id ?? null;
+};
+
 // -------------------- GUARD AUTOMÁTICO --------------------
 (function guard() {
   const p = (location.pathname || '').toLowerCase();
@@ -63,6 +80,8 @@ window.handleLoginResponse = function (res, data, email) {
   // backend retorna { id, ... }
   if (data && typeof data.id !== 'undefined') {
     session.user = { id: data.id, email };
+  } else {
+    console.warn('[login] Resposta sem id:', data);
   }
   location.href = HOME_PATH; // -> /profile.html
 };
@@ -72,3 +91,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const btn = document.getElementById('btnLogout');
   if (btn) btn.addEventListener('click', () => session.logout());
 });
+
+// -------------------- PRÉ-AQUECIMENTO DO BACKEND --------------------
+(function warmBackend() {
+  fetch(api('/api/_health'), { cache: 'no-store' }).catch(() => {});
+})();
