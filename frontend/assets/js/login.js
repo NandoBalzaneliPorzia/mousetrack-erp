@@ -1,15 +1,18 @@
+// assets/js/login.js
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('loginForm');
+  if (!form) return;
+
   const submitBtn = form.querySelector('button[type="submit"]');
+  const emailEl = document.getElementById('email');
+  const senhaEl = document.getElementById('senha');
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-
-    const email = document.getElementById('email').value.trim();
-    const senha = document.getElementById('senha').value.trim();
-
-    // UX: evita duplo clique
     submitBtn.disabled = true;
+
+    const email = (emailEl?.value || '').trim();
+    const senha = (senhaEl?.value || '').trim();
 
     try {
       const res = await fetch(api('/api/login'), {
@@ -18,28 +21,13 @@ document.addEventListener('DOMContentLoaded', () => {
         body: JSON.stringify({ email, senha })
       });
 
-      // tenta ler JSON; se falhar, usa objeto vazio
       let data = {};
-      try { data = await res.json(); } catch (_) {}
+      try { data = await res.json(); } catch {}
 
-      if (res.ok) {
-        // Backend retorna { mensagem, id }
-        if (data && typeof data.id !== 'undefined') {
-          localStorage.setItem('usuarioId', String(data.id));
-        } else {
-          console.warn('Resposta sem id:', data);
-        }
-
-        alert(data.mensagem || 'Login realizado com sucesso!');
-        // Redireciona após login
-        window.location.href = 'profile.html'; // ou 'access.html' se preferir
-        return;
-      }
-
-      // Erro de autenticação/validação
-      alert(data.erro || `Falha no login (${res.status})`);
+      // >>> ESSENCIAL: grava session.user e redireciona para /profile.html
+      handleLoginResponse(res, data, email);
     } catch (err) {
-      console.error('Erro na requisição:', err);
+      console.error('[login] erro de rede:', err);
       alert('Erro ao conectar ao servidor.');
     } finally {
       submitBtn.disabled = false;

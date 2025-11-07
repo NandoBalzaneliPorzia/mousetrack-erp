@@ -1,3 +1,4 @@
+// profile.js
 document.addEventListener('DOMContentLoaded', () => {
   // bloqueia a página se não estiver logado
   const user = requireAuth();
