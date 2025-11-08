@@ -4,7 +4,7 @@
 window.requireAuth = function () {
   const usuarioId = localStorage.getItem('usuarioId');
   if (!usuarioId) {
-    // Se não estiver logado, volta para a página de login
+     //Se não estiver logado, volta para a página de login
     alert('Sessão expirada. Faça login novamente.');
     window.location.href = 'index.html';
   }

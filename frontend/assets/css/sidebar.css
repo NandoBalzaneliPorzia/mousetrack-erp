@@ -1,15 +1,14 @@
 /* ===== Sidebar padrão (usar em TODAS as páginas) ===== */
 :root{
   --sidebar-bg:    #4E7367;   /* verde base */
-  
 
-  --sidebar-w: 84px;              /* largura colapsada */
-  --sidebar-w-expanded: 240px;    /* largura expandida no hover */
+  --sidebar-w: 84px;               /* largura colapsada */
+  --sidebar-w-expanded: 240px;     /* largura expandida no hover */
 
   --icon-size: 22px;
   --row-h: 48px;
 
-  --active-bg: #1F4F46;           /* faixa escura do ativo */
+  --active-bg: #1F4F46;            /* faixa escura do ativo */
   --active-color: #EAF6F2;
 }
 
@@ -25,46 +24,62 @@
   transition: width .2s ease;
   overflow: visible;
 }
-.sidebar:hover{ width: var(--sidebar-w-expanded); }
+.sidebar:hover{
+  width: var(--sidebar-w-expanded);
+}
 
-
+/* ===== LOGO CENTRALIZADA ===== */
+.menu-logo{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 22px 0 10px;
+}
+.menu-logo img{
+  width: 70px;
+  height: auto;
+  display: block;
+}
 
 /* lista de itens */
 .menu{
   flex: 1;
-  display: grid;
-  align-content: start;
+  display: flex;
+  flex-direction: column;
   gap: 8px;
   padding: 12px 0;
 }
 
-/* item base: todos do mesmo tamanho */
-.menu-item,
-.menu-exit{
-  height: var(--row-h);            /* 🔹 altura fixa */
+/* item base */
+.menu-item{
+  height: var(--row-h);
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 12px;
-  padding: 0 16px;                 /* 🔹 padding igual */
+  gap: 16px;
+  padding: 0 20px;
   border-radius: 8px;
   color: #E9F5F2;
   text-decoration: none;
   font-size: 14px;
-  transition: background .2s, box-shadow .2s;
+  transition: background .2s ease, box-shadow .2s ease;
 }
 
 /* ícones */
-.menu-item img,
-.menu-exit img{
+.menu-item img{
   width: var(--icon-size);
   height: var(--icon-size);
   display: block;
   object-fit: contain;
+  flex-shrink: 0;
 }
 
 /* “Sair” colado embaixo */
-.menu-item.exit { margin-top: auto; padding-bottom: 12px; }
+.menu-item.exit{
+  margin-top: auto;
+  padding-bottom: 14px;
+}
 
 /* rótulos aparecem só no expandido */
 .menu-label{
@@ -77,43 +92,28 @@
   color: #E9F5F2;
   font-size: 13px;
 }
+
 .sidebar:hover .menu-label{
   opacity: 1;
   width: auto;
   transform: translateX(0);
 }
 
-/* ativo: faixa escura inteira */
+/* ativo */
 .menu-item.is-active{
   background: var(--active-bg);
-  box-shadow: none;
 }
 .sidebar:hover .menu-item.is-active .menu-label{
   color: var(--active-color);
 }
 
-/* remove focos do navegador */
-.menu-item:focus,
-.menu-item:focus-visible,
-.menu-item:active,
-.menu-item.exit:focus,
-.menu-item.exit:focus-visible {
-  outline: none !important;
-  box-shadow: none !important;
-  background-image: none !important;
+/* foco acessível */
+.menu-item:focus-visible{
+  outline: 2px solid #EAF6F2;
+  outline-offset: 2px;
 }
 
 /* conteúdo após sidebar */
-.page-with-sidebar{ margin-left: var(--sidebar-w); }
-
-.menu-logo img {
-  width: 100px;
-  margin: 20px auto 30px;
-  display: block;
-}
-
-/* foco acessível sem empurrar nada */
-.menu-item:focus-visible {
-  outline: 2px solid #EAF6F2;
-  outline-offset: 2px;
+.page-with-sidebar{
+  margin-left: var(--sidebar-w);
 }
