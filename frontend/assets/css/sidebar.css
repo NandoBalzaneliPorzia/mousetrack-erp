@@ -114,6 +114,11 @@
 }
 
 /* conteúdo após sidebar */
-.page-with-sidebar{
+.sidebar {
+  z-index: 999; /* sempre acima do conteúdo */
+}
+
+.page-with-sidebar {
   margin-left: var(--sidebar-w);
+  padding-top: 20px; /* evita corte no topo */
 }
