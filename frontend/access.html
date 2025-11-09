@@ -5,15 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Acesso</title>
 
-  <!-- estilos base e da sidebar, os mesmos já usados no projeto -->
+  <!-- estilos base -->
   <link rel="stylesheet" href="assets/css/reset.css">
-  <link rel="stylesheet" href="assets/css/sidebar.css">
-  <!-- estilo desta tela -->
-  <link rel="stylesheet" href="assets/css/access.css">
+  <link rel="stylesheet" href="assets/css/sidebar.css"> <!-- sidebar única -->
+  <link rel="stylesheet" href="assets/css/access.css">  <!-- estilo desta tela -->
 </head>
+
 <body data-page="access">
+
   <!-- Sidebar padrão -->
-<div id="sidebarMount"></div>
+  <div id="sidebarMount"></div>
 
   <main class="page-with-sidebar">
     <header class="acc-header">
@@ -22,49 +23,43 @@
 
     <section class="acc-body">
       <form id="accForm" class="access-form" autocomplete="off" novalidate>
-        <!-- Nome -->
+
         <div class="field">
-          <label for="accName" class="label">Nome Completo</label>
-          <input id="accName" type="text" class="input" placeholder="Value" required>
+          <label class="label" for="accName">Nome Completo</label>
+          <input id="accName" type="text" class="input" placeholder="Value">
         </div>
 
-        <!-- Email -->
         <div class="field">
-          <label for="accEmail" class="label">Email</label>
-          <input id="accEmail" type="email" class="input" placeholder="Value" required>
+          <label class="label" for="accEmail">Email</label>
+          <input id="accEmail" type="email" class="input" placeholder="Value">
         </div>
 
-        <!-- Senha + Gerar -->
         <div class="field field-inline">
           <div class="field-col">
-            <label for="accPass" class="label">Senha</label>
-            <input id="accPass" type="text" class="input" placeholder="Value" required>
+            <label class="label" for="accPass">Senha</label>
+            <input id="accPass" type="text" class="input" placeholder="Value">
           </div>
           <button type="button" id="btnGenPass" class="btn small">Gerar</button>
         </div>
 
-        <!-- Cliente -->
         <div class="field">
-          <label for="accClient" class="label">Cliente</label>
-          <select id="accClient" class="input select" required>
-            <!-- opções inseridas via JS -->
-          </select>
+          <label class="label" for="accClient">Cliente</label>
+          <select id="accClient" class="input select"></select>
         </div>
 
-        <!-- Feedback -->
-        <div id="accFeedback" class="feedback" aria-live="polite"></div>
+        <div id="accFeedback" class="feedback"></div>
 
-        <!-- Enviar -->
         <div class="actions">
           <button type="submit" class="btn primary wide">Enviar</button>
         </div>
+
       </form>
     </section>
   </main>
 
   <script src="assets/js/api.js"></script>
-  <script src="assets/js/nav.js"></script>
-  <script src="assets/js/access.js"></script>
-  
+  <script src="assets/js/nav.js" defer></script> <!-- SIDEBAR GLOBAL -->
+  <script src="assets/js/access.js"></script>    <!-- LÓGICA DA PÁGINA -->
+
 </body>
 </html>

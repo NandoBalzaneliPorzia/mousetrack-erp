@@ -1,45 +1,8 @@
 // ======================
-//  SIDEBAR DINÂMICA
-// ======================
-document.addEventListener("DOMContentLoaded", () => {
-  const sidebar = document.querySelector(".sidebar");
-
-  sidebar.addEventListener("mouseenter", async () => {
-    if (!sidebar.classList.contains("expanded")) {
-      try {
-        const resp = await fetch("menu.html");
-        const html = await resp.text();
-        sidebar.innerHTML = html;
-        sidebar.classList.add("expanded");
-      } catch (err) {
-        console.error("Erro ao carregar menu.html:", err);
-      }
-    }
-  });
-
-  sidebar.addEventListener("mouseleave", () => {
-    sidebar.classList.remove("expanded");
-    sidebar.innerHTML = `
-      <div class="logo-block">LOGO</div>
-      <nav class="menu">
-        <a href="profile.html" class="menu-item"><img src="assets/img/icons/usuario.svg" alt=""></a>
-        <a href="shipping.html" class="menu-item"><img src="assets/img/icons/caminhao.svg" alt=""></a>
-        <a href="forms.html" class="menu-item"><img src="assets/img/icons/documento.svg" alt=""></a>
-        <a href="board.html" class="menu-item"><img src="assets/img/icons/tetris.svg" alt=""></a>
-        <a href="repository.html" class="menu-item"><img src="assets/img/icons/pasta.svg" alt=""></a>
-        <a href="tracking.html" class="menu-item"><img src="assets/img/icons/caixa.svg" alt=""></a>
-        <a href="access.html" class="menu-item is-active"><img src="assets/img/icons/cadeado.svg" alt=""></a>
-        <a href="chat.html" class="menu-item"><img src="assets/img/icons/comentario.svg" alt=""></a>
-        <a href="#" class="menu-exit"><img src="assets/img/icons/sair.svg" alt=""></a>
-      </nav>`;
-  });
-});
-
-// ======================
 //  LÓGICA DA PÁGINA DE ACESSO
 // ======================
 
-// Seleciona elementos do DOM
+// Seleciona elementos
 const form = document.getElementById('accForm');
 const nameEl = document.getElementById('accName');
 const emailEl = document.getElementById('accEmail');
@@ -48,13 +11,13 @@ const cliSel = document.getElementById('accClient');
 const feedbackEl = document.getElementById('accFeedback');
 const genBtn = document.getElementById('btnGenPass');
 
-// ---- Função de feedback ----
-function setFeedback(msg, isError = false) {
+// feedback
+function setFeedback(msg, error = false) {
   feedbackEl.textContent = msg;
-  feedbackEl.style.color = isError ? 'red' : 'green';
+  feedbackEl.style.color = error ? 'red' : 'green';
 }
 
-// ---- GERA SENHA ----
+// gerar senha
 function generatePassword(len = 12) {
   const upper = "ABCDEFGHJKLMNPQRSTUVWXYZ";
   const lower = "abcdefghijkmnopqrstuvwxyz";
@@ -62,9 +25,7 @@ function generatePassword(len = 12) {
   const symbols = "!@#$%&*?";
   const all = upper + lower + numbers + symbols;
 
-  function pick(set) {
-    return set[Math.floor(Math.random() * set.length)];
-  }
+  const pick = set => set[Math.floor(Math.random() * set.length)];
 
   let pwd = pick(upper) + pick(lower) + pick(numbers) + pick(symbols);
   while (pwd.length < len) pwd += pick(all);
@@ -73,35 +34,34 @@ function generatePassword(len = 12) {
 }
 
 genBtn.addEventListener('click', () => {
-  passEl.value = generatePassword(12);
+  passEl.value = generatePassword();
   setFeedback('Senha gerada automaticamente.');
 });
 
-// ---- CARREGAR CLIENTES ----
+// carregar clientes
 async function carregarClientes() {
   try {
     const resp = await fetch(api('/api/clientes'));
-    if (!resp.ok) throw new Error('Falha ao obter clientes');
-    const clientes = await resp.json();
+    const lista = await resp.json();
 
     cliSel.innerHTML = '<option value="">Selecione</option>';
-    clientes.forEach(c => {
+    lista.forEach(c => {
       const opt = document.createElement('option');
       opt.value = c.id;
       opt.textContent = c.nome;
       cliSel.appendChild(opt);
     });
+
   } catch (err) {
-    console.error('Erro ao carregar clientes:', err);
+    console.error(err);
     setFeedback('Falha ao carregar clientes.', true);
   }
 }
 
-// ---- CHAMAR LOGO AO INICIAR ----
 carregarClientes();
 
-// ---- ENVIO DO FORMULÁRIO ----
-form.addEventListener('submit', async (e) => {
+// envio do form
+form.addEventListener('submit', async e => {
   e.preventDefault();
   setFeedback('');
 
@@ -117,7 +77,6 @@ form.addEventListener('submit', async (e) => {
 
   if (!/^\S+@\S+\.\S+$/.test(email)) {
     setFeedback('Email inválido.', true);
-    emailEl.focus();
     return;
   }
 
@@ -126,7 +85,7 @@ form.addEventListener('submit', async (e) => {
   setFeedback('Enviando…');
 
   try {
-    const response = await fetch(api('/api/usuarios'), {
+    const resp = await fetch(api('/api/usuarios'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -138,22 +97,14 @@ form.addEventListener('submit', async (e) => {
       })
     });
 
-    if (!response.ok) throw new Error(await response.text());
+    if (!resp.ok) throw new Error(await resp.text());
 
     setFeedback('Usuário cadastrado com sucesso!');
     form.reset();
-    setTimeout(() => setFeedback(''), 4000);
 
   } catch (err) {
-    console.error(err);
-    setFeedback('Falha ao cadastrar. Tente novamente.', true);
+    setFeedback('Falha ao cadastrar.', true);
   } finally {
     submitBtn.disabled = false;
   }
 });
-
-// ⚙️ TODO: implementar lógica do campo de processo
-// (para definir se o usuário tem acesso a exportação, importação ou ambos)
-
-
-//FAZER A LOGICA DO CAMPO DE PROCESSO, P SABER SE O USUARIO TEM ACESSO P EXPORTAÇÃO, IMPORTAÇÃO OU AMBOS, MAS SO DA P FAZER DEPOIS QUE A LOGICA DO PROCESSO ESTIVER FEITA
