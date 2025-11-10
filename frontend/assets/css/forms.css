@@ -48,7 +48,7 @@ body{
   padding:0 12px;
   outline:none;
 }
-.input:focus{ border-color:#9fc5b9; box-shadow:0 0 0 3px rgba(159,197,185,.25); }
+
 
 /* ===== dots Exportação/Importação (iguais aos que usamos no Shipping) ===== */
 .dot-group{ display:flex; gap:20px; align-items:center; }
@@ -82,7 +82,18 @@ body{
 .filebox input[type="file"]{
   position:absolute; inset:0; opacity:0; cursor:pointer;
 }
-.paperclip{ font-size:16px; line-height:1; }
+.paperclip {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  opacity: 0.85;
+  transition: opacity 0.2s ease;
+}
+
+.filebox:hover .paperclip {
+  opacity: 1;
+}
+
 .filetext{ font-size:12px; color:#6d7b76; }
 
 /* ===== botão ===== */
