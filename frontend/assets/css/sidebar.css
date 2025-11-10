@@ -122,3 +122,16 @@
   margin-left: var(--sidebar-w);
   padding-top: 20px; /* evita corte no topo */
 }
+/* ===== Centralizar ícones quando sidebar está fechada ===== */
+.sidebar:not(:hover) .menu-item {
+  justify-content: center; /* centraliza ícones */
+  padding: 0; /* remove o padding lateral */
+}
+
+.sidebar:not(:hover) .menu-item img {
+  margin: 0 auto; /* garante centralização absoluta */
+}
+
+.sidebar:not(:hover) .menu-label {
+  display: none; /* esconde completamente os textos */
+}
