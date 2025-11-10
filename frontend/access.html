@@ -7,8 +7,8 @@
 
   <!-- estilos base -->
   <link rel="stylesheet" href="assets/css/reset.css">
-  <link rel="stylesheet" href="assets/css/sidebar.css"> <!-- sidebar única -->
-  <link rel="stylesheet" href="assets/css/access.css">  <!-- estilo desta tela -->
+  <link rel="stylesheet" href="assets/css/sidebar.css">
+  <link rel="stylesheet" href="assets/css/access.css">
 </head>
 
 <body data-page="access">
@@ -43,8 +43,17 @@
         </div>
 
         <div class="field">
+          <label class="label" for="accProcess">Processo</label>
+          <select id="accProcess" class="input select">
+            <option>Value</option>
+          </select>
+        </div>
+
+        <div class="field">
           <label class="label" for="accClient">Cliente</label>
-          <select id="accClient" class="input select"></select>
+          <select id="accClient" class="input select">
+            <option>Value</option>
+          </select>
         </div>
 
         <div id="accFeedback" class="feedback"></div>
@@ -58,8 +67,8 @@
   </main>
 
   <script src="assets/js/api.js"></script>
-  <script src="assets/js/nav.js" defer></script> <!-- SIDEBAR GLOBAL -->
-  <script src="assets/js/access.js"></script>    <!-- LÓGICA DA PÁGINA -->
+  <script src="assets/js/nav.js" defer></script>
+  <script src="assets/js/access.js"></script>
 
 </body>
 </html>

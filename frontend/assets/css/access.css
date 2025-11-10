@@ -11,19 +11,22 @@
 
   --ok: #265f52;
   --err: #b33;
+
+  --sidebar-w: 72px;
+  --sidebar-w-open: 200px;
 }
 
 body {
   background: var(--page-bg);
   color: var(--ink);
-  font-family: Arial, sans-serif;
+  font-family: "Segoe UI", Arial, sans-serif;
   margin: 0;
 }
 
-/* layout com sidebar */
+/* Layout com sidebar */
 .page-with-sidebar {
   margin-left: var(--sidebar-w);
-  padding: 20px;
+  padding: 40px 0;
   transition: margin-left .25s ease;
 }
 
@@ -31,28 +34,36 @@ body {
   margin-left: var(--sidebar-w-open);
 }
 
-/* título */
+/* ===== Cabeçalho ===== */
 .acc-header {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 36px;
 }
 
 .acc-header h1 {
   font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
   margin: 0;
 }
 
-/* form */
+/* ===== Corpo do formulário ===== */
 .acc-body {
   display: flex;
   justify-content: center;
 }
 
 .access-form {
-  width: 540px;
+  width: 440px;
   max-width: 90vw;
   display: grid;
-  gap: 14px;
+  gap: 22px;
+}
+
+/* ===== Campos ===== */
+.field {
+  display: flex;
+  flex-direction: column;
 }
 
 .label {
@@ -64,44 +75,70 @@ body {
 .input,
 .select {
   width: 100%;
-  height: 32px;
+  height: 38px;
   border: 1px solid var(--line);
-  border-radius: 4px;
+  border-radius: 6px;
   background: var(--white);
-  padding: 0 10px;
-  font-size: 12px;
+  padding: 0 12px;
+  font-size: 13px;
+  color: var(--ink);
 }
 
+.input::placeholder {
+  color: #999;
+}
+
+/* campo com botão Gerar */
 .field-inline {
   display: grid;
   grid-template-columns: 1fr auto;
-  gap: 8px;
+  gap: 10px;
+  align-items: end;
 }
 
-/* botões */
+/* ===== Botões ===== */
 .btn {
-  height: 32px;
-  border: 0;
-  border-radius: 4px;
+  border: none;
+  border-radius: 6px;
   background: var(--btn);
   color: var(--btn-ink);
-  padding: 0 14px;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
+  transition: background 0.2s ease;
 }
 
 .btn.small {
-  height: 28px;
-  font-size: 11px;
+  padding: 0 14px;
+  height: 38px;
 }
 
-.btn.wide {
+.btn.primary.wide {
   width: 100%;
+  height: 38px;
 }
 
+.btn:hover {
+  background: #24453c;
+}
+
+/* ===== Select personalizado ===== */
+.select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%233B4C47' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 10px;
+}
+
+/* ===== Feedback ===== */
 .feedback {
   font-size: 12px;
   min-height: 18px;
   color: var(--ok);
+}
+
+/* ===== Botão Enviar ===== */
+.actions {
+  margin-top: 10px;
 }
