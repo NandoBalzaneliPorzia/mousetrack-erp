@@ -54,8 +54,8 @@ body {
 }
 
 .access-form {
-  width: 440px;
-  max-width: 90vw;
+  width: 540px;  /* ← era 440px */
+  max-width: 95vw;  /* ← permite que cresça um pouco mais em telas menores */
   display: grid;
   gap: 22px;
 }
