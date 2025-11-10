@@ -122,14 +122,14 @@
   margin-left: var(--sidebar-w);
   padding-top: 20px; /* evita corte no topo */
 }
-/* ===== Centralizar ícones quando sidebar está fechada ===== */
+/* ===== Centralizar levemente à direita quando sidebar está fechada ===== */
 .sidebar:not(:hover) .menu-item {
-  justify-content: center; /* centraliza ícones */
-  padding: 0; /* remove o padding lateral */
+  justify-content: flex-start; /* permite ajustar com padding */
+  padding-left: 22px; /* desloca ligeiramente o ícone para a direita */
 }
 
 .sidebar:not(:hover) .menu-item img {
-  margin: 0 auto; /* garante centralização absoluta */
+  margin: 0; /* remove centralização total */
 }
 
 .sidebar:not(:hover) .menu-label {
