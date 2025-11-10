@@ -24,8 +24,8 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
-  padding: 26px 28px 0;
+  gap: 14px;
+  padding: 40px 28px 0;
 }
 .repo-header h1 {
   font-size: 16px;
@@ -38,59 +38,69 @@ body {
   align-items: center;
   border: 1px solid var(--line);
   border-radius: 18px;
-  width: 320px;
-  height: 34px;
+  width: 360px;
+  height: 38px;
   background: var(--white);
-  padding: 0 10px;
+  padding: 0 12px;
 }
 .loupe {
-  width: 16px;
-  height: 16px;
-  margin-right: 6px;
+  width: 18px;
+  height: 18px;
+  margin-right: 8px;
 }
 .search-input {
   border: none;
   outline: none;
   flex: 1;
-  font-size: 12px;
+  font-size: 13px;
 }
 
 /* ====== CONTAINER ====== */
 .repo-wrap {
-  max-width: 980px;
-  margin: 22px auto 40px;
-  padding: 0 8px;
+  max-width: 1150px; /* mais largo */
+  margin: 40px auto 60px;
+  padding: 0 16px;
 }
 
 /* ====== TABELA ====== */
 .repo-table {
   width: 100%;
   border-collapse: collapse;
-  table-layout: fixed;
-  font-size: 13px;
+  table-layout: auto;
+  font-size: 14px;
   color: var(--ink-2);
 }
 
 .repo-table thead th {
   text-align: left;
   font-weight: 700;
-  padding: 10px 12px;
+  padding: 14px 20px;
   border-bottom: 1px solid var(--line);
+  white-space: nowrap;
 }
 
 .repo-table thead th.col-icon {
-  width: 40px;
+  width: 50px;
 }
 
 .repo-table thead th.col-qty {
-  width: 180px;
+  width: 200px;
+  text-align: center;
 }
 
 .repo-table tbody td {
-  padding: 12px 12px;
+  padding: 18px 20px; /* aumenta altura das linhas */
   border-bottom: 1px solid var(--line);
   color: var(--ink);
   background: transparent;
+  white-space: nowrap;
+}
+
+.repo-table tbody td:nth-child(2) {
+  width: 120px; /* código */
+}
+.repo-table tbody td:nth-child(3) {
+  width: 280px; /* nome */
 }
 
 .repo-table tbody tr {
@@ -103,7 +113,7 @@ body {
 }
 
 .repo-table tbody td.col-icon {
-  width: 40px;
+  width: 50px;
 }
 
 .repo-table img {
@@ -121,5 +131,9 @@ body {
   .repo-table thead th.col-qty,
   .repo-table tbody td.col-qty {
     display: none;
+  }
+
+  .repo-table tbody td {
+    padding: 14px 10px;
   }
 }
