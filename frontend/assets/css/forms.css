@@ -18,14 +18,7 @@ body{
   margin:0;
 }
 
-/* card central */
-.panel{
-  max-width:var(--panel-w);
-  margin:32px auto;
-  background:var(--panel-bg);
-  border-radius:10px;
-  padding:28px 28px 32px;
-}
+
 .title{
   text-align:center;
   font-size:18px;
