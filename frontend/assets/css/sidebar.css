@@ -125,7 +125,7 @@
 /* ===== Centralizar levemente à direita quando sidebar está fechada ===== */
 .sidebar:not(:hover) .menu-item {
   justify-content: flex-start; /* permite ajustar com padding */
-  padding-left: 28px; /* desloca ligeiramente o ícone para a direita */
+  padding-left: 32px; /* desloca ligeiramente o ícone para a direita */
 }
 
 .sidebar:not(:hover) .menu-item img {
