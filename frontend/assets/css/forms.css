@@ -112,8 +112,8 @@ body{
 
 .panel {
   width: var(--panel-w);
-  background: var(--panel-bg);
-  padding: 32px 40px;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  background: transparent;    /* tira o fundo verde */
+  padding: 0;                 /* remove o acolchoamento exagerado */
+  border-radius: 0;           /* tira borda arredondada */
+  box-shadow: none;           /* remove sombra */
 }
