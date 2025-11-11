@@ -103,3 +103,17 @@ body{
   :root{ --panel-w:92vw; }
   .btn{ width:100%; }
 }
+/* ===== painel central ===== */
+.page-with-sidebar {
+  padding: 32px 0;
+  display: flex;
+  justify-content: center;
+}
+
+.panel {
+  width: var(--panel-w);
+  background: var(--panel-bg);
+  padding: 32px 40px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+}
