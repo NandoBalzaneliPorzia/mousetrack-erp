@@ -11,10 +11,7 @@
 *{box-sizing:border-box}
 :focus{outline:none}
 
-/* ============================== */
-/* BASE */
-/* ============================== */
-
+/* HEADER */
 body{
   background:var(--page-bg);
   color:var(--ink);
@@ -22,16 +19,14 @@ body{
   margin:0
 }
 
-/* ============================== */
-/* HEADER */
-/* ============================== */
-
 .board-header{
   display:grid;
   grid-template-columns:1fr 420px 220px;
   align-items:center;
   gap:20px;
   padding:26px 28px 6px;
+
+  /* >>> FIX de camadas para o dropdown não ficar atrás das colunas <<< */
   position:relative;
   z-index:10;
   background:var(--page-bg);
@@ -44,10 +39,7 @@ body{
   letter-spacing:.35px
 }
 
-/* ============================== */
-/* SEARCH BAR */
-/* ============================== */
-
+/* Search */
 .search-wrap{
   justify-self:center;
   width:420px;
@@ -69,16 +61,12 @@ body{
   font-size:12px
 }
 
-/* ============================== */
-/* SWITCH (IMPORTAÇÃO/EXPORTAÇÃO) */
-/* ============================== */
-
+/* Switch */
 .type-switch{
-  position:relative;
-  z-index:11;
+  position:relative;   /* contexto para o menu */
+  z-index:11;          /* acima do header e das lanes */
   justify-self:end
 }
-
 .type-btn{
   height:34px;min-width:160px;padding:0 14px;
   border:1px solid #2B443C;border-radius:18px;
@@ -93,47 +81,28 @@ body{
   border:1px solid #2B443C;
   border-radius:10px;
   box-shadow:0 6px 16px rgba(0,0,0,.08);
+
+  /* >>> fica acima das colunas e do popover <<< */
   z-index:999;
 }
-.type-menu li{
-  padding:8px 12px;font-size:12px;cursor:pointer
-}
+.type-menu li{padding:8px 12px;font-size:12px;cursor:pointer}
 .type-menu li:hover{background:#EEF5F3}
 .type-menu li.active{font-weight:700}
 
-/* ============================== */
-/* BOARD / LANES */
-/* ============================== */
-
+/* BOARD */
 .board-area{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:40px;
+  display:grid;grid-template-columns:1fr 1fr;gap:40px;
   padding:18px 28px 36px
 }
-
 .lane{
-  background:var(--lane-bg);
-  border-radius:8px;
-  padding:16px;
-  min-height:420px;
+  background:var(--lane-bg);border-radius:8px;padding:16px;min-height:420px;
   position:relative;
-  z-index:1;
+  z-index:1; /* abaixo do header/menu */
 }
-
 .lane-head{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin:0 4px 14px
+  display:flex;align-items:center;justify-content:space-between;margin:0 4px 14px
 }
-
-.lane-head h2{
-  color:#EAF6F2;
-  font-size:12px;
-  font-weight:700
-}
-
+.lane-head h2{color:#EAF6F2;font-size:12px;font-weight:700}
 .lane-add{
   width:28px;height:28px;border-radius:50%;
   border:1px solid rgba(255,255,255,.55);
@@ -141,95 +110,86 @@ body{
   cursor:pointer;font-size:16px;line-height:26px
 }
 
-/* ============================== */
-/* CARDS */
-/* ============================== */
-
+/* Cards */
 .lane-cards{display:grid;gap:14px}
-
 .card{
-  background:var(--card-bg);
-  border-radius:6px;
-  padding:14px 12px;
-  cursor:pointer;
-  box-shadow:0 1px 0 rgba(0,0,0,.06)
+  background:var(--card-bg);border-radius:6px;padding:14px 12px;
+  cursor:pointer;box-shadow:0 1px 0 rgba(0,0,0,.06)
 }
-
-.card .card-head{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin-bottom:8px
-}
+.card .card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
 .card .code{font-weight:700;font-size:12px}
 .card .icons{display:flex;gap:10px;color:#263832;font-size:13px}
+.card .desc{font-size:12px;margin-bottom:14px}
+.card .foot{display:flex;gap:12px;font-size:14px}
 
-.card .desc{
-  font-size:12px;
-  margin-bottom:14px
-}
-
-.card .foot{
-  display:flex;
-  gap:12px;
-  font-size:14px
-}
-
-/* ============================== */
-/* POPOVER */
-/* ============================== */
-
+/* ===== Popover ===== */
 .popover[hidden]{display:none}
-.popover{
-  position:fixed;
-  z-index:50
-}
+.popover{position:fixed;z-index:50}
 
 .pop-box{
-  width:560px;
-  background:var(--pop-bg);
-  border:1px solid var(--line);
-  border-radius:8px;
-  box-shadow:0 12px 26px rgba(0,0,0,.20);
-  overflow:hidden
+  width:560px;background:var(--pop-bg);
+  border:1px solid var(--line);border-radius:8px;
+  box-shadow:0 12px 26px rgba(0,0,0,.20);overflow:hidden
 }
+.pop-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 12px;border-bottom:1px solid var(--line)
+}
+.pop-head strong{font-size:13px;font-weight:700}
+.pop-actions{display:flex;gap:10px}
+.icon-btn{border:0;background:transparent;cursor:pointer;color:var(--ink-2);padding:2px 6px}
 
-/* ============================== */
-/* OUTROS ESTILOS (meta-row, obs, docs...) */
-/* ============================== */
-
+/* Metas */
 .meta-row{
-  display:grid;
-  grid-template-columns:1fr 1fr 1fr;
-  gap:10px;
-  padding:10px 12px 8px
+  display:grid;grid-template-columns:1fr 1fr 1fr;
+  gap:10px;padding:10px 12px 8px
 }
-
 .field{display:grid;gap:5px}
 .label{font-size:11px;font-weight:600;color:var(--ink-2)}
-
-.input{
-  height:26px;
-  border:1px solid var(--line);
-  border-radius:6px;
-  background:#fff;
-  padding:0 10px;
-  font-size:12px
-}
-
+.input{height:26px;border:1px solid var(--line);border-radius:6px;background:#fff;padding:0 10px;font-size:12px}
 .input.sm{height:24px}
 
-/* ============================== */
-/* RESPONSIVO */
-/* ============================== */
+/* calendário dentro do input */
+.date-inside{position:relative}
+.date-inside .input{padding-left:30px}
+.date-square{
+  position:absolute;left:7px;top:50%;transform:translateY(-50%);
+  width:18px;height:18px;border:1px solid var(--line);border-radius:4px;background:#fff
+}
 
+/* Checklist */
+.checklist{padding:2px 12px 0;display:grid;gap:8px}
+.check{display:flex;align-items:center;gap:8px;font-size:12px}
+.check input.round{
+  appearance:none;width:12px;height:12px;border:2px solid #7ea59a;border-radius:50%;position:relative
+}
+.check input.round:checked::after{
+  content:"";position:absolute;inset:2px;background:#2E4E45;border-radius:50%
+}
+
+/* Observação */
+.field.obs{padding:8px 12px 10px}
+.field.obs .input{height:24px}
+
+/* Documentos */
+.docs-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:8px 12px;border-top:1px solid var(--line)
+}
+.docs-left{display:flex;align-items:center;gap:10px;color:var(--ink-2)}
+.docs-right{display:flex;align-items:center;gap:12px;color:var(--ink-2)}
+.docs-txt{font-size:12px}
+.kebab{border:0;background:transparent;font-size:20px;line-height:12px;cursor:pointer;color:var(--ink-2);padding:0 2px}
+.menu.small{
+  position:absolute;right:10px;bottom:-2px;transform:translateY(100%);
+  list-style:none;margin:0;padding:6px 0;background:#fff;border:1px solid var(--line);
+  border-radius:8px;box-shadow:0 8px 16px rgba(0,0,0,.12)
+}
+.menu.small li{padding:8px 12px;font-size:12px;cursor:pointer;white-space:nowrap}
+.menu.small li:hover{background:#EEF5F3}
+
+/* Responsivo */
 @media (max-width:1100px){
-  .board-header{
-    grid-template-columns:1fr;
-    justify-items:center;
-    gap:12px
-  }
-  .board-area{
-    grid-template-columns:1fr
-  }
+  .board-header{grid-template-columns:1fr;justify-items:center;gap:12px}
+  .board-area{grid-template-columns:1fr}
 }
