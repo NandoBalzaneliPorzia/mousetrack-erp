@@ -32,6 +32,8 @@ body{ background:var(--content-bg); color:var(--text); font-family:system-ui,-ap
   margin-top: -4px; /* sobe o título um pouco */
 }
 .avatar-icon {
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
   object-fit: cover;
 }

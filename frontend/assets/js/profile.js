@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <img src="${event.target.result}" 
                alt="Avatar" 
                class="avatar-icon" 
-               style="width:72px;height:72px;border-radius:50%;object-fit:cover;">
+               style="width:120px;height:120px;border-radius:50%;object-fit:cover;">
         `;
       };
       reader.readAsDataURL(arquivo);
