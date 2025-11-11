@@ -9,15 +9,11 @@
   <link rel="stylesheet" href="assets/css/sidebar.css">
   <link rel="stylesheet" href="assets/css/board.css">
 </head>
-<body>
-
-  <!-- ✅ SIDEBAR PADRÃO (carregado via sidebar.js) -->
+<body data-page="board">
   <div id="sidebarMount"></div>
 
-  <!-- ✅ MAIN PRINCIPAL -->
-  <main class="content page-with-sidebar">
-
-    <!-- ========== HEADER ========== -->
+  <!-- Conteúdo principal -->
+  <main class="page-with-sidebar">
     <header class="board-header">
       <h1>QUADRO PROCESSOS</h1>
 
@@ -28,10 +24,8 @@
 
       <div class="type-switch">
         <button id="typeBtn" class="type-btn">
-          <span id="typeLabel">Importação</span>
-          <span class="caret">▾</span>
+          <span id="typeLabel">Importação</span><span class="caret">▾</span>
         </button>
-
         <ul id="typeMenu" class="type-menu" hidden>
           <li data-type="importacao" class="active">Importação</li>
           <li data-type="exportacao">Exportação</li>
@@ -39,11 +33,7 @@
       </div>
     </header>
 
-
-    <!-- ========== LANES ========== -->
     <section class="board-area">
-      
-      <!-- Importação Marítima -->
       <div class="lane" data-lane="maritima">
         <div class="lane-head">
           <h2 id="lane1Title">Importação Marítima</h2>
@@ -52,7 +42,6 @@
         <div class="lane-cards" id="laneMaritima"></div>
       </div>
 
-      <!-- Importação Aérea -->
       <div class="lane" data-lane="aerea">
         <div class="lane-head">
           <h2 id="lane2Title">Importação Aérea</h2>
@@ -60,35 +49,23 @@
         </div>
         <div class="lane-cards" id="laneAerea"></div>
       </div>
-
     </section>
   </main>
 
-
-  <!-- ========== POPOVER ========== -->
+  <!-- Popover -->
   <div id="cardPopover" class="popover" hidden>
     <div class="pop-box" role="dialog" aria-modal="false" aria-labelledby="popTitle">
-
       <div class="pop-head">
         <strong id="popTitle">INA_01 - Importação Geladeira</strong>
-
         <div class="pop-actions">
-          <button type="button" class="icon-btn" id="pInspect" title="Inspecionar">
-            <svg width="16" height="16" viewBox="0 0 24 24">
-              <path d="M10 17a7 7 0 100-14 7 7 0 000 14zm11 4l-6-6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-            </svg>
+          <button type="button" class="icon-btn" id="pInspect" title="Inspecionar" aria-label="Inspecionar">
+            <svg width="16" height="16" viewBox="0 0 24 24"><path d="M10 17a7 7 0 100-14 7 7 0 000 14zm11 4l-6-6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
           </button>
-
-          <button type="button" class="icon-btn" id="pAdd" title="Adicionar">
-            <svg width="16" height="16" viewBox="0 0 24 24">
-              <path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-            </svg>
+          <button type="button" class="icon-btn" id="pAdd" title="Adicionar" aria-label="Adicionar">
+            <svg width="16" height="16" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
           </button>
-
-          <button type="button" class="icon-btn" id="pClose" title="Fechar">
-            <svg width="16" height="16" viewBox="0 0 24 24">
-              <path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-            </svg>
+          <button type="button" class="icon-btn" id="pClose" title="Fechar" aria-label="Fechar">
+            <svg width="16" height="16" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
           </button>
         </div>
       </div>
@@ -98,7 +75,7 @@
           <label class="label">Data de início</label>
           <div class="date-inside">
             <input id="pStart" class="input sm" type="text" placeholder="dd/mm/aaaa">
-            <span class="date-square"></span>
+            <span class="date-square" aria-hidden="true"></span>
           </div>
         </div>
 
@@ -106,7 +83,7 @@
           <label class="label">Data de conclusão</label>
           <div class="date-inside">
             <input id="pEnd" class="input sm" type="text" placeholder="dd/mm/aaaa">
-            <span class="date-square"></span>
+            <span class="date-square" aria-hidden="true"></span>
           </div>
         </div>
 
@@ -129,40 +106,23 @@
 
       <div class="docs-row">
         <div class="docs-left">
-          <svg width="16" height="16" viewBox="0 0 24 24">
-            <path d="M8 12l6-6a4 4 0 115.6 5.6l-8.5 8.5a6 6 0 11-8.5-8.5l8-8" 
-            fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-          </svg>
-
+          <svg width="16" height="16" viewBox="0 0 24 24"><path d="M8 12l6-6a4 4 0 115.6 5.6l-8.5 8.5a6 6 0 11-8.5-8.5l8-8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
           <span class="docs-txt">Documentos</span>
         </div>
-
         <div class="docs-right">
-          <svg width="16" height="16" viewBox="0 0 24 24">
-            <path d="M21 15a7 7 0 10-3 5l4 1-1-4z"
-            fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-          </svg>
-
-          <svg width="16" height="16" viewBox="0 0 24 24">
-            <path d="M7 3h8l4 4v14H7zM15 3v4h4"
-            fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-          </svg>
-
-          <button class="kebab" id="docsMenuBtn">⋯</button>
-
+          <svg width="16" height="16" viewBox="0 0 24 24"><path d="M21 15a7 7 0 10-3 5l4 1-1-4z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24"><path d="M7 3h8l4 4v14H7zM15 3v4h4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <button class="kebab" id="docsMenuBtn" aria-label="Mais opções">⋯</button>
           <ul class="menu small" id="docsMenu" hidden>
             <li id="mDelete">Excluir card</li>
           </ul>
         </div>
       </div>
-
     </div>
   </div>
 
-  <!-- ✅ LOAD SCRIPTS -->
   <script src="assets/js/api.js"></script>
+  <script src="assets/js/nav.js"></script>
   <script src="assets/js/board.js"></script>
-  <script src="assets/js/nav.js" defer></script>
-
 </body>
 </html>
