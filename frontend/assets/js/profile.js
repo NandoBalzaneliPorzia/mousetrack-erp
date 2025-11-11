@@ -4,16 +4,19 @@ document.addEventListener('DOMContentLoaded', () => {
   const user = requireAuth();
   console.log('[profile] user =', user);
 
-  const form      = document.getElementById('perfilForm');
-  const senha     = document.getElementById('senha');
+  const form = document.getElementById('perfilForm');
+  const senha = document.getElementById('senha');
   const confirmar = document.getElementById('confirmar');
-  const telefone  = document.getElementById('telefone');
+  const telefone = document.getElementById('telefone');
+  const inputImagem = document.getElementById('inputImagem');
+  const btnAlterarImagem = document.getElementById('btnAlterarImagem');
 
   if (!form) {
     console.error('[profile] Form #perfilForm não encontrado');
     return;
   }
 
+  // 👉 Evento de envio do formulário
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -33,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const payload = {
       telefone: telefone?.value || null,
-      senha:    senha?.value     || null
+      senha: senha?.value || null
     };
 
     try {
@@ -52,11 +55,34 @@ document.addEventListener('DOMContentLoaded', () => {
       alert('Perfil atualizado com sucesso!');
 
       // opcional: limpar campos de senha
-      if (senha)     senha.value = '';
+      if (senha) senha.value = '';
       if (confirmar) confirmar.value = '';
     } catch (err) {
       console.error('[profile] erro de rede:', err);
       alert('Erro de rede ao salvar perfil.');
+    }
+  });
+
+  // 👉 Evento de alteração da imagem
+  btnAlterarImagem.addEventListener('click', () => {
+    inputImagem.click(); // abre o seletor de arquivos
+  });
+
+  inputImagem.addEventListener('change', (e) => {
+    const arquivo = e.target.files[0];
+    if (arquivo) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        // troca o avatar para mostrar a nova imagem escolhida
+        const avatarIcon = document.querySelector('.avatar-icon');
+        avatarIcon.outerHTML = `
+          <img src="${event.target.result}" 
+               alt="Avatar" 
+               class="avatar-icon" 
+               style="width:72px;height:72px;border-radius:50%;object-fit:cover;">
+        `;
+      };
+      reader.readAsDataURL(arquivo);
     }
   });
 });

@@ -31,3 +31,7 @@ body{ background:var(--content-bg); color:var(--text); font-family:system-ui,-ap
 .title {
   margin-top: -4px; /* sobe o título um pouco */
 }
+.avatar-icon {
+  border-radius: 50%;
+  object-fit: cover;
+}
