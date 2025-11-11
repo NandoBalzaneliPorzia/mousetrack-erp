@@ -29,5 +29,5 @@ body{ background:var(--content-bg); color:var(--text); font-family:system-ui,-ap
   align-content: start;
 }
 .title {
-  margin-top: -16px; /* sobe o título um pouco */
+  margin-top: -8px; /* sobe o título um pouco */
 }
