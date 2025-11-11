@@ -4,24 +4,33 @@ document.addEventListener('DOMContentLoaded', () => {
   const fileText = document.getElementById('fileText');
   const form = document.getElementById('procForm');
 
-  if (input) {
-    input.addEventListener('change', () => {
-      if (!input.files || input.files.length === 0) {
-        fileText.textContent = '';
-        return;
-      }
-      if (input.files.length === 1) {
-        fileText.textContent = input.files[0].name;
-      } else {
-        fileText.textContent = `${input.files.length} arquivos selecionados`;
-      }
-    });
-  }
-
   if (form) {
-    form.addEventListener('submit', (e) => {
-      e.preventDefault(); // placeholder — aqui depois integramos com Python/Back-end
-      alert('Formulário enviado (simulação).');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const data = Object.fromEntries(new FormData(form).entries());
+
+      try {
+        const response = await fetch('https://mouse-track-backend.onrender.com/api/forms/docx', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        if (!response.ok) throw new Error('Erro ao gerar documento');
+
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'Form_Processo.docx';
+        a.click();
+        window.URL.revokeObjectURL(url);
+
+      } catch (err) {
+        alert('❌ Falha ao gerar documento.');
+        console.error(err);
+      }
     });
   }
 });
