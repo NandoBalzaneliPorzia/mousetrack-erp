@@ -26,6 +26,13 @@ public class ShippingWordService {
             XWPFTable table = document.createTable();
             table.setWidth("100%");
 
+            XWPFTableRow header = table.getRow(0);
+            while (header.getTableCells().size() < 2) {
+                header.addNewTableCell();
+            }
+            header.getCell(0).setText("Campo");
+            header.getCell(1).setText("Valor");
+
             addRow(table, "Origem", si.getOrigem());
             addRow(table, "Destino", si.getDestino());
             addRow(table, "Shipper", si.getShipper());
@@ -59,8 +66,14 @@ public class ShippingWordService {
     }
 
     private void addRow(XWPFTable table, String label, String value) {
-        XWPFTableRow row = table.createRow();
-        row.getCell(0).setText(label);
-        row.getCell(1).setText(value != null ? value : "");
+    XWPFTableRow row = table.createRow();
+
+    // Garante que a linha tenha ao menos 2 células
+    while (row.getTableCells().size() < 2) {
+        row.addNewTableCell();
     }
+
+    row.getCell(0).setText(label);
+    row.getCell(1).setText(value != null ? value : "");
+}
 }
