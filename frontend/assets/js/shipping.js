@@ -58,25 +58,25 @@ modalItems.forEach(item => {
     data.tipo = form.id === 'formAereo' ? 'aereo' : 'maritmo';
 
     try {
-      const response = await fetch(api('/api/shipping/pdf'), {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      });
+  const response = await fetch(api('/api/shipping/docx'), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  });
 
-      if (!response.ok) throw new Error('Erro ao gerar PDF');
+  if (!response.ok) throw new Error('Erro ao gerar DOCX');
 
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `Shipping_${data.tipo}.pdf`;
-      a.click();
-      window.URL.revokeObjectURL(url);
+  const blob = await response.blob();
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `Shipping_${data.refCliente || data.tipo}.docx`; // <- extensão alterada
+  a.click();
+  window.URL.revokeObjectURL(url);
 
-    } catch (err) {
-      alert('❌ Falha ao gerar documento.');
-      console.error(err);
-    }
+} catch (err) {
+  alert('❌ Falha ao gerar documento.');
+  console.error(err);
+}
   });
 });

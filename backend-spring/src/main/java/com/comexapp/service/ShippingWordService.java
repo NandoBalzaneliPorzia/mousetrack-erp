@@ -44,7 +44,7 @@ public class ShippingWordService {
             footer.setAlignment(ParagraphAlignment.CENTER);
             XWPFRun footerRun = footer.createRun();
             footerRun.addBreak();
-            footerRun.setText("Gerado automaticamente pelo sistema MousTrack.");
+            footerRun.setText("Gerado automaticamente pelo sistema Mouss&Track.");
             footerRun.setFontSize(10);
             footerRun.setItalic(true);
 
