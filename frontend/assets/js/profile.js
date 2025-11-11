@@ -10,18 +10,54 @@ document.addEventListener('DOMContentLoaded', () => {
   const telefone = document.getElementById('telefone');
   const inputImagem = document.getElementById('inputImagem');
   const btnAlterarImagem = document.getElementById('btnAlterarImagem');
+  const avatarContainer = document.querySelector('.avatar-container');
 
   if (!form) {
     console.error('[profile] Form #perfilForm não encontrado');
     return;
   }
 
+  // 👉 Exibir imagem salva (caso já exista no localStorage)
+  const imagemSalva = localStorage.getItem('userAvatar');
+  if (imagemSalva) {
+    avatarContainer.innerHTML = `
+      <img src="${imagemSalva}" 
+           alt="Avatar" 
+           class="avatar-icon" 
+           style="width:120px;height:120px;border-radius:50%;object-fit:cover;">
+    `;
+  }
+
+  // 👉 Evento de alteração da imagem
+  btnAlterarImagem.addEventListener('click', () => {
+    inputImagem.click();
+  });
+
+  inputImagem.addEventListener('change', (e) => {
+    const arquivo = e.target.files[0];
+    if (arquivo) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const novaImagem = event.target.result;
+
+        // exibe e salva no localStorage
+        avatarContainer.innerHTML = `
+          <img src="${novaImagem}" 
+               alt="Avatar" 
+               class="avatar-icon" 
+               style="width:120px;height:120px;border-radius:50%;object-fit:cover;">
+        `;
+        localStorage.setItem('userAvatar', novaImagem);
+      };
+      reader.readAsDataURL(arquivo);
+    }
+  });
+
   // 👉 Evento de envio do formulário
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const usuarioId = getUsuarioId(); // já garantido pelo requireAuth()
-
+    const usuarioId = getUsuarioId();
     if (!usuarioId) {
       alert('Sessão inválida. Faça login novamente.');
       session.logout();
@@ -41,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       const resp = await fetch(api(`/api/usuarios/${usuarioId}`), {
-        method: 'PUT', // mude para PATCH se seu controller pedir
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
@@ -53,36 +89,11 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       alert('Perfil atualizado com sucesso!');
-
-      // opcional: limpar campos de senha
       if (senha) senha.value = '';
       if (confirmar) confirmar.value = '';
     } catch (err) {
       console.error('[profile] erro de rede:', err);
       alert('Erro de rede ao salvar perfil.');
-    }
-  });
-
-  // 👉 Evento de alteração da imagem
-  btnAlterarImagem.addEventListener('click', () => {
-    inputImagem.click(); // abre o seletor de arquivos
-  });
-
-  inputImagem.addEventListener('change', (e) => {
-    const arquivo = e.target.files[0];
-    if (arquivo) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        // troca o avatar para mostrar a nova imagem escolhida
-        const avatarIcon = document.querySelector('.avatar-icon');
-        avatarIcon.outerHTML = `
-          <img src="${event.target.result}" 
-               alt="Avatar" 
-               class="avatar-icon" 
-               style="width:120px;height:120px;border-radius:50%;object-fit:cover;">
-        `;
-      };
-      reader.readAsDataURL(arquivo);
     }
   });
 });

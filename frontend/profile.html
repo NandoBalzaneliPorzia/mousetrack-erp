@@ -4,25 +4,27 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Informações Pessoais</title>
-  
+
   <link rel="stylesheet" href="assets/css/reset.css">
   <link rel="stylesheet" href="assets/css/sidebar.css"> <!-- sidebar compartilhada -->
   <link rel="stylesheet" href="assets/css/profile.css">
 </head>
 
 <body data-page="profile">
-  <!-- SIDEBAR PADRÃO (mesma ordem em todo o site) -->
+  <!-- SIDEBAR PADRÃO -->
   <div id="sidebarMount"></div>
 
   <main class="content page-with-sidebar">
     <h1 class="title">INFORMAÇÕES PESSOAIS</h1>
 
     <section class="avatar">
-      <svg class="avatar-icon" width="120" height="120" viewBox="0 0 72 72" aria-hidden="true">
-        <circle cx="36" cy="36" r="34" fill="#1F4F46" />
-        <circle cx="36" cy="30" r="10" fill="none" stroke="#E6F0EE" stroke-width="3" />
-        <path d="M18 56c5-9 13-12 18-12s13 3 18 12" fill="none" stroke="#E6F0EE" stroke-width="3" stroke-linecap="round"/>
-      </svg>
+      <div class="avatar-container">
+        <svg class="avatar-icon" width="120" height="120" viewBox="0 0 72 72" aria-hidden="true">
+          <circle cx="36" cy="36" r="34" fill="#1F4F46" />
+          <circle cx="36" cy="30" r="10" fill="none" stroke="#E6F0EE" stroke-width="3" />
+          <path d="M18 56c5-9 13-12 18-12s13 3 18 12" fill="none" stroke="#E6F0EE" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+      </div>
 
       <button type="button" class="avatar-link" id="btnAlterarImagem">Alterar imagem</button>
       <!-- input de upload oculto -->
