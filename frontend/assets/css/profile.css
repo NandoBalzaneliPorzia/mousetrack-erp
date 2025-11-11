@@ -28,3 +28,6 @@ body{ background:var(--content-bg); color:var(--text); font-family:system-ui,-ap
   justify-items: center;
   align-content: start;
 }
+.title {
+  margin-top: -10px; /* sobe o título um pouco */
+}
