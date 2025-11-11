@@ -4,29 +4,15 @@
   --ink-2: #3b4c47;
   --line: #C8D6D1;
   --white: #fff;
-
-  --btn: #2E4E45;
-  --btn-ink: #EAF6F2;
-  --btn-ghost: #dfe9e6;
-
-  --ok: #265f52;
-  --err: #b33;
+  --card-bg: #E6EEEB;
 
   --sidebar-w: 72px;
   --sidebar-w-open: 200px;
 }
 
-body {
-  background: var(--page-bg);
-  color: var(--ink);
-  font-family: "Segoe UI", Arial, sans-serif;
-  margin: 0;
-}
-
-/* ===== Layout com sidebar ===== */
+/* ALINHAMENTO DO CONTEÚDO COM A SIDEBAR */
 .page-with-sidebar {
   margin-left: var(--sidebar-w);
-  padding: 40px 0;
   transition: margin-left .25s ease;
 }
 
@@ -34,119 +20,105 @@ body {
   margin-left: var(--sidebar-w-open);
 }
 
-/* ===== Cabeçalho ===== */
-.acc-header {
-  text-align: center;
-  margin-bottom: 36px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--line);
+/* ÁREA GERAL */
+.board-container {
+  padding: 40px 50px;
+  background: var(--page-bg);
+  min-height: 100vh;
 }
 
-.acc-header h1 {
-  font-size: 20px;
+/* HEADER */
+.board-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 25px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 30px;
+}
+
+.board-header h1 {
+  font-size: 26px;
   font-weight: 700;
-  margin: 0;
+  padding-left: 4px;
   color: var(--ink);
 }
 
-/* ===== Corpo ===== */
-.acc-body {
+.header-controls {
   display: flex;
-  justify-content: center;
+  align-items: center;
+  gap: 16px;
 }
 
-.access-form {
-  width: 520px;
-  max-width: 94vw;
-  background: var(--white);
-  padding: 32px;
-  border-radius: 10px;
+.search-input {
+  padding: 10px 14px;
+  width: 220px;
+  height: 40px;
   border: 1px solid var(--line);
-  display: grid;
-  gap: 24px;
+  border-radius: 6px;
+  background: var(--white);
+  font-size: 14px;
+  color: var(--ink);
 }
 
-/* ===== Campos ===== */
-.field {
+.filter-select {
+  padding: 10px 14px;
+  height: 40px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--white);
+  font-size: 14px;
+}
+
+/* LANES */
+.lanes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 45px;
+}
+
+.lane-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 18px;
+  color: var(--ink);
+}
+
+.lane-cards {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 22px;
 }
 
-.label {
-  font-size: 13px;
-  font-weight: 600;
+/* PROCESS CARD */
+.process-card {
+  background: var(--card-bg);
+  border-radius: 10px;
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  border: 1px solid var(--line);
+}
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
   color: var(--ink-2);
 }
 
-.input,
-.select {
-  width: 100%;
-  height: 40px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--white);
-  padding: 0 12px;
-  font-size: 14px;
+.process-title {
+  font-size: 18px;
+  font-weight: 700;
   color: var(--ink);
-  transition: border 0.2s ease;
+  margin: 0;
 }
 
-.input:focus,
-.select:focus {
-  border-color: var(--ink-2);
-}
-
-/* Campo com botão Gerar */
-.field-inline {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: end;
-  gap: 12px;
-}
-
-/* ===== Botões ===== */
-.btn {
-  border: none;
-  border-radius: 8px;
-  background: var(--btn);
-  color: var(--btn-ink);
-  cursor: pointer;
+.card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
   font-size: 14px;
-  font-weight: 600;
-  transition: background 0.2s ease;
-}
-
-.btn.small {
-  padding: 0 16px;
-  height: 40px;
-}
-
-.btn.primary.wide {
-  width: 100%;
-  height: 42px;
-}
-
-.btn:hover {
-  background: #24453c;
-}
-
-/* ===== Select com seta ===== */
-.select {
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='%233B4C47' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 14px center;
-}
-
-/* ===== Feedback ===== */
-.feedback {
-  font-size: 13px;
-  min-height: 18px;
-  color: var(--ok);
-}
-
-/* ===== Ações ===== */
-.actions {
-  margin-top: 10px;
+  color: var(--ink-2);
 }

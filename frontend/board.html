@@ -3,73 +3,88 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Acesso</title>
+  <title>Quadro de Processos</title>
 
-  <!-- estilos base -->
   <link rel="stylesheet" href="assets/css/reset.css">
   <link rel="stylesheet" href="assets/css/sidebar.css">
-  <link rel="stylesheet" href="assets/css/access.css">
+  <link rel="stylesheet" href="assets/css/board.css">
 </head>
 
-<body data-page="access">
+<body data-page="board">
 
-  <!-- Sidebar padrão -->
+  <!-- Sidebar -->
   <div id="sidebarMount"></div>
 
-  <main class="page-with-sidebar">
+  <!-- CONTEÚDO PRINCIPAL -->
+  <main class="page-with-sidebar board-container">
 
-    <header class="acc-header">
-      <h1>ACESSO</h1>
+    <!-- HEADER -->
+    <header class="board-header">
+      <h1>Quadro de Processos</h1>
+
+      <div class="header-controls">
+        <input type="text" placeholder="Buscar processo..." class="search-input" id="search">
+
+        <select class="filter-select" id="filter">
+          <option value="exportacao">Exportação</option>
+          <option value="importacao">Importação</option>
+          <option value="todos">Todos</option>
+        </select>
+      </div>
     </header>
 
-    <section class="acc-body">
-      <form id="accForm" class="access-form" autocomplete="off" novalidate>
+    <!-- LANES -->
+    <section class="lanes">
 
-        <div class="field">
-          <label class="label" for="accName">Nome Completo</label>
-          <input id="accName" type="text" class="input" placeholder="Digite o nome">
-        </div>
+      <!-- Marítima -->
+      <div class="lane">
+        <h2 class="lane-title">Marítima</h2>
 
-        <div class="field">
-          <label class="label" for="accEmail">Email</label>
-          <input id="accEmail" type="email" class="input" placeholder="Digite o email">
-        </div>
+        <div class="lane-cards" id="lane-mar">
+          <!-- Exemplo -->
+          <div class="process-card">
+            <div class="card-top">
+              <span class="process-id">#5471013</span>
+              <span class="process-type">Marítima</span>
+            </div>
 
-        <div class="field field-inline">
-          <div class="field-col">
-            <label class="label" for="accPass">Senha</label>
-            <input id="accPass" type="text" class="input" placeholder="Clique para gerar ou digitar">
+            <h3 class="process-title">Equipamentos Eletrônicos</h3>
+
+            <div class="card-info">
+              <span>Origem: China</span>
+              <span>Destino: Brasil</span>
+            </div>
           </div>
-          <button type="button" id="btnGenPass" class="btn small">Gerar</button>
         </div>
+      </div>
 
-        <div class="field">
-          <label class="label" for="accProcess">Processo</label>
-          <select id="accProcess" class="input select">
-            <option value="">Selecione</option>
-          </select>
+      <!-- Aérea -->
+      <div class="lane">
+        <h2 class="lane-title">Aérea</h2>
+
+        <div class="lane-cards" id="lane-air">
+          <!-- Exemplo -->
+          <div class="process-card">
+            <div class="card-top">
+              <span class="process-id">#5471014</span>
+              <span class="process-type">Aérea</span>
+            </div>
+
+            <h3 class="process-title">Roupas e Acessórios</h3>
+
+            <div class="card-info">
+              <span>Origem: EUA</span>
+              <span>Destino: Brasil</span>
+            </div>
+          </div>
         </div>
+      </div>
 
-        <div class="field">
-          <label class="label" for="accClient">Cliente</label>
-          <select id="accClient" class="input select">
-            <option value="">Selecione</option>
-          </select>
-        </div>
-
-        <div id="accFeedback" class="feedback"></div>
-
-        <div class="actions">
-          <button type="submit" class="btn primary wide">Enviar</button>
-        </div>
-
-      </form>
     </section>
   </main>
 
-  <script src="assets/js/api.js"></script>
   <script src="assets/js/nav.js" defer></script>
-  <script src="assets/js/access.js"></script>
+  <script src="assets/js/board.js"></script>
 
 </body>
 </html>
