@@ -25,6 +25,8 @@ body{
   align-items:center;
   gap:20px;
   padding:26px 28px 6px;
+
+  /* >>> FIX de camadas para o dropdown não ficar atrás das colunas <<< */
   position:relative;
   z-index:10;
   background:var(--page-bg);
@@ -61,8 +63,8 @@ body{
 
 /* Switch */
 .type-switch{
-  position:relative;
-  z-index:11;
+  position:relative;   /* contexto para o menu */
+  z-index:11;          /* acima do header e das lanes */
   justify-self:end
 }
 .type-btn{
@@ -79,6 +81,8 @@ body{
   border:1px solid #2B443C;
   border-radius:10px;
   box-shadow:0 6px 16px rgba(0,0,0,.08);
+
+  /* >>> fica acima das colunas e do popover <<< */
   z-index:999;
 }
 .type-menu li{padding:8px 12px;font-size:12px;cursor:pointer}
@@ -93,7 +97,7 @@ body{
 .lane{
   background:var(--lane-bg);border-radius:8px;padding:16px;min-height:420px;
   position:relative;
-  z-index:1;
+  z-index:1; /* abaixo do header/menu */
 }
 .lane-head{
   display:flex;align-items:center;justify-content:space-between;margin:0 4px 14px
@@ -118,9 +122,10 @@ body{
 .card .desc{font-size:12px;margin-bottom:14px}
 .card .foot{display:flex;gap:12px;font-size:14px}
 
-/* Popover */
+/* ===== Popover ===== */
 .popover[hidden]{display:none}
 .popover{position:fixed;z-index:50}
+
 .pop-box{
   width:560px;background:var(--pop-bg);
   border:1px solid var(--line);border-radius:8px;
