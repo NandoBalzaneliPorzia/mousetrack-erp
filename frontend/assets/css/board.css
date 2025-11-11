@@ -28,12 +28,12 @@ body{
 
 .board-header {
   display: grid;
-  grid-template-columns: 1fr auto; /* título ocupa o centro, seletor vai pro canto direito */
+  grid-template-columns: 1fr auto;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   padding: 26px 28px 6px;
   position: relative;
-  z-index: 10;
+  z-index: 50;
   background: var(--page-bg);
 }
 
@@ -46,19 +46,19 @@ body{
   text-align: center;
 }
 
-/* a barra de pesquisa agora vem abaixo do título */
 .search-wrap {
-  grid-column: 1 / -1; /* ocupa toda a largura do header */
+  grid-column: 1 / -1;
   justify-self: center;
   width: 420px;
   height: 34px;
   border: 1px solid #2B443C;
   border-radius: 18px;
-  background: #F5F5F5;
+  background: #fff;
   display: flex;
   align-items: center;
-  margin-top: 10px; /* espaçamento entre título e pesquisa */
+  margin-top: 10px;
 }
+
 
 .loupe {
   margin-left: 10px;
