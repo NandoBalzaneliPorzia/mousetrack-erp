@@ -26,48 +26,55 @@ body{
 /* HEADER */
 /* ============================== */
 
-.board-header{
-  display:grid;
-  grid-template-columns:1fr 420px 220px;
-  align-items:center;
-  gap:20px;
-  padding:26px 28px 6px;
-  position:relative;
-  z-index:10;
-  background:var(--page-bg);
+.board-header {
+  display: grid;
+  grid-template-columns: 1fr auto; /* título ocupa o centro, seletor vai pro canto direito */
+  align-items: center;
+  justify-content: center;
+  padding: 26px 28px 6px;
+  position: relative;
+  z-index: 10;
+  background: var(--page-bg);
 }
 
-.board-header h1{
-  justify-self:center;
-  font-size:16px;
-  font-weight:700;
-  letter-spacing:.35px
+.board-header h1 {
+  justify-self: center;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin: 0;
+  text-align: center;
 }
 
-/* ============================== */
-/* SEARCH BAR */
-/* ============================== */
+/* a barra de pesquisa agora vem abaixo do título */
+.search-wrap {
+  grid-column: 1 / -1; /* ocupa toda a largura do header */
+  justify-self: center;
+  width: 420px;
+  height: 34px;
+  border: 1px solid #2B443C;
+  border-radius: 18px;
+  background: #F5F5F5;
+  display: flex;
+  align-items: center;
+  margin-top: 10px; /* espaçamento entre título e pesquisa */
+}
 
-.search-wrap{
-  justify-self:center;
-  width:420px;
-  height:34px;
-  border:1px solid #2B443C;
-  border-radius:18px;
-  background:#F5F5F5;
-  display:flex;
-  align-items:center
+.loupe {
+  margin-left: 10px;
+  font-size: 14px;
 }
-.loupe{margin-left:10px;font-size:14px}
-.search-input{
-  border:0;
-  outline:0;
-  height:100%;
-  flex:1;
-  padding:0 14px;
-  background:transparent;
-  font-size:12px
+
+.search-input {
+  border: 0;
+  outline: 0;
+  height: 100%;
+  flex: 1;
+  padding: 0 14px;
+  background: transparent;
+  font-size: 12px;
 }
+
 
 /* ============================== */
 /* SWITCH (IMPORTAÇÃO/EXPORTAÇÃO) */
