@@ -11,9 +11,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+@CrossOrigin(origins = "https://mousetrack-frontend.onrender.com")
 @RestController
 @RequestMapping("/api/processos")
-@CrossOrigin // usa CorsConfig global
 public class ProcessoController {
 
     private final ProcessoService service;
