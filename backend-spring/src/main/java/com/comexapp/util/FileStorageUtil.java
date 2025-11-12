@@ -13,18 +13,24 @@ import java.util.stream.Collectors;
 @Component
 public class FileStorageUtil {
 
-    private static final String UPLOAD_DIR = "uploads/";
+    // Em produção configure um path absoluto (ex: /mnt/data/uploads) se necessário
+    private static final String UPLOAD_DIR = "uploads";
 
     public String saveFiles(MultipartFile[] files) {
         if (files == null || files.length == 0) return null;
         File dir = new File(UPLOAD_DIR);
-        if (!dir.exists()) dir.mkdirs();
+        if (!dir.exists()) {
+            boolean ok = dir.mkdirs();
+            if (!ok) throw new RuntimeException("Não foi possível criar diretório de upload");
+        }
 
         return Arrays.stream(files)
                 .map(f -> {
                     try {
-                        String safe = UUID.randomUUID().toString().substring(0,8) + "_" + sanitize(f.getOriginalFilename());
-                        Path dest = Paths.get(UPLOAD_DIR, safe);
+                        String original = f.getOriginalFilename();
+                        String safe = UUID.randomUUID().toString().substring(0,8) + "_" + sanitize(original);
+                        Path dest = Paths.get(UPLOAD_DIR).resolve(safe);
+                        // escreve o arquivo
                         Files.copy(f.getInputStream(), dest, StandardCopyOption.REPLACE_EXISTING);
                         return safe;
                     } catch (IOException e) {

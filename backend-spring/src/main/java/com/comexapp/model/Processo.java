@@ -12,7 +12,6 @@ public class Processo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // código único gerado (ex: INA_A1B2)
     @Column(unique = true)
     private String codigo;
 
@@ -21,7 +20,6 @@ public class Processo {
     private String modal;   // aereo / maritimo
     private String observacao;
 
-    // arquivos armazenados (nomes separados por vírgula)
     @Lob
     private String arquivos;
 

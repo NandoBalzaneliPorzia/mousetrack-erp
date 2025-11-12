@@ -4,6 +4,7 @@ import com.comexapp.DTO.ProcessoRequestDTO;
 import com.comexapp.model.Processo;
 import com.comexapp.repository.ProcessoRepository;
 import com.comexapp.service.ProcessoService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/processos")
-@CrossOrigin(origins = "https://mousetrack-frontend.onrender.com")
+@CrossOrigin // usa CorsConfig global
 public class ProcessoController {
 
     private final ProcessoService service;
@@ -23,23 +24,31 @@ public class ProcessoController {
         this.repository = repository;
     }
 
+    // Recebe título, tipo, modal, observacao e arquivos (name="arquivos" no form)
     @PostMapping(consumes = {"multipart/form-data"})
-    public ResponseEntity<Processo> criarProcesso(
+    public ResponseEntity<?> criarProcesso(
             @RequestParam String titulo,
             @RequestParam String tipo,
             @RequestParam String modal,
             @RequestParam(required = false) String observacao,
-            @RequestParam(required = false) MultipartFile[] arquivos) {
+            @RequestParam(value = "arquivos", required = false) MultipartFile[] arquivos) {
 
-        ProcessoRequestDTO dto = new ProcessoRequestDTO();
-        dto.setTitulo(titulo);
-        dto.setTipo(tipo);
-        dto.setModal(modal);
-        dto.setObservacao(observacao);
-        dto.setArquivos(arquivos);
+        try {
+            ProcessoRequestDTO dto = new ProcessoRequestDTO();
+            dto.setTitulo(titulo);
+            dto.setTipo(tipo);
+            dto.setModal(modal);
+            dto.setObservacao(observacao);
+            dto.setArquivos(arquivos);
 
-        Processo created = service.criarProcesso(dto);
-        return ResponseEntity.ok(created);
+            Processo created = service.criarProcesso(dto);
+            return ResponseEntity.ok(created);
+        } catch (Exception e) {
+            // log no console do servidor (spring logs)
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Erro ao criar processo: " + e.getMessage());
+        }
     }
 
     @GetMapping

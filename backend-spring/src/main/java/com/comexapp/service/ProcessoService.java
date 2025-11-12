@@ -22,12 +22,10 @@ public class ProcessoService {
     public Processo criarProcesso(ProcessoRequestDTO dto) {
         Processo p = new Processo();
 
-        // prefixo: INA / INM / EXA / EXM
-        String prefix = (dto.getTipo().equals("importacao")
-                ? (dto.getModal().equals("maritimo") ? "INM" : "INA")
-                : (dto.getModal().equals("maritimo") ? "EXM" : "EXA"));
+        String prefix = (dto.getTipo().equalsIgnoreCase("importacao")
+                ? (dto.getModal().equalsIgnoreCase("maritimo") ? "INM" : "INA")
+                : (dto.getModal().equalsIgnoreCase("maritimo") ? "EXM" : "EXA"));
 
-        // gera código curto único (coloca loop pra garantir unicidade)
         String codigo;
         do {
             codigo = prefix + "_" + UUID.randomUUID().toString().substring(0,4).toUpperCase();

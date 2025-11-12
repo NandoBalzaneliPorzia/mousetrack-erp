@@ -4,10 +4,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const fileText = document.getElementById('fileText');
   const form = document.getElementById('procForm');
 
-  // URL do backend hospedado no Render
-  const BASE_URL = 'https://mouse-track-backend.onrender.com';
+  // ATENÇÃO: ajuste para seu backend correto (com/sem hífen conforme deploy)
+  const BASE_URL = 'https://mousetrack-backend.onrender.com';
 
-  // Mostra nomes/quantidade de arquivos selecionados
   if (input) {
     input.addEventListener('change', () => {
       if (!input.files || input.files.length === 0) {
@@ -24,22 +23,21 @@ document.addEventListener('DOMContentLoaded', () => {
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      const formData = new FormData(form);
+      const formData = new FormData(form); // pega todos os campos com os names corretos
 
       try {
         const res = await fetch(`${BASE_URL}/api/processos`, {
           method: 'POST',
-          body: formData // 👈 manda como multipart/form-data automaticamente
+          body: formData,
+          // NÃO setar Content-Type — o browser faz o boundary automaticamente
         });
 
         if (!res.ok) {
           const text = await res.text().catch(() => null);
-          throw new Error(`Servidor retornou ${res.status} ${text || ''}`);
+          throw new Error(`Servidor retornou ${res.status} - ${text || 'sem corpo'}`);
         }
 
         const created = await res.json();
-
-        // Salva o processo no localStorage (para exibir no board)
         const processos = JSON.parse(localStorage.getItem('processos') || '[]');
         processos.push(created);
         localStorage.setItem('processos', JSON.stringify(processos));
@@ -48,12 +46,9 @@ document.addEventListener('DOMContentLoaded', () => {
         form.reset();
         if (fileText) fileText.textContent = '';
 
-        // Redireciona para o board (opcional)
-        // window.location.href = '/board.html';
-
       } catch (err) {
         console.error('Erro ao criar processo:', err);
-        alert('❌ Falha ao criar processo. Verifique o console para detalhes.');
+        alert('❌ Falha ao criar processo. Veja console do navegador para detalhes.');
       }
     });
   }
