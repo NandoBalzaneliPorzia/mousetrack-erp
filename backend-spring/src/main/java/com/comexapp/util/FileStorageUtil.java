@@ -16,20 +16,26 @@ public class FileStorageUtil {
     private static final String UPLOAD_DIR = "uploads/";
 
     public String saveFiles(MultipartFile[] files) {
+        if (files == null || files.length == 0) return null;
         File dir = new File(UPLOAD_DIR);
         if (!dir.exists()) dir.mkdirs();
 
         return Arrays.stream(files)
                 .map(f -> {
                     try {
-                        String newName = UUID.randomUUID() + "_" + f.getOriginalFilename();
-                        Path dest = Paths.get(UPLOAD_DIR + newName);
+                        String safe = UUID.randomUUID().toString().substring(0,8) + "_" + sanitize(f.getOriginalFilename());
+                        Path dest = Paths.get(UPLOAD_DIR, safe);
                         Files.copy(f.getInputStream(), dest, StandardCopyOption.REPLACE_EXISTING);
-                        return newName;
+                        return safe;
                     } catch (IOException e) {
                         throw new RuntimeException("Erro ao salvar arquivo: " + f.getOriginalFilename(), e);
                     }
                 })
                 .collect(Collectors.joining(","));
+    }
+
+    private String sanitize(String name) {
+        if (name == null) return "file";
+        return name.replaceAll("[^a-zA-Z0-9\\.\\-\\_]", "_");
     }
 }

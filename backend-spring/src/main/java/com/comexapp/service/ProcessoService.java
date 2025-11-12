@@ -22,11 +22,16 @@ public class ProcessoService {
     public Processo criarProcesso(ProcessoRequestDTO dto) {
         Processo p = new Processo();
 
-        // Gera ID automático (ex: INM_0001 ou EXA_00F2)
+        // prefixo: INA / INM / EXA / EXM
         String prefix = (dto.getTipo().equals("importacao")
-                ? (dto.getModal().equals("maritimo") ? "INM_" : "INA_")
-                : (dto.getModal().equals("maritimo") ? "EXM_" : "EXA_"));
-        String codigo = prefix + UUID.randomUUID().toString().substring(0, 4).toUpperCase();
+                ? (dto.getModal().equals("maritimo") ? "INM" : "INA")
+                : (dto.getModal().equals("maritimo") ? "EXM" : "EXA"));
+
+        // gera código curto único (coloca loop pra garantir unicidade)
+        String codigo;
+        do {
+            codigo = prefix + "_" + UUID.randomUUID().toString().substring(0,4).toUpperCase();
+        } while (repo.existsByCodigo(codigo));
 
         p.setCodigo(codigo);
         p.setTitulo(dto.getTitulo());

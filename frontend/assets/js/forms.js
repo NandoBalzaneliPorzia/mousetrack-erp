@@ -1,35 +1,59 @@
-// Exibe nomes/quantidade dos arquivos selecionados e evita submit real por enquanto
+// forms.js
 document.addEventListener('DOMContentLoaded', () => {
   const input = document.getElementById('anexo');
   const fileText = document.getElementById('fileText');
   const form = document.getElementById('procForm');
 
+  // URL do backend hospedado no Render
+  const BASE_URL = 'https://mouse-track-backend.onrender.com';
+
+  // Mostra nomes/quantidade de arquivos selecionados
+  if (input) {
+    input.addEventListener('change', () => {
+      if (!input.files || input.files.length === 0) {
+        fileText.textContent = '';
+        return;
+      }
+      fileText.textContent = input.files.length === 1
+        ? input.files[0].name
+        : `${input.files.length} arquivos selecionados`;
+    });
+  }
+
   if (form) {
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      const data = Object.fromEntries(new FormData(form).entries());
+      const formData = new FormData(form);
 
       try {
-        const response = await fetch('https://mouse-track-backend.onrender.com/api/forms/docx', {
+        const res = await fetch(`${BASE_URL}/api/processos`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
+          body: formData // 👈 manda como multipart/form-data automaticamente
         });
 
-        if (!response.ok) throw new Error('Erro ao gerar documento');
+        if (!res.ok) {
+          const text = await res.text().catch(() => null);
+          throw new Error(`Servidor retornou ${res.status} ${text || ''}`);
+        }
 
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'Form_Processo.docx';
-        a.click();
-        window.URL.revokeObjectURL(url);
+        const created = await res.json();
+
+        // Salva o processo no localStorage (para exibir no board)
+        const processos = JSON.parse(localStorage.getItem('processos') || '[]');
+        processos.push(created);
+        localStorage.setItem('processos', JSON.stringify(processos));
+
+        alert(`✅ Processo criado com sucesso!\nCódigo: ${created.codigo}`);
+        form.reset();
+        if (fileText) fileText.textContent = '';
+
+        // Redireciona para o board (opcional)
+        // window.location.href = '/board.html';
 
       } catch (err) {
-        alert('❌ Falha ao gerar documento.');
-        console.error(err);
+        console.error('Erro ao criar processo:', err);
+        alert('❌ Falha ao criar processo. Verifique o console para detalhes.');
       }
     });
   }
