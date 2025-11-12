@@ -12,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/processos")
+@CrossOrigin(origins = "https://mousetrack-frontend.onrender.com")
 public class ProcessoController {
 
     private final ProcessoService service;
