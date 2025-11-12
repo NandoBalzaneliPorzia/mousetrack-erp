@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@CrossOrigin(origins = "https://mousetrack-frontend.onrender.com")
+//@CrossOrigin(origins = "https://mousetrack-frontend.onrender.com")
 @RestController
 @RequestMapping("/api/processos")
 public class ProcessoController {
