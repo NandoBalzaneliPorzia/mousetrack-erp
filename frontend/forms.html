@@ -14,18 +14,19 @@
   <!-- Sidebar -->
   <div id="sidebarMount"></div>
 
+  <!-- 🔧 REMOVIDO main duplicado -->
   <main class="content page-with-sidebar">
-
-  <!-- Conteúdo -->
-  <main class="page-with-sidebar">
     <section class="panel">
       <h1 class="title">FORMULÁRIO PROCESSOS</h1>
 
-      <form id="procForm" class="form" autocomplete="off" novalidate>
+      <!-- 🔧 ADICIONADO enctype="multipart/form-data" -->
+      <form id="procForm" class="form" autocomplete="off" novalidate enctype="multipart/form-data">
+        
         <!-- Título -->
         <div class="field">
           <label class="label" for="titulo">Título</label>
-          <input id="titulo" class="input" type="text" placeholder="Value" name="titulo">
+          <!-- 🔧 ADICIONADO required -->
+          <input id="titulo" class="input" type="text" placeholder="Value" name="titulo" required>
         </div>
 
         <!-- Tipo -->
@@ -62,21 +63,22 @@
           </div>
         </div>
 
-<!-- Observação -->
-<div class="field">
-  <label class="label" for="obs">Observação</label>
-  <input id="obs" class="input" type="text" placeholder="Value" name="observacao">
-</div>
+        <!-- Observação -->
+        <div class="field">
+          <label class="label" for="obs">Observação</label>
+          <input id="obs" class="input" type="text" placeholder="Value" name="observacao">
+        </div>
 
-<!-- Anexar arquivos -->
-<div class="field">
-  <label class="label" for="anexo">Anexar arquivos</label>
-  <label class="filebox">
-    <input id="anexo" name="arquivos" type="file" multiple>
-    <img src="assets/img/icons/clipe.svg" alt="Anexar" class="paperclip" aria-hidden="true">
-    <span id="fileText" class="filetext"></span>
-  </label>
-</div>
+        <!-- Anexar arquivos -->
+        <div class="field">
+          <label class="label" for="anexo">Anexar arquivos</label>
+          <label class="filebox">
+            <!-- 🔧 Certifique-se de que o backend espera "arquivos" -->
+            <input id="anexo" name="arquivos" type="file" multiple>
+            <img src="assets/img/icons/clipe.svg" alt="Anexar" class="paperclip" aria-hidden="true">
+            <span id="fileText" class="filetext"></span>
+          </label>
+        </div>
 
         <!-- Botão -->
         <div class="actions">
