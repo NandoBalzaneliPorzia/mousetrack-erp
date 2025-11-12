@@ -9,15 +9,13 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class CorsConfig {
     @Bean
     public WebMvcConfigurer corsConfigurer() {
-        // EM PRODUÇÃO substitua "*" pelo domínio exato (ex: "https://mousetrack-frontend.onrender.com")
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("*")
-                        .allowedMethods("GET","POST","PUT","DELETE","OPTIONS")
-                        .allowedHeaders("*")
-                        .allowCredentials(false);
+                        .allowedOrigins("https://mousetrack-frontend.onrender.com")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .allowedHeaders("*");
             }
         };
     }
