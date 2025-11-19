@@ -14,6 +14,7 @@ public class CorsConfig {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
                         .allowedOrigins("https://mousetrack-frontend.onrender.com")
+                        .allowCredentials(true)
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*");
             }

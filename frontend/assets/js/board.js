@@ -8,8 +8,8 @@ const seed = {
 };
 
 // elementos no DOM (exemplo): containers para cada lane
-const importAereaContainer = document.getElementById('import-aerea');
-const importMaritimaContainer = document.getElementById('import-maritima');
+const importAereaContainer = document.getElementById('laneAerea');
+const importMaritimaContainer = document.getElementById('laneMaritima');
 const exportAereaContainer = document.getElementById('export-aerea');
 const exportMaritimaContainer = document.getElementById('export-maritima');
 
