@@ -42,7 +42,7 @@ public class ProcessoController {
             dto.setArquivos(arquivos);
 
             Processo created = service.criarProcesso(dto);
-            return ResponseEntity.ok(created);
+            return ResponseEntity.ok("Processo criado com ID: " + created.getId());
         } catch (Exception e) {
             // log no console do servidor (spring logs)
             e.printStackTrace();

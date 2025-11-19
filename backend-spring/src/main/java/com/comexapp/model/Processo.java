@@ -21,7 +21,8 @@ public class Processo {
     private String observacao;
 
     @Lob
-    private String arquivos;
+    @Column(columnDefinition = "bytea")
+    private byte[] arquivos;
 
     private String status = "Em andamento";
     private LocalDateTime dataCriacao = LocalDateTime.now();
