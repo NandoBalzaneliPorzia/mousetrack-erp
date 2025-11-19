@@ -14,7 +14,6 @@ public class Processo {
 
     @Column(unique = true)
     private String codigo;
-
     private String titulo;
     private String tipo;    // importacao / exportacao
     private String modal;   // aereo / maritimo

@@ -1,5 +1,5 @@
 // board.js
-const BASE_URL = 'https://mousetrack-backend.onrender.com';
+const BASE_URL = 'https://mousetrack-erp.onrender.com';
 
 // estrutura mínima de seed
 const seed = {

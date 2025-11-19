@@ -4,6 +4,8 @@ import com.comexapp.DTO.ProcessoRequestDTO;
 import com.comexapp.model.Processo;
 import com.comexapp.repository.ProcessoRepository;
 import com.comexapp.service.ProcessoService;
+import java.util.Map;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-//@CrossOrigin(origins = "https://mousetrack-frontend.onrender.com")
+@CrossOrigin(origins = "https://mousetrack-frontend.onrender.com")
 @RestController
 @RequestMapping("/api/processos")
 public class ProcessoController {
@@ -24,7 +26,6 @@ public class ProcessoController {
         this.repository = repository;
     }
 
-    // Recebe título, tipo, modal, observacao e arquivos (name="arquivos" no form)
     @PostMapping(consumes = {"multipart/form-data"})
     public ResponseEntity<?> criarProcesso(
             @RequestParam String titulo,
@@ -42,12 +43,14 @@ public class ProcessoController {
             dto.setArquivos(arquivos);
 
             Processo created = service.criarProcesso(dto);
-            return ResponseEntity.ok("Processo criado com ID: " + created.getId());
+
+            // Retorna o objeto criado como JSON (frontend espera json)
+            return ResponseEntity.status(HttpStatus.CREATED).body(created);
         } catch (Exception e) {
-            // log no console do servidor (spring logs)
             e.printStackTrace();
+            // Retorna JSON com erro para que o frontend possa ler o texto
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Erro ao criar processo: " + e.getMessage());
+                    .body(Map.of("error", "Erro ao criar processo", "detail", e.getMessage()));
         }
     }
 
