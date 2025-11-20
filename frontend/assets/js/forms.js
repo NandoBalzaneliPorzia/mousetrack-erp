@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('procForm');
 
   // 🔧 ATUALIZE para o domínio EXATO do seu backend
-  const BASE_URL = 'https://mousetrack-erp.onrender.com'; 
+  const BASE_URL = 'https://mousetrack-erp.onrender.com';
 
   // Exibe nome ou quantidade de arquivos selecionados
   if (input) {
@@ -26,41 +26,51 @@ document.addEventListener('DOMContentLoaded', () => {
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      // 🔧 Cria um FormData para incluir arquivos + campos
       const formData = new FormData(form);
 
-      // Debug opcional — mostra o conteúdo antes de enviar
       console.log('--- Enviando FormData ---');
       for (const pair of formData.entries()) {
         console.log(pair[0], pair[1]);
       }
 
       try {
-        // 🔧 Envio sem headers — o próprio FormData define o Content-Type
         const res = await fetch(`${BASE_URL}/api/processos`, {
           method: 'POST',
           body: formData,
         });
 
-        if (!res.ok) {
-          const text = await res.text().catch(() => null);
-          throw new Error(`Servidor retornou ${res.status}: ${text || 'sem corpo'}`);
+        console.log("Status:", res.status);
+        console.log("Headers:", [...res.headers.entries()]);
+
+        let rawBody = await res.text();
+        console.log("Raw body:", rawBody);
+
+        let parsed;
+        try {
+          parsed = JSON.parse(rawBody);
+        } catch {
+          parsed = rawBody;
         }
 
-        const created = await res.json();
+        if (!res.ok) {
+          throw new Error(`Erro HTTP ${res.status}: ${rawBody}`);
+        }
 
-        // 🔧 Salva localmente para consulta offline
+        const created = parsed;
+
+        // Salvar localmente
         const processos = JSON.parse(localStorage.getItem('processos') || '[]');
         processos.push(created);
         localStorage.setItem('processos', JSON.stringify(processos));
 
-        alert(`✅ Processo criado com sucesso!\nCódigo: ${created.codigo || 'sem código'}`);
+        alert(`✅ Processo criado com sucesso!\nCódigo: ${created?.codigo || 'sem código'}`);
+
         form.reset();
         if (fileText) fileText.textContent = '';
 
       } catch (err) {
-        console.error('❌ Erro ao criar processo:', err);
-        alert('❌ Falha ao criar processo. Veja o console para detalhes.');
+        console.error("❌ Erro ao criar processo:", err);
+        alert("❌ Falha ao criar processo. Veja o console para detalhes.");
       }
     });
   }
