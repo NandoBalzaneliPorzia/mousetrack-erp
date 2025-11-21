@@ -5,17 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Chat</title>
 
-  <!-- mesmo padrão das outras páginas -->
+  <!-- Estilos padrão -->
   <link rel="stylesheet" href="assets/css/reset.css">
   <link rel="stylesheet" href="assets/css/sidebar.css">
   <link rel="stylesheet" href="assets/css/chat.css">
 </head>
 <body data-page="chat">
-  <!-- Sidebar compartilhada (menu.html é injetado aqui pelo nav.js) -->
+
+  <!-- Sidebar compartilhada -->
   <div id="sidebarMount"></div>
 
-  <!-- Conteúdo principal -->
+  <!-- Conteúdo -->
   <main class="page-with-sidebar chat-page">
+
     <header class="chat-header">
       <h1>CHAT</h1>
 
@@ -26,13 +28,14 @@
     </header>
 
     <section class="chat-layout">
+
       <!-- LISTA DE CONVERSAS -->
       <aside class="chat-list" id="threadList">
-        <!-- preenchido via JS -->
+          <!-- preenchido via JS -->
       </aside>
 
       <!-- PAINEL DE MENSAGENS -->
-      <section class="chat-panel" id="chatPanel">
+      <section class="chat-panel hidden" id="chatPanel">
         <header class="chat-panel__header">
           <div class="chat-panel__avatar" id="chatAvatar">--</div>
           <div class="chat-panel__info">
@@ -51,17 +54,17 @@
             placeholder="Digite sua mensagem..."
             autocomplete="off"
           />
-          <button type="submit" aria-label="Enviar mensagem">
-            ➤
-          </button>
+          <button type="submit" aria-label="Enviar mensagem">➤</button>
         </form>
       </section>
+
     </section>
   </main>
 
-  <!-- scripts padrão -->
+  <!-- Scripts -->
   <script src="assets/js/api.js"></script>
   <script src="assets/js/nav.js"></script>
   <script src="assets/js/chat.js"></script>
+
 </body>
 </html>

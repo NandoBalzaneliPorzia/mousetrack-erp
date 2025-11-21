@@ -2,7 +2,7 @@
 // Integração do chat com o backend Java (REST)
 
 document.addEventListener('DOMContentLoaded', () => {
-  // requireAuth já é chamado em nav.js, mas se quiser garantir:
+  // se requireAuth existir, aplica
   if (typeof requireAuth === 'function') {
     try { requireAuth(); } catch (e) { return; }
   }
@@ -42,7 +42,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const res = await fetch(api(`/api/chat/threads/${currentThreadId}/messages`), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
+        body: JSON.stringify(body),
+        credentials: 'include'
       });
 
       if (!res.ok) {
@@ -55,7 +56,6 @@ document.addEventListener('DOMContentLoaded', () => {
       inputEl.value = '';
       inputEl.focus();
 
-      // Atualiza lista (preview / não lidas)
       loadThreads(false);
     } catch (err) {
       console.error('[chat] erro ao enviar mensagem:', err);
@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Filtro de pesquisa na lista de conversas
+  // Filtro de pesquisa
   if (searchEl) {
     searchEl.addEventListener('input', () => {
       const term = searchEl.value.toLowerCase();
@@ -76,11 +76,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ---------- Funções principais ----------
+  // -----------------------------------------
+  // FUNÇÕES PRINCIPAIS
+  // -----------------------------------------
 
   async function loadThreads(selectFirst = true) {
     try {
-      const res = await fetch(api('/api/chat/threads'), { cache: 'no-store' });
+      const res = await fetch(api('/api/chat/threads'), {
+        method: 'GET',
+        cache: 'no-store',
+        credentials: 'include'
+      });
+
       if (!res.ok) throw new Error('Falha ao carregar conversas');
 
       allThreads = await res.json();
@@ -136,7 +143,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     chatPanelEl.classList.remove('hidden');
 
-    // Destaca conversa ativa na lista
     threadListEl.querySelectorAll('.chat-list-item').forEach(btn => {
       const isActive = Number(btn.dataset.id) === id;
       btn.classList.toggle('is-active', isActive);
@@ -146,7 +152,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       const res = await fetch(api(`/api/chat/threads/${id}/messages`), {
-        cache: 'no-store'
+        method: 'GET',
+        cache: 'no-store',
+        credentials: 'include'
       });
       if (!res.ok) throw new Error('Falha ao buscar mensagens');
 
@@ -155,7 +163,6 @@ document.addEventListener('DOMContentLoaded', () => {
       msgs.forEach(appendMessageBubble);
       scrollMessagesToBottom();
 
-      // Atualiza lista (não lidas devem zerar)
       loadThreads(false);
     } catch (err) {
       console.error('[chat] erro ao abrir thread:', err);
