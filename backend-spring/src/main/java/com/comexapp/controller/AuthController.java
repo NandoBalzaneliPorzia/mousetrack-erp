@@ -9,7 +9,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "*") // 🔥 Permite chamadas do frontend
 public class AuthController {
 
     private final AuthService authService;

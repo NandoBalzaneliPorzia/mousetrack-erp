@@ -6,7 +6,7 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-public class CorsConfig {
+public class CorsConfig implements WebMvcConfigurer {
 
     @Bean
     public WebMvcConfigurer corsConfigurer() {
@@ -14,17 +14,16 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        // 👉 ORIGENS PERMITIDAS (sem "*")
-                        .allowedOrigins(
-                                "http://localhost:8080",           // backend direto (se acessar via browser)
-                                "http://localhost:8088",           // seu proxy que serve o frontend
-                                "http://127.0.0.1:8080",
-                                "http://127.0.0.1:8088",
-                                "https://mousetrack-frontend.onrender.com"
-                        )
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                        .allowedHeaders("*")
-                        .allowCredentials(true); // ok, agora sem wildcard "*"
+                    .allowedOrigins(
+                        "https://mousetrack-frontend.onrender.com",
+                        "http://localhost:8080",
+                        "http://localhost:8088"
+                    )
+                    .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                    .allowedHeaders("*")
+                    .exposedHeaders("*")
+                    .allowCredentials(true)
+                    .maxAge(3600);
             }
         };
     }
