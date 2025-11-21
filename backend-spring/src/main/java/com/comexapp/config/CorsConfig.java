@@ -14,13 +14,18 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        // em vez de allowedOrigins("*")
-                        .allowedOriginPatterns("*")
+                        // 👉 ORIGENS PERMITIDAS (sem "*")
+                        .allowedOrigins(
+                                "http://localhost:8080",           // backend direto (se acessar via browser)
+                                "http://localhost:8088",           // seu proxy que serve o frontend
+                                "http://127.0.0.1:8080",
+                                "http://127.0.0.1:8088",
+                                "https://mousetrack-frontend.onrender.com"
+                        )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
-                        .allowCredentials(true);
+                        .allowCredentials(true); // ok, agora sem wildcard "*"
             }
         };
     }
 }
-
