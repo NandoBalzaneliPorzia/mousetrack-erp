@@ -1,166 +1,177 @@
 // assets/js/chat.js
+// Integração do chat com o backend Java (REST)
 
-// Dados fake só para a interface funcionar
-const threadsMock = [
-  {
-    id: 1,
-    nome: "Juliana Prado",
-    preview: "Bom dia, tudo bem?",
-    unread: 1,
-    mensagens: [
-      { id: 1, autor: "them", texto: "Bom dia!" },
-      { id: 2, autor: "them", texto: "Tudo bem?" }
-    ]
-  },
-  {
-    id: 2,
-    nome: "Ana Maranhão",
-    preview: "Estou com uma dúvida.",
-    unread: 3,
-    mensagens: [
-      { id: 1, autor: "them", texto: "Bom dia!" },
-      { id: 2, autor: "them", texto: "Tudo bem?" },
-      { id: 3, autor: "them", texto: "Estou com uma dúvida." }
-    ]
-  },
-  {
-    id: 3,
-    nome: "Laura Nogueira",
-    preview: "Vou verificar.",
-    unread: 0,
-    mensagens: [
-      { id: 1, autor: "them", texto: "Vou verificar." }
-    ]
+document.addEventListener('DOMContentLoaded', () => {
+  // requireAuth já é chamado em nav.js, mas se quiser garantir:
+  if (typeof requireAuth === 'function') {
+    try { requireAuth(); } catch (e) { return; }
   }
-];
 
-let currentThreadId = null;
+  const threadListEl  = document.getElementById('threadList');
+  const chatPanelEl   = document.getElementById('chatPanel');
+  const messagesEl    = document.getElementById('messagesContainer');
+  const contactNameEl = document.getElementById('chatContactName');
+  const avatarEl      = document.getElementById('chatAvatar');
+  const formEl        = document.getElementById('chatForm');
+  const inputEl       = document.getElementById('messageInput');
+  const searchEl      = document.getElementById('searchInput');
 
-document.addEventListener("DOMContentLoaded", () => {
-  const threadListEl = document.getElementById("threadList");
-  const messagesEl = document.getElementById("messagesContainer");
-  const contactNameEl = document.getElementById("chatContactName");
-  const formEl = document.getElementById("chatForm");
-  const messageInputEl = document.getElementById("messageInput");
-  const searchInputEl = document.getElementById("searchInput");
+  let currentThreadId = null;
+  let allThreads = [];
 
-  let filteredThreads = [...threadsMock];
+  if (!threadListEl || !messagesEl || !formEl) return;
 
-  // Render inicial
-  renderThreadList(filteredThreads);
-  renderEmptyState();
+  // Carrega lista de conversas ao abrir a tela
+  loadThreads();
 
-  // Clique em uma conversa
-  threadListEl.addEventListener("click", (event) => {
-    const item = event.target.closest("[data-thread-id]");
-    if (!item) return;
+  // Envio de mensagem
+  formEl.addEventListener('submit', async (ev) => {
+    ev.preventDefault();
+    const text = (inputEl.value || '').trim();
+    if (!text || !currentThreadId) return;
 
-    const id = Number(item.dataset.threadId);
-    openThread(id);
+    const submitBtn = formEl.querySelector('button[type="submit"]');
+    if (submitBtn) submitBtn.disabled = true;
+
+    try {
+      const body = {
+        autorId: getUsuarioId(),
+        conteudo: text
+      };
+
+      const res = await fetch(api(`/api/chat/threads/${currentThreadId}/messages`), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+
+      if (!res.ok) {
+        alert('Erro ao enviar mensagem.');
+        return;
+      }
+
+      const msg = await res.json();
+      appendMessageBubble(msg);
+      inputEl.value = '';
+      inputEl.focus();
+
+      // Atualiza lista (preview / não lidas)
+      loadThreads(false);
+    } catch (err) {
+      console.error('[chat] erro ao enviar mensagem:', err);
+      alert('Erro ao enviar mensagem.');
+    } finally {
+      if (submitBtn) submitBtn.disabled = false;
+    }
   });
 
-  // Enviar mensagem
-  formEl.addEventListener("submit", (event) => {
-    event.preventDefault();
-    const text = messageInputEl.value.trim();
-    if (!text || currentThreadId == null) return;
-
-    const thread = threadsMock.find((t) => t.id === currentThreadId);
-    if (!thread) return;
-
-    // Cria mensagem "me"
-    const msg = {
-      id: Date.now(),
-      autor: "me",
-      texto: text
-    };
-    thread.mensagens.push(msg);
-    thread.preview = text;
-    thread.unread = 0; // você é quem está vendo, então zera
-
-    messageInputEl.value = "";
-    appendMessageBubble(msg);
-    scrollMessagesToBottom();
-
-    // Atualiza lista (preview)
-    renderThreadList(filteredThreads);
-  });
-
-  // Filtro da busca
-  if (searchInputEl) {
-    searchInputEl.addEventListener("input", () => {
-      const term = searchInputEl.value.toLowerCase();
-      filteredThreads = threadsMock.filter((t) =>
-        t.nome.toLowerCase().includes(term)
+  // Filtro de pesquisa na lista de conversas
+  if (searchEl) {
+    searchEl.addEventListener('input', () => {
+      const term = searchEl.value.toLowerCase();
+      const filtradas = allThreads.filter(t =>
+        t.titulo.toLowerCase().includes(term)
       );
-      renderThreadList(filteredThreads);
+      renderThreadList(filtradas);
     });
   }
 
-  // ---------- FUNÇÕES ----------
+  // ---------- Funções principais ----------
+
+  async function loadThreads(selectFirst = true) {
+    try {
+      const res = await fetch(api('/api/chat/threads'), { cache: 'no-store' });
+      if (!res.ok) throw new Error('Falha ao carregar conversas');
+
+      allThreads = await res.json();
+      renderThreadList(allThreads);
+
+      if (selectFirst && allThreads.length && !currentThreadId) {
+        openThread(allThreads[0].id, allThreads[0].titulo);
+      }
+    } catch (err) {
+      console.error('[chat] erro ao carregar threads:', err);
+    }
+  }
 
   function renderThreadList(list) {
-    threadListEl.innerHTML = "";
+    threadListEl.innerHTML = '';
 
-    list.forEach((thread) => {
-      const btn = document.createElement("button");
-      btn.type = "button";
-      btn.className =
-        "chat-list-item" +
-        (thread.id === currentThreadId ? " is-active" : "");
-      btn.dataset.threadId = thread.id;
+    list.forEach(thread => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'chat-list-item' +
+        (thread.id === currentThreadId ? ' is-active' : '');
+      btn.dataset.id = thread.id;
 
-      const initials = getInitials(thread.nome);
+      const initials = getInitials(thread.titulo);
 
       btn.innerHTML = `
         <div class="chat-list-meta">
           <div class="chat-list-avatar">${initials}</div>
           <div class="chat-list-text">
-            <span class="chat-list-name">${thread.nome}</span>
-            <span class="chat-list-preview">${thread.preview || ""}</span>
+            <span class="chat-list-name">${thread.titulo}</span>
+            <span class="chat-list-preview">
+              ${thread.ultimaMensagem ? thread.ultimaMensagem : '&nbsp;'}
+            </span>
           </div>
         </div>
-        <div class="chat-list-unread" ${
-          thread.unread ? "" : "hidden"
-        }>${thread.unread}</div>
+        <div class="chat-list-unread" ${thread.naoLidas ? '' : 'hidden'}>
+          ${thread.naoLidas}
+        </div>
       `;
 
+      btn.addEventListener('click', () => openThread(thread.id, thread.titulo));
       threadListEl.appendChild(btn);
     });
   }
 
-  function openThread(id) {
+  async function openThread(id, titulo) {
     currentThreadId = id;
-    const thread = threadsMock.find((t) => t.id === id);
-    if (!thread) return;
 
-    // Zera não lidas
-    thread.unread = 0;
+    if (titulo) {
+      contactNameEl.textContent = titulo;
+      if (avatarEl) avatarEl.textContent = getInitials(titulo);
+    }
 
-    // Atualiza cabeçalho
-    contactNameEl.textContent = thread.nome;
-    document.querySelector(".chat-panel__avatar").textContent =
-      getInitials(thread.nome);
+    chatPanelEl.classList.remove('hidden');
 
-    // Atualiza lista (highlight + contagem)
-    renderThreadList(filteredThreads);
+    // Destaca conversa ativa na lista
+    threadListEl.querySelectorAll('.chat-list-item').forEach(btn => {
+      const isActive = Number(btn.dataset.id) === id;
+      btn.classList.toggle('is-active', isActive);
+    });
 
-    // Render mensagens
-    messagesEl.innerHTML = "";
-    thread.mensagens.forEach(appendMessageBubble);
-    scrollMessagesToBottom();
+    messagesEl.innerHTML = '<p class="chat-empty">Carregando...</p>';
+
+    try {
+      const res = await fetch(api(`/api/chat/threads/${id}/messages`), {
+        cache: 'no-store'
+      });
+      if (!res.ok) throw new Error('Falha ao buscar mensagens');
+
+      const msgs = await res.json();
+      messagesEl.innerHTML = '';
+      msgs.forEach(appendMessageBubble);
+      scrollMessagesToBottom();
+
+      // Atualiza lista (não lidas devem zerar)
+      loadThreads(false);
+    } catch (err) {
+      console.error('[chat] erro ao abrir thread:', err);
+      messagesEl.innerHTML =
+        '<p class="chat-empty">Erro ao carregar mensagens.</p>';
+    }
   }
 
   function appendMessageBubble(msg) {
-    const div = document.createElement("div");
-    div.className = "chat-bubble " + (msg.autor === "me" ? "me" : "them");
-    div.textContent = msg.texto;
-    messagesEl.appendChild(div);
-  }
+    const isMine = String(msg.autorId) === String(getUsuarioId());
 
-  function renderEmptyState() {
-    messagesEl.innerHTML =
-      '<p class="chat-empty">Selecione uma conversa na lista ao lado.</p>';
+    const div = document.createElement('div');
+    div.className = 'chat-bubble ' + (isMine ? 'me' : 'them');
+    div.textContent = msg.conteudo;
+    messagesEl.appendChild(div);
+    scrollMessagesToBottom();
   }
 
   function scrollMessagesToBottom() {
@@ -168,11 +179,11 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function getInitials(name) {
-    return name
-      .split(" ")
+    return (name || '')
+      .split(' ')
       .filter(Boolean)
       .slice(0, 2)
-      .map((part) => part[0].toUpperCase())
-      .join("");
+      .map(p => p[0].toUpperCase())
+      .join('');
   }
 });
