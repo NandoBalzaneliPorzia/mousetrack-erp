@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chat - Mouse&Track</title>
+
+  <!-- Ajusta o caminho conforme sua estrutura -->
+  <link rel="stylesheet" href="assets/css/chat.css" />
+</head>
+<body>
+  <!-- SIDEBAR LATERAL (versão simples; você pode trocar pelos ícones reais) -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <!-- Pode ser um <img src="..."> com o logo -->
+      <span class="sidebar-logo-icon">⛵</span>
+    </div>
+
+    <nav class="sidebar-menu">
+      <button class="sidebar-item">
+        <span class="sidebar-icon">👤</span>
+      </button>
+      <button class="sidebar-item">
+        <span class="sidebar-icon">🚚</span>
+      </button>
+      <button class="sidebar-item">
+        <span class="sidebar-icon">📦</span>
+      </button>
+      <button class="sidebar-item">
+        <span class="sidebar-icon">📄</span>
+      </button>
+      <button class="sidebar-item sidebar-item--active">
+        <span class="sidebar-icon">💬</span>
+      </button>
+      <button class="sidebar-item">
+        <span class="sidebar-icon">⚙️</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="sidebar-item">
+        <span class="sidebar-icon">↩</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- CONTEÚDO PRINCIPAL -->
+  <main class="page">
+    <!-- HEADER -->
+    <header class="page-header">
+      <h1>CHAT</h1>
+
+      <div class="chat-search">
+        <span class="chat-search__icon">🔍</span>
+        <input
+          id="searchInput"
+          type="text"
+          placeholder="Pesquisar"
+        />
+      </div>
+    </header>
+
+    <!-- LAYOUT DO CHAT: LISTA (ESQ) + CONVERSA (DIR) -->
+    <section class="chat-layout">
+      <!-- LISTA DE CONVERSAS -->
+      <aside class="chat-list" id="threadList">
+        <!-- Itens são preenchidos via JS -->
+      </aside>
+
+      <!-- PAINEL DE MENSAGENS -->
+      <section class="chat-panel" id="chatPanel">
+        <!-- Cabeçalho com nome da pessoa -->
+        <header class="chat-panel__header">
+          <div class="chat-panel__avatar">A</div>
+          <div class="chat-panel__info">
+            <span class="chat-panel__name" id="chatContactName">Selecione um contato</span>
+          </div>
+        </header>
+
+        <!-- Mensagens -->
+        <div class="chat-panel__messages" id="messagesContainer">
+          <p class="chat-empty">Selecione uma conversa na lista ao lado.</p>
+        </div>
+
+        <!-- Input -->
+        <form class="chat-input" id="chatForm">
+          <input
+            id="messageInput"
+            type="text"
+            placeholder="Digite sua mensagem..."
+            autocomplete="off"
+          />
+          <button type="submit" aria-label="Enviar mensagem">
+            ➤
+          </button>
+        </form>
+      </section>
+    </section>
+  </main>
+
+  <script src="assets/js/chat.js"></script>
+</body>
+</html>
