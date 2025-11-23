@@ -4,14 +4,14 @@ import com.comexapp.DTO.ProcessoRequestDTO;
 import com.comexapp.model.Processo;
 import com.comexapp.repository.ProcessoRepository;
 import com.comexapp.service.ProcessoService;
+
+import java.util.List;
 import java.util.Map;
-import org.springframework.web.bind.annotation.CrossOrigin;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/processos")
@@ -25,16 +25,16 @@ public class ProcessoController {
         this.repository = repository;
     }
 
-@PostMapping(consumes = "multipart/form-data")
-public ResponseEntity<?> criarProcesso(
-        @RequestPart("titulo") String titulo,
-        @RequestPart("tipo") String tipo,
-        @RequestPart("modal") String modal,
-        @RequestPart(value = "observacao", required = false) String observacao,
-        @RequestPart(value = "arquivos", required = false) MultipartFile[] arquivos
-) {
-
+    @PostMapping(consumes = "multipart/form-data")
+    public ResponseEntity<?> criarProcesso(
+            @RequestPart("titulo") String titulo,
+            @RequestPart("tipo") String tipo,
+            @RequestPart("modal") String modal,
+            @RequestPart(value = "observacao", required = false) String observacao,
+            @RequestPart(value = "arquivos", required = false) MultipartFile[] arquivos
+    ) {
         try {
+
             ProcessoRequestDTO dto = new ProcessoRequestDTO();
             dto.setTitulo(titulo);
             dto.setTipo(tipo);
@@ -44,11 +44,10 @@ public ResponseEntity<?> criarProcesso(
 
             Processo created = service.criarProcesso(dto);
 
-            // Retorna o objeto criado como JSON (frontend espera json)
             return ResponseEntity.status(HttpStatus.CREATED).body(created);
+
         } catch (Exception e) {
             e.printStackTrace();
-            // Retorna JSON com erro para que o frontend possa ler o texto
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("error", "Erro ao criar processo", "detail", e.getMessage()));
         }
@@ -61,6 +60,8 @@ public ResponseEntity<?> criarProcesso(
 
     @GetMapping("/{id}")
     public ResponseEntity<Processo> getProcesso(@PathVariable Long id) {
-        return repository.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+        return repository.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 }
