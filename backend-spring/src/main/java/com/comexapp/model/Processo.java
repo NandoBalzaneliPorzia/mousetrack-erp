@@ -2,6 +2,8 @@ package com.comexapp.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Processo {
@@ -14,18 +16,19 @@ public class Processo {
     private String codigo;
 
     private String titulo;
-    private String tipo;    // importacao / exportacao
-    private String modal;   // aereo / maritimo
+    private String tipo;      // importacao / exportacao
+    private String modal;     // aereo / maritimo
     private String observacao;
 
-    @Lob
-    @Column(columnDefinition = "bytea")
-    private byte[] arquivos;
+    // 🔥 Agora não existe mais coluna arquivos dentro de Processo
+    // Ela virou uma relação 1:N com ProcessoArquivo
+    @OneToMany(mappedBy = "processo", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProcessoArquivo> arquivos = new ArrayList<>();
 
     private String status = "Em andamento";
     private LocalDateTime dataCriacao = LocalDateTime.now();
 
-    // GETTERS
+    // GETTERS -----------------------------
 
     public Long getId() {
         return id;
@@ -51,7 +54,7 @@ public class Processo {
         return observacao;
     }
 
-    public byte[] getArquivos() {
+    public List<ProcessoArquivo> getArquivos() {
         return arquivos;
     }
 
@@ -63,7 +66,7 @@ public class Processo {
         return dataCriacao;
     }
 
-    // SETTERS
+    // SETTERS -----------------------------
 
     public void setId(Long id) {
         this.id = id;
@@ -89,7 +92,7 @@ public class Processo {
         this.observacao = observacao;
     }
 
-    public void setArquivos(byte[] arquivos) {
+    public void setArquivos(List<ProcessoArquivo> arquivos) {
         this.arquivos = arquivos;
     }
 
