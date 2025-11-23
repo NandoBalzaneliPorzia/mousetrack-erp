@@ -2,6 +2,7 @@ package com.comexapp.service;
 
 import com.comexapp.DTO.ProcessoRequestDTO;
 import com.comexapp.model.Processo;
+import com.comexapp.model.ArquivoProcesso;
 import com.comexapp.repository.ProcessoRepository;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -44,13 +45,14 @@ public class ProcessoService {
             p.setCodigo(codigo);
 
             try {
-                // Tenta salvar o processo
-                // se o código existir, cairá no catch
+                // Agora corretamente processa TODOS os arquivos
                 processarArquivos(dto, p);
+
+                // Salva o processo com seus arquivos
                 return repo.save(p);
 
             } catch (DataIntegrityViolationException ex) {
-                // conflito de código gerado — tenta de novo
+
                 if (attempt == 4) {
                     throw new RuntimeException("Erro ao gerar código único para o processo.", ex);
                 }
@@ -61,14 +63,22 @@ public class ProcessoService {
     }
 
     // ===============================================================
-    // 🔥 3. Método auxiliar — lê arquivos do DTO
+    // 🔥 3. Método auxiliar — lê e salva TODOS os arquivos
     // ===============================================================
     private void processarArquivos(ProcessoRequestDTO dto, Processo p) {
-        if (dto.getArquivos() != null && dto.getArquivos().length > 0) {
+        if (dto.getArquivos() == null) return;
+
+        for (MultipartFile file : dto.getArquivos()) {
+            if (file.isEmpty()) continue;
+
             try {
-                // Aqui estamos armazenando APENAS o primeiro arquivo
-                MultipartFile file = dto.getArquivos()[0];
-                p.setArquivos(file.getBytes());
+                ArquivoProcesso arq = new ArquivoProcesso();
+                arq.setNomeArquivo(file.getOriginalFilename());
+                arq.setTipoArquivo(file.getContentType());
+                arq.setDados(file.getBytes());
+                arq.setProcesso(p);
+
+                p.getArquivos().add(arq);
 
             } catch (Exception e) {
                 throw new RuntimeException("Erro ao processar arquivos.", e);
