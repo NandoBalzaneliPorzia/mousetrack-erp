@@ -27,16 +27,12 @@ public class ProcessoService {
         p.setModal(dto.getModal());
         p.setObservacao(dto.getObservacao());
 
-        // ===============================================================
-        // 1. Gera prefixo do código (INA, INM, EXA, EXM)
-        // ===============================================================
+        // 1 — prefixo do código
         String prefix = (dto.getTipo().equalsIgnoreCase("importacao")
                 ? (dto.getModal().equalsIgnoreCase("maritimo") ? "INM" : "INA")
                 : (dto.getModal().equalsIgnoreCase("maritimo") ? "EXM" : "EXA"));
 
-        // ===============================================================
-        // 2. Lógica de retry para gerar código único
-        // ===============================================================
+        // 2 — tenta gerar código único
         for (int attempt = 0; attempt < 5; attempt++) {
 
             String codigo = prefix + "_" +
@@ -45,16 +41,13 @@ public class ProcessoService {
             p.setCodigo(codigo);
 
             try {
-                // Processa todos os arquivos corretamente
                 processarArquivos(dto, p);
-
-                // Salva o processo com seus arquivos embutidos
                 return repo.save(p);
 
             } catch (DataIntegrityViolationException ex) {
 
                 if (attempt == 4) {
-                    throw new RuntimeException("Erro ao gerar código único para o processo.", ex);
+                    throw new RuntimeException("Erro ao gerar código único.", ex);
                 }
             }
         }
@@ -62,10 +55,11 @@ public class ProcessoService {
         throw new RuntimeException("Falha inesperada ao criar processo.");
     }
 
-    // ===============================================================
-    // 3. Lê e adiciona TODOS os arquivos ao Processo
-    // ===============================================================
+    // ==========================
+    // PROCESSAR ARQUIVOS
+    // ==========================
     private void processarArquivos(ProcessoRequestDTO dto, Processo p) {
+
         if (dto.getArquivos() == null) return;
 
         for (MultipartFile file : dto.getArquivos()) {
