@@ -25,13 +25,14 @@ public class ProcessoController {
         this.repository = repository;
     }
 
-    @PostMapping(consumes = {"multipart/form-data"})
-    public ResponseEntity<?> criarProcesso(
-            @RequestParam String titulo,
-            @RequestParam String tipo,
-            @RequestParam String modal,
-            @RequestParam(required = false) String observacao,
-            @RequestPart(value = "arquivos", required = false) MultipartFile[] arquivos) {
+@PostMapping(consumes = "multipart/form-data")
+public ResponseEntity<?> criarProcesso(
+        @RequestPart("titulo") String titulo,
+        @RequestPart("tipo") String tipo,
+        @RequestPart("modal") String modal,
+        @RequestPart(value = "observacao", required = false) String observacao,
+        @RequestPart(value = "arquivos", required = false) MultipartFile[] arquivos
+) {
 
         try {
             ProcessoRequestDTO dto = new ProcessoRequestDTO();
