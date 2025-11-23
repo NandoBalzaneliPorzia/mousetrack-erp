@@ -31,7 +31,7 @@ public class ProcessoController {
             @RequestPart("tipo") String tipo,
             @RequestPart("modal") String modal,
             @RequestPart(value = "observacao", required = false) String observacao,
-            @RequestPart(value = "arquivos", required = false) MultipartFile arquivos
+            @RequestPart(value = "arquivos", required = false) MultipartFile[] arquivos
     ) {
         try {
 
