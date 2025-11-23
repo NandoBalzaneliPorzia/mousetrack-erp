@@ -5,10 +5,14 @@
   --ink-2:#3b4c47;
   --line:#C8D6D1;
   --white:#fff;
-  --dot:#6AA79A;       /* bolinhas ativas */
-  --dot-off:#A3B8B2;   /* bolinhas futuras */
+  --dot:#6AA79A;
+  --dot-off:#A3B8B2;
   --bar:#2E4E45;
+
+  /* ➜ NOVO: cor dos cards */
+  --card-bg:#CBD9D4;
 }
+
 /* ============================== */
 /* BASE */
 /* ============================== */
