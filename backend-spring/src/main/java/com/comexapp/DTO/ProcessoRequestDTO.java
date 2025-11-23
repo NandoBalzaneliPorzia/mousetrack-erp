@@ -10,44 +10,42 @@ public class ProcessoRequestDTO {
     private String observacao;
     private MultipartFile[] arquivos;
 
-    // GETTERS
+    // GETTERS E SETTERS
 
     public String getTitulo() {
         return titulo;
+    }
+
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
     }
 
     public String getTipo() {
         return tipo;
     }
 
-    public String getModal() {
-        return modal;
-    }
-
-    public String getObservacao() {
-        return observacao;
-    }
-
-    public MultipartFile[] getArquivos() {
-        return arquivos;
-    }
-
-    // SETTERS
-
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
-    }
-
     public void setTipo(String tipo) {
         this.tipo = tipo;
+    }
+
+    public String getModal() {
+        return modal;
     }
 
     public void setModal(String modal) {
         this.modal = modal;
     }
 
+    public String getObservacao() {
+        return observacao;
+    }
+
     public void setObservacao(String observacao) {
         this.observacao = observacao;
+    }
+
+    public MultipartFile[] getArquivos() {
+        return arquivos;
     }
 
     public void setArquivos(MultipartFile[] arquivos) {
