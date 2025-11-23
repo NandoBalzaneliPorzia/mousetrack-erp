@@ -31,7 +31,7 @@ public class ProcessoController {
             @RequestParam String tipo,
             @RequestParam String modal,
             @RequestParam(required = false) String observacao,
-            @RequestParam(value = "arquivos", required = false) MultipartFile[] arquivos) {
+            @RequestPart(value = "arquivos", required = false) MultipartFile[] arquivos) {
 
         try {
             ProcessoRequestDTO dto = new ProcessoRequestDTO();
