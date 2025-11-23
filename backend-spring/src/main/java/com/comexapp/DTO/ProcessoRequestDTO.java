@@ -8,7 +8,7 @@ public class ProcessoRequestDTO {
     private String tipo;
     private String modal;
     private String observacao;
-    private MultipartFile[] arquivos;
+    private MultipartFile arquivos;
 
     // GETTERS
 
