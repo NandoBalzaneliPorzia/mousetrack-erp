@@ -11,10 +11,10 @@
 </head>
 <body>
 
-  <!-- ✅ SIDEBAR PADRÃO (carregado via sidebar.js) -->
+  <!-- ✅ SIDEBAR PADRÃO -->
   <div id="sidebarMount"></div>
 
-  <!-- ✅ MAIN PRINCIPAL -->
+  <!-- ✅ MAIN -->
   <main class="content page-with-sidebar">
 
     <!-- ========== HEADER ========== -->
@@ -58,6 +58,28 @@
           <button class="lane-add" data-add="aerea" title="Adicionar card">＋</button>
         </div>
         <div class="lane-cards" id="laneAerea"></div>
+      </div>
+
+      <!-- ================================ -->
+      <!--        EXPORTAÇÃO MARÍTIMA       -->
+      <!-- ================================ -->
+      <div class="lane" data-lane="maritima">
+        <div class="lane-head">
+          <h2>Exportação Marítima</h2>
+          <button class="lane-add" data-add="exp-maritima" title="Adicionar card">＋</button>
+        </div>
+        <div class="lane-cards" id="export-maritima"></div>
+      </div>
+
+      <!-- ================================ -->
+      <!--        EXPORTAÇÃO AÉREA          -->
+      <!-- ================================ -->
+      <div class="lane" data-lane="aerea">
+        <div class="lane-head">
+          <h2>Exportação Aérea</h2>
+          <button class="lane-add" data-add="exp-aerea" title="Adicionar card">＋</button>
+        </div>
+        <div class="lane-cards" id="export-aerea"></div>
       </div>
 
     </section>
@@ -158,7 +180,6 @@
   </div>
 
   <!-- scripts -->
-
   <script src="assets/js/api.js"></script>
   <script src="assets/js/nav.js"></script>
   <script src="assets/js/board.js"></script>
