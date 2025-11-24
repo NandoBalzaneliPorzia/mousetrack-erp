@@ -26,32 +26,49 @@ public class ProcessoController {
     }
 
     @PostMapping(consumes = "multipart/form-data")
-    public ResponseEntity<?> criarProcesso(
-            @RequestPart("titulo") String titulo,
-            @RequestPart("tipo") String tipo,
-            @RequestPart("modal") String modal,
-            @RequestPart(value = "observacao", required = false) String observacao,
-            @RequestPart(value = "arquivos", required = false) MultipartFile[] arquivos
-    ) {
-        try {
+public ResponseEntity<?> criarProcesso(
+        @RequestPart("titulo") String titulo,
+        @RequestPart("tipo") String tipo,
+        @RequestPart("modal") String modal,
+        @RequestPart(value = "observacao", required = false) String observacao,
+        @RequestPart(value = "arquivos", required = false) MultipartFile[] arquivos
+) {
+    try {
 
-            ProcessoRequestDTO dto = new ProcessoRequestDTO();
-            dto.setTitulo(titulo);
-            dto.setTipo(tipo);
-            dto.setModal(modal);
-            dto.setObservacao(observacao);
-            dto.setArquivos(arquivos);
+        System.out.println("=== DEBUG RECEBIMENTO DE FORM-DATA ===");
+        System.out.println("titulo: " + titulo);
+        System.out.println("tipo: " + tipo);
+        System.out.println("modal: " + modal);
+        System.out.println("observacao: " + observacao);
 
-            Processo created = service.criarProcesso(dto);
-
-            return ResponseEntity.status(HttpStatus.CREATED).body(created);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("error", "Erro ao criar processo", "detail", e.getMessage()));
+        if (arquivos == null) {
+            System.out.println("Nenhum arquivo recebido (arquivos == null)");
+        } else {
+            System.out.println("Qtd de arquivos recebidos: " + arquivos.length);
+            for (MultipartFile f : arquivos) {
+                System.out.println(" - Nome: " + f.getOriginalFilename());
+                System.out.println("   ContentType: " + f.getContentType());
+                System.out.println("   Tamanho: " + f.getSize() + " bytes");
+            }
         }
+
+        ProcessoRequestDTO dto = new ProcessoRequestDTO();
+        dto.setTitulo(titulo);
+        dto.setTipo(tipo);
+        dto.setModal(modal);
+        dto.setObservacao(observacao);
+        dto.setArquivos(arquivos);
+
+        Processo created = service.criarProcesso(dto);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(Map.of("error", "Erro ao criar processo", "detail", e.getMessage()));
     }
+}
 
     @GetMapping
     public List<Processo> listarProcessos() {
