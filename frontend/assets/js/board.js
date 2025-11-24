@@ -55,8 +55,7 @@ async function carregarProcessosRemotos() {
     processos.forEach(p => renderProcesso(p));
 
     // render locais
-    const processosLocais =
-      JSON.parse(localStorage.getItem('processos') || '[]');
+    const processosLocais = JSON.parse(localStorage.getItem('processos') || '[]');
 
     processosLocais.forEach(p => {
       if (!document.querySelector(`[data-codigo="${p.codigo}"]`)) {
@@ -70,11 +69,8 @@ async function carregarProcessosRemotos() {
   }
 }
 
-// render local caso API falhe
 function renderLocalOnly() {
-  const processos =
-    JSON.parse(localStorage.getItem('processos') || '[]');
-
+  const processos = JSON.parse(localStorage.getItem('processos') || '[]');
   processos.forEach(p => renderProcesso(p));
 }
 
@@ -82,15 +78,13 @@ function renderLocalOnly() {
 // RENDERIZA UM PROCESSO NA LANE CORRETA
 // ======================================
 function renderProcesso(p) {
-  const tipo =
-    (p.tipo && p.tipo.toLowerCase().includes('export'))
-      ? 'exportacao'
-      : 'importacao';
+  const tipo = (p.tipo && p.tipo.toLowerCase().includes('export'))
+    ? 'exportacao'
+    : 'importacao';
 
-  const lane =
-    (p.modal && p.modal.toLowerCase().includes('marit'))
-      ? 'maritima'
-      : 'aerea';
+  const lane = (p.modal && p.modal.toLowerCase().includes('marit'))
+    ? 'maritima'
+    : 'aerea';
 
   const card = createCardElement(p);
 
@@ -103,11 +97,10 @@ function renderProcesso(p) {
   }
 }
 
-// chama ao abrir página
 carregarProcessosRemotos();
 
 // ========================================================================
-// PARTE NOVA: SISTEMA DE ALTERNAÇÃO IMPORTAÇÃO / EXPORTAÇÃO
+// NOVO SISTEMA DE ALTERNAÇÃO IMPORTAÇÃO / EXPORTAÇÃO
 // ========================================================================
 const typeBtn = document.getElementById("typeBtn");
 const typeLabel = document.getElementById("typeLabel");
@@ -121,43 +114,31 @@ typeBtn.addEventListener("click", () => {
   typeMenu.hidden = !typeMenu.hidden;
 });
 
-// clique numa opção do menu
-typeMenu.querySelectorAll("li").forEach(item => {
+// ---------------------------------------------------------------------
+// NOVO SISTEMA DE EXIBIÇÃO DE LANES
+// ---------------------------------------------------------------------
+function atualizarLanes(tipo) {
+  const lanes = document.querySelectorAll(".lane");
 
-  item.addEventListener("click", () => {
+  lanes.forEach(lane => {
+    const titulo = lane.querySelector("h2").textContent.toLowerCase();
 
-    const tipo = item.dataset.type; // importacao | exportacao
+    const isImport = titulo.includes("importação");
+    const isExport = titulo.includes("exportação");
 
-    // marcar selecionado
-    typeMenu.querySelectorAll("li").forEach(li =>
-      li.classList.remove("active")
-    );
-    item.classList.add("active");
-
-    // atualizar botão
-    typeLabel.textContent = item.textContent;
-    typeMenu.hidden = true;
-
-    // alterar títulos das colunas
     if (tipo === "importacao") {
-      lane1Title.textContent = "Importação Marítima";
-      lane2Title.textContent = "Importação Aérea";
+      lane.style.display = isImport ? "block" : "none";
     } else {
-      lane1Title.textContent = "Exportação Marítima";
-      lane2Title.textContent = "Exportação Aérea";
+      lane.style.display = isExport ? "block" : "none";
     }
-
-    // filtrar cards
-    atualizarVisibilidadeCards(tipo);
   });
-});
+}
 
-// FILTRA OS CARDS BASEADO EM "IN" OU "EX"
-function atualizarVisibilidadeCards(tipoAtual) {
+function atualizarCards(tipoAtual) {
   const cards = document.querySelectorAll(".card");
 
   cards.forEach(card => {
-    const codigo = card.dataset.codigo.toUpperCase();
+    const codigo = card.dataset.codigo?.toUpperCase() || "";
 
     const ehExport = codigo.startsWith("EX");
     const ehImport = codigo.startsWith("IN");
@@ -171,3 +152,29 @@ function atualizarVisibilidadeCards(tipoAtual) {
     }
   });
 }
+
+// ---------------------------------------------------------------------
+// MENU DE ALTERNAÇÃO
+// ---------------------------------------------------------------------
+typeMenu.querySelectorAll("li").forEach(item => {
+  item.addEventListener("click", () => {
+    const tipo = item.dataset.type;
+
+    typeLabel.textContent = item.textContent;
+    typeMenu.hidden = true;
+
+    if (tipo === "importacao") {
+      lane1Title.textContent = "Importação Marítima";
+      lane2Title.textContent = "Importação Aérea";
+    } else {
+      lane1Title.textContent = "Exportação Marítima";
+      lane2Title.textContent = "Exportação Aérea";
+    }
+
+    atualizarLanes(tipo);
+    atualizarCards(tipo);
+  });
+});
+
+// estado inicial
+atualizarLanes("importacao");
