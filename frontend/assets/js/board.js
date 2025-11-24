@@ -10,28 +10,75 @@ const exportAereaContainer = document.getElementById('export-aerea');
 const exportMaritimaContainer = document.getElementById('export-maritima');
 
 // ======================================
-// FUNÇÃO PARA CRIAR CARDS
+// FUNÇÃO PARA CRIAR CARDS (ATUALIZADA)
 // ======================================
 function createCardElement(p) {
   const card = document.createElement('div');
   card.className = 'card';
 
   card.dataset.codigo = p.codigo;
-  card.dataset.tipo = (p.tipo && p.tipo.toLowerCase().includes('export'))
-    ? 'exportacao'
-    : 'importacao';
+  card.dataset.titulo = p.titulo;
 
   card.innerHTML = `
-    <strong>${p.titulo}</strong>
-    <div>${p.codigo}</div>
+    <div class="card-head">
+      <span class="code">${p.codigo}</span>
+    </div>
+    <div class="desc">${p.titulo}</div>
   `;
 
-  card.addEventListener('click', () => {
-    alert(`Abrir processo ${p.codigo}\nTítulo: ${p.titulo}`);
-  });
+  // ➜ Ao clicar → abrir popover
+  card.addEventListener('click', () => abrirPopover(p));
 
   return card;
 }
+
+// ======================================
+// FUNÇÃO PARA ABRIR O POPOVER (NOVA)
+// ======================================
+function abrirPopover(p) {
+  const pop = document.getElementById("cardPopover");
+
+  // preencher campos
+  document.getElementById("popTitle").textContent = `${p.codigo} - ${p.titulo}`;
+  document.getElementById("pStart").value = p.inicio || "";
+  document.getElementById("pEnd").value = p.fim || "";
+  document.getElementById("pStatus").value = p.status || "Em andamento";
+  document.getElementById("pObs").value = p.observacao || "";
+
+  // checklist dinâmico
+  const checklist = document.getElementById("pChecklist");
+  checklist.innerHTML = "";
+
+  if (p.checklist && Array.isArray(p.checklist)) {
+    p.checklist.forEach(item => {
+      const li = document.createElement("label");
+      li.className = "check";
+      li.innerHTML = `
+        <input type="checkbox" class="round" ${item.done ? "checked" : ""}>
+        <span>${item.label}</span>
+      `;
+      checklist.appendChild(li);
+    });
+  }
+
+  // mostrar popover
+  pop.hidden = false;
+
+  // posicionar centralizado
+  const width = 560;
+  const x = (window.innerWidth - width) / 2;
+  const y = window.scrollY + 120;
+
+  pop.style.left = `${x}px`;
+  pop.style.top = `${y}px`;
+}
+
+// ======================================
+// BOTÃO FECHAR DO POPUP
+// ======================================
+document.getElementById("pClose").addEventListener("click", () => {
+  document.getElementById("cardPopover").hidden = true;
+});
 
 // ======================================
 // CARREGAR PROCESSOS REMOTOS + LOCAIS
@@ -97,7 +144,7 @@ function renderProcesso(p) {
 carregarProcessosRemotos();
 
 // ========================================================================
-// NOVO SISTEMA DE ALTERNAÇÃO IMPORTAÇÃO / EXPORTAÇÃO
+// ALTERNAÇÃO IMPORTAÇÃO / EXPORTAÇÃO
 // ========================================================================
 const typeBtn = document.getElementById("typeBtn");
 const typeLabel = document.getElementById("typeLabel");
@@ -108,21 +155,16 @@ typeBtn.addEventListener("click", () => {
   typeMenu.hidden = !typeMenu.hidden;
 });
 
-// ---------------------------------------------------------------------
-// ALTERAÇÃO REAL — VISIBILIDADE POR DATASET
-// ---------------------------------------------------------------------
+// exibe apenas as lanes compatíveis
 function atualizarLanes(tipo) {
   const lanes = document.querySelectorAll(".lane");
-
   lanes.forEach(lane => {
-    const laneTipo = lane.dataset.type; // importacao | exportacao
+    const laneTipo = lane.dataset.type;
     lane.style.display = laneTipo === tipo ? "block" : "none";
   });
 }
 
-// ---------------------------------------------------------------------
-// FILTRAGEM DE CARDS (opcional - mantém seu original)
-// ---------------------------------------------------------------------
+// filtra cards por tipo (import/export)
 function atualizarCards(tipoAtual) {
   const cards = document.querySelectorAll(".card");
 
@@ -142,9 +184,7 @@ function atualizarCards(tipoAtual) {
   });
 }
 
-// ---------------------------------------------------------------------
-// MENU DE ALTERNAÇÃO (mantido)
-// ---------------------------------------------------------------------
+// click no item do menu
 typeMenu.querySelectorAll("li").forEach(item => {
   item.addEventListener("click", () => {
     const tipo = item.dataset.type;
