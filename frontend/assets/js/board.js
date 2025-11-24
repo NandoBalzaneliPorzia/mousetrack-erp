@@ -3,11 +3,12 @@
 // ======================================
 const BASE_URL = 'https://mousetrack-erp.onrender.com';
 
-// containers das lanes no DOM
+// containers
 const importAereaContainer = document.getElementById('laneAerea');
 const importMaritimaContainer = document.getElementById('laneMaritima');
 const exportAereaContainer = document.getElementById('export-aerea');
 const exportMaritimaContainer = document.getElementById('export-maritima');
+
 
 // ======================================
 // FUNÇÃO PARA CRIAR CARDS
@@ -16,60 +17,24 @@ function createCardElement(p) {
   const card = document.createElement('div');
   card.className = 'card';
   card.dataset.codigo = p.codigo;
-  card.dataset.tipo = (p.tipo && p.tipo.toLowerCase().includes('export')) ? 'exportacao' : 'importacao';
+  card.dataset.tipo = (p.tipo && p.tipo.toLowerCase().includes("export")) ? "exportacao" : "importacao";
 
   card.innerHTML = `
     <strong>${p.titulo}</strong>
     <div>${p.codigo}</div>
   `;
 
-  card.addEventListener('click', () => {
+  card.addEventListener("click", () => {
     alert(`Abrir processo ${p.codigo}\nTítulo: ${p.titulo}`);
   });
 
   return card;
 }
 
-// ======================================
-// CARREGAR PROCESSOS REMOTOS + LOCAIS
-// ======================================
-async function carregarProcessosRemotos() {
-  try {
-    const res = await fetch(`${BASE_URL}/api/processos`);
-    if (!res.ok) throw new Error('Falha ao buscar processos remotos');
 
-    const processos = await res.json();
-
-    // limpar lanes
-    [importAereaContainer, importMaritimaContainer, exportAereaContainer, exportMaritimaContainer]
-      .forEach(c => c.innerHTML = '');
-
-    // render remotos
-    processos.forEach(p => renderProcesso(p));
-
-    // render locais
-    const processosLocais = JSON.parse(localStorage.getItem('processos') || '[]');
-    processosLocais.forEach(p => {
-      if (!document.querySelector(`[data-codigo="${p.codigo}"]`)) {
-        renderProcesso(p);
-      }
-    });
-
-  } catch (err) {
-    console.error("Erro ao carregar processos:", err);
-    renderLocalOnly();
-  }
-}
-
-// render local caso API falhe
-function renderLocalOnly() {
-  const processos = JSON.parse(localStorage.getItem('processos') || '[]');
-  processos.forEach(p => renderProcesso(p));
-}
-
-// ======================================
+// =========================================
 // RENDERIZA UM PROCESSO NA LANE CORRETA
-// ======================================
+// =========================================
 function renderProcesso(p) {
   const tipo = (p.tipo && p.tipo.toLowerCase().includes('export')) ? 'exportacao' : 'importacao';
   const lane = (p.modal && p.modal.toLowerCase().includes('marit')) ? 'maritima' : 'aerea';
@@ -85,12 +50,54 @@ function renderProcesso(p) {
   }
 }
 
-// chama ao abrir página
+
+// =========================================
+// CARREGAR PROCESSOS REMOTOS + LOCAIS
+// =========================================
+async function carregarProcessosRemotos() {
+  try {
+    const res = await fetch(`${BASE_URL}/api/processos`);
+    if (!res.ok) throw new Error("Falha ao buscar processos remotos");
+
+    const processos = await res.json();
+
+    // limpar lanes
+    [
+      importAereaContainer,
+      importMaritimaContainer,
+      exportAereaContainer,
+      exportMaritimaContainer
+    ].forEach(c => c.innerHTML = "");
+
+    // remotos
+    processos.forEach(p => renderProcesso(p));
+
+    // locais
+    const locais = JSON.parse(localStorage.getItem("processos") || "[]");
+
+    locais.forEach(p => {
+      if (!document.querySelector(`[data-codigo="${p.codigo}"]`)) {
+        renderProcesso(p);
+      }
+    });
+
+  } catch (err) {
+    console.error("Erro:", err);
+    renderLocalOnly();
+  }
+}
+
+function renderLocalOnly() {
+  const processos = JSON.parse(localStorage.getItem('processos') || '[]');
+  processos.forEach(p => renderProcesso(p));
+}
+
+// carregar ao abrir
 carregarProcessosRemotos();
 
 
 // ========================================================================
-//  PARTE NOVA: SISTEMA DE ALTERNAÇÃO IMPORTAÇÃO / EXPORTAÇÃO
+//  SISTEMA DE ALTERNAÇÃO IMPORTAÇÃO / EXPORTAÇÃO
 // ========================================================================
 
 const typeBtn = document.getElementById("typeBtn");
@@ -100,40 +107,33 @@ const typeMenu = document.getElementById("typeMenu");
 const lane1Title = document.getElementById("lane1Title");
 const lane2Title = document.getElementById("lane2Title");
 
-// abre/fecha menu
+
+// abrir / fechar menu
 typeBtn.addEventListener("click", () => {
   typeMenu.hidden = !typeMenu.hidden;
 });
 
-// clique numa opção do menu
-typeMenu.querySelectorAll("li").forEach(item => {
-  item.addEventListener("click", () => {
 
-    const tipo = item.dataset.type; // importacao | exportacao
+// ================================
+// MOSTRAR APENAS IMPORTAÇÃO OU EXPORTAÇÃO
+// ================================
+function atualizarVisibilidadeLanes(tipoAtual) {
+  const lanesImport = document.querySelectorAll('[data-group="importacao"]');
+  const lanesExport = document.querySelectorAll('[data-group="exportacao"]');
 
-    // marcar selecionado
-    typeMenu.querySelectorAll("li").forEach(li => li.classList.remove("active"));
-    item.classList.add("active");
+  if (tipoAtual === "importacao") {
+    lanesImport.forEach(l => l.style.display = "block");
+    lanesExport.forEach(l => l.style.display = "none");
+  } else {
+    lanesImport.forEach(l => l.style.display = "none");
+    lanesExport.forEach(l => l.style.display = "block");
+  }
+}
 
-    // atualizar botão
-    typeLabel.textContent = item.textContent;
-    typeMenu.hidden = true;
 
-    // alterar títulos das colunas
-    if (tipo === "importacao") {
-      lane1Title.textContent = "Importação Marítima";
-      lane2Title.textContent = "Importação Aérea";
-    } else {
-      lane1Title.textContent = "Exportação Marítima";
-      lane2Title.textContent = "Exportação Aérea";
-    }
-
-    // filtrar cards
-    atualizarVisibilidadeCards(tipo);
-  });
-});
-
-// FILTRA OS CARDS BASEADO EM "IN" OU "EX"
+// ================================
+// FILTRAR CARDS PELO PREFIXO
+// ================================
 function atualizarVisibilidadeCards(tipoAtual) {
   const cards = document.querySelectorAll(".card");
 
@@ -151,3 +151,33 @@ function atualizarVisibilidadeCards(tipoAtual) {
     }
   });
 }
+
+
+// ================================
+// EVENTO DO MENU
+// ================================
+typeMenu.querySelectorAll("li").forEach(item => {
+  item.addEventListener("click", () => {
+
+    const tipo = item.dataset.type; // importacao | exportacao
+
+    typeMenu.querySelectorAll("li").forEach(li =>
+      li.classList.remove("active")
+    );
+    item.classList.add("active");
+
+    typeLabel.textContent = item.textContent;
+    typeMenu.hidden = true;
+
+    if (tipo === "importacao") {
+      lane1Title.textContent = "Importação Marítima";
+      lane2Title.textContent = "Importação Aérea";
+    } else {
+      lane1Title.textContent = "Exportação Marítima";
+      lane2Title.textContent = "Exportação Aérea";
+    }
+
+    atualizarVisibilidadeLanes(tipo);
+    atualizarVisibilidadeCards(tipo);
+  });
+});
