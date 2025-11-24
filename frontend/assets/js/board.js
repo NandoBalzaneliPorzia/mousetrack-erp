@@ -43,7 +43,6 @@ async function carregarProcessosRemotos() {
 
     const processos = await res.json();
 
-    // limpar lanes
     [
       importAereaContainer,
       importMaritimaContainer,
@@ -51,10 +50,8 @@ async function carregarProcessosRemotos() {
       exportMaritimaContainer
     ].forEach(c => c.innerHTML = '');
 
-    // render remotos
     processos.forEach(p => renderProcesso(p));
 
-    // render locais
     const processosLocais = JSON.parse(localStorage.getItem('processos') || '[]');
 
     processosLocais.forEach(p => {
@@ -106,34 +103,26 @@ const typeBtn = document.getElementById("typeBtn");
 const typeLabel = document.getElementById("typeLabel");
 const typeMenu = document.getElementById("typeMenu");
 
-const lane1Title = document.getElementById("lane1Title");
-const lane2Title = document.getElementById("lane2Title");
-
 // abre/fecha menu
 typeBtn.addEventListener("click", () => {
   typeMenu.hidden = !typeMenu.hidden;
 });
 
 // ---------------------------------------------------------------------
-// NOVO SISTEMA DE EXIBIÇÃO DE LANES
+// ALTERAÇÃO REAL — VISIBILIDADE POR DATASET
 // ---------------------------------------------------------------------
 function atualizarLanes(tipo) {
   const lanes = document.querySelectorAll(".lane");
 
   lanes.forEach(lane => {
-    const titulo = lane.querySelector("h2").textContent.toLowerCase();
-
-    const isImport = titulo.includes("importação");
-    const isExport = titulo.includes("exportação");
-
-    if (tipo === "importacao") {
-      lane.style.display = isImport ? "block" : "none";
-    } else {
-      lane.style.display = isExport ? "block" : "none";
-    }
+    const laneTipo = lane.dataset.type; // importacao | exportacao
+    lane.style.display = laneTipo === tipo ? "block" : "none";
   });
 }
 
+// ---------------------------------------------------------------------
+// FILTRAGEM DE CARDS (opcional - mantém seu original)
+// ---------------------------------------------------------------------
 function atualizarCards(tipoAtual) {
   const cards = document.querySelectorAll(".card");
 
@@ -154,7 +143,7 @@ function atualizarCards(tipoAtual) {
 }
 
 // ---------------------------------------------------------------------
-// MENU DE ALTERNAÇÃO
+// MENU DE ALTERNAÇÃO (mantido)
 // ---------------------------------------------------------------------
 typeMenu.querySelectorAll("li").forEach(item => {
   item.addEventListener("click", () => {
@@ -162,14 +151,6 @@ typeMenu.querySelectorAll("li").forEach(item => {
 
     typeLabel.textContent = item.textContent;
     typeMenu.hidden = true;
-
-    if (tipo === "importacao") {
-      lane1Title.textContent = "Importação Marítima";
-      lane2Title.textContent = "Importação Aérea";
-    } else {
-      lane1Title.textContent = "Exportação Marítima";
-      lane2Title.textContent = "Exportação Aérea";
-    }
 
     atualizarLanes(tipo);
     atualizarCards(tipo);
