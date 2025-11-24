@@ -4,7 +4,6 @@ import com.comexapp.DTO.ProcessoRequestDTO;
 import com.comexapp.model.Processo;
 import com.comexapp.model.ProcessoArquivo;
 import com.comexapp.repository.ProcessoRepository;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,66 +18,38 @@ public class ProcessoService {
         this.repo = repo;
     }
 
-    public Processo criarProcesso(ProcessoRequestDTO dto) {
+    public Processo criarProcesso(ProcessoRequestDTO dto) throws Exception {
 
-        Processo p = new Processo();
-        p.setTitulo(dto.getTitulo());
-        p.setTipo(dto.getTipo());
-        p.setModal(dto.getModal());
-        p.setObservacao(dto.getObservacao());
+        // Criar processo básico
+        Processo processo = new Processo();
+        processo.setTitulo(dto.getTitulo());
+        processo.setTipo(dto.getTipo());
+        processo.setModal(dto.getModal());
+        processo.setObservacao(dto.getObservacao());
 
-        // 1 — prefixo do código
-        String prefix = (dto.getTipo().equalsIgnoreCase("importacao")
-                ? (dto.getModal().equalsIgnoreCase("maritimo") ? "INM" : "INA")
-                : (dto.getModal().equalsIgnoreCase("maritimo") ? "EXM" : "EXA"));
+        // Código único
+        processo.setCodigo(UUID.randomUUID().toString().substring(0, 8));
 
-        // 2 — tenta gerar código único
-        for (int attempt = 0; attempt < 5; attempt++) {
+        // Salva processo primeiro para gerar ID
+        processo = repo.save(processo);
 
-            String codigo = prefix + "_" +
-                    UUID.randomUUID().toString().substring(0, 4).toUpperCase();
+        // Salvar arquivos
+        if (dto.getArquivos() != null) {
+            for (MultipartFile file : dto.getArquivos()) {
 
-            p.setCodigo(codigo);
+                if (!file.isEmpty()) {
+                    ProcessoArquivo pa = new ProcessoArquivo();
+                    pa.setNomeArquivo(file.getOriginalFilename());
+                    pa.setTipoArquivo(file.getContentType());
+                    pa.setDadosArquivo(file.getBytes());
+                    pa.setProcesso(processo);
 
-            try {
-                processarArquivos(dto, p);
-                return repo.save(p);
-
-            } catch (DataIntegrityViolationException ex) {
-
-                if (attempt == 4) {
-                    throw new RuntimeException("Erro ao gerar código único.", ex);
+                    processo.getArquivos().add(pa);
                 }
             }
         }
 
-        throw new RuntimeException("Falha inesperada ao criar processo.");
-    }
-
-    // ==========================
-    // PROCESSAR ARQUIVOS
-    // ==========================
-    private void processarArquivos(ProcessoRequestDTO dto, Processo p) {
-
-        if (dto.getArquivos() == null) return;
-
-        for (MultipartFile file : dto.getArquivos()) {
-
-            if (file.isEmpty()) continue;
-
-            try {
-
-                ProcessoArquivo arquivo = new ProcessoArquivo();
-                arquivo.setNomeArquivo(file.getOriginalFilename());
-                arquivo.setTipoArquivo(file.getContentType());
-                arquivo.setDadosArquivo(file.getBytes());
-                arquivo.setProcesso(p);
-
-                p.getArquivos().add(arquivo);
-
-            } catch (Exception e) {
-                throw new RuntimeException("Erro ao processar arquivos.", e);
-            }
-        }
+        // Persistir arquivos e processo
+        return repo.save(processo);
     }
 }
