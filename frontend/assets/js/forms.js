@@ -1,13 +1,13 @@
-// forms.js (corrigido e revisado)
+// forms.js (corrigido e revisado DEFINITIVO)
 document.addEventListener('DOMContentLoaded', () => {
   const input = document.getElementById('anexo');
   const fileText = document.getElementById('fileText');
   const form = document.getElementById('procForm');
 
-  // 🔧 ATUALIZE para o domínio EXATO do seu backend
+  // 🔧 SEU BACKEND
   const BASE_URL = 'https://mousetrack-erp.onrender.com';
 
-  // Exibe nome ou quantidade de arquivos selecionados
+  // Exibe nome(s) dos arquivos
   if (input) {
     input.addEventListener('change', () => {
       if (!input.files || input.files.length === 0) {
@@ -21,14 +21,32 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Envio do formulário
+  // =============================
+  // ENVIO DO FORMULÁRIO
+  // =============================
   if (form) {
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      const formData = new FormData(form);
+      // NÃO USAR new FormData(form) (quebra MultipartFile[])
+      const formData = new FormData();
 
-      console.log('--- Enviando FormData ---');
+      // Campos simples
+      formData.append("titulo", form.titulo.value);
+      formData.append("tipo", form.tipo.value);
+      formData.append("modal", form.modal.value);
+      formData.append("observacao", form.observacao.value);
+
+      // Arquivos (forma correta p/ MultipartFile[])
+      const files = input.files;
+      if (files && files.length > 0) {
+        for (let i = 0; i < files.length; i++) {
+          formData.append("arquivos", files[i]); // MESMO NOME!
+        }
+      }
+
+      // Debug
+      console.log("------ Enviando FormData ------");
       for (const pair of formData.entries()) {
         console.log(pair[0], pair[1]);
       }
@@ -40,37 +58,31 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         console.log("Status:", res.status);
-        console.log("Headers:", [...res.headers.entries()]);
 
-        let rawBody = await res.text();
-        console.log("Raw body:", rawBody);
+        const raw = await res.text();
+        let parsed = raw;
 
-        let parsed;
-        try {
-          parsed = JSON.parse(rawBody);
-        } catch {
-          parsed = rawBody;
-        }
+        try { parsed = JSON.parse(raw); } catch {}
 
         if (!res.ok) {
-          throw new Error(`Erro HTTP ${res.status}: ${rawBody}`);
+          throw new Error(`Erro HTTP ${res.status}: ${raw}`);
         }
 
         const created = parsed;
 
-        // Salvar localmente
+        // Salva no localStorage (cards)
         const processos = JSON.parse(localStorage.getItem('processos') || '[]');
         processos.push(created);
         localStorage.setItem('processos', JSON.stringify(processos));
 
-        alert(`✅ Processo criado com sucesso!\nCódigo: ${created?.codigo || 'sem código'}`);
+        alert(`✅ Processo criado!\nCódigo: ${created?.codigo || '(sem código)'}`);
 
         form.reset();
         if (fileText) fileText.textContent = '';
 
       } catch (err) {
         console.error("❌ Erro ao criar processo:", err);
-        alert("❌ Falha ao criar processo. Veja o console para detalhes.");
+        alert("❌ Falha ao criar processo. Veja o console.");
       }
     });
   }
