@@ -10,7 +10,7 @@
   --bar:#2E4E45;
 
   /* ➜ NOVO: cor dos cards */
-  --card-bg:#CBD9D4;
+  --card-bg:#A3B8B2;
 }
 
 /* ============================== */
@@ -179,7 +179,7 @@ body {
 }
 
 .card {
-  background: var(--card-bg);
+  background: #A3B8B2;
   border-radius: 6px;
   padding: 14px 12px;
   cursor: pointer;

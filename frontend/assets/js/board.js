@@ -126,38 +126,42 @@ function openPopover(proc) {
   pTitle.textContent = `${codigo} - ${proc.titulo || '(Sem título)'}`;
   renderChecklist(proc.tipo, proc.modal);
 
-  // --- POSICIONAMENTO ---
   const cardEl = document.querySelector(`[data-id="${proc.id}"]`);
   if (!cardEl) return;
 
-  const rect = cardEl.getBoundingClientRect();
+  // MOSTRAR TEMPORARIAMENTE FORA DA TELA PARA MEDIR
+  popover.hidden = false;
+  popover.style.left = "-9999px";
+  popover.style.top = "-9999px";
 
-  // largura e altura da pop-box
+  const rect = cardEl.getBoundingClientRect();
   const box = document.querySelector(".pop-box");
+
   const boxWidth = box.offsetWidth;
   const boxHeight = box.offsetHeight;
 
-  // calcula posição centralizada em cima do card
-  let left = rect.left + (rect.width / 2) - (boxWidth / 2);
-  let top = rect.top - boxHeight - 10; // sobe 10px acima do card
+  // posição inicial (em cima)
+  let left = rect.left + rect.width/2 - boxWidth/2;
+  let top = rect.top - boxHeight - 10;
 
-  // ▶ Correções: não deixar cortar para os lados
+  // garantir que não saia pela esquerda
   if (left < 10) left = 10;
-  if (left + boxWidth > window.innerWidth - 10) {
+
+  // garantir que não saia pela direita
+  if (left + boxWidth > window.innerWidth - 10)
     left = window.innerWidth - boxWidth - 10;
-  }
 
-  // ▶ Correção: se não couber acima, abrir abaixo
-  if (top < 10) {
-    top = rect.bottom + 10;
-  }
+  // se não couber em cima → descer
+  if (top < 10) top = rect.bottom + 10;
 
-  // aplica a posição
+  // aplicar posição final
   popover.style.left = `${left}px`;
   popover.style.top = `${top}px`;
-
-  popover.hidden = false;
 }
+pClose.addEventListener("click", () => {
+  popover.hidden = true;
+});
+
 
 // ======================================
 // RENDER
