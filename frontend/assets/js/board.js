@@ -155,6 +155,36 @@ pClose.addEventListener("click", () => {
   popover.hidden = true;
   selectedCard = null;
 });
+// BOTÃO "+" DO POPOVER ABRE INPUT DE E-MAIL
+const pAdd = document.getElementById("pAdd");
+const emailBox = document.getElementById("emailBox");
+const emailInput = document.getElementById("emailInput");
+const emailSendBtn = document.getElementById("emailSendBtn");
+
+pAdd.addEventListener("click", () => {
+  // alternar visibilidade do box
+  emailBox.hidden = !emailBox.hidden;
+
+  if (!emailBox.hidden) {
+    emailInput.focus();
+  }
+});
+// BOTÃO DE ENVIO DO E-MAIL
+emailSendBtn.addEventListener("click", () => {
+  const email = emailInput.value.trim();
+  // gera link único
+  const link = `${location.origin}/processo?id=${selectedCard.id}`;
+
+  // simulação (trocar por API real)
+  console.log("Enviar para:", email);
+  console.log("Processo:", selectedCard.id);
+  console.log("Link:", link);
+
+  alert(`Link enviado para ${email}!`);
+
+  emailInput.value = "";
+  emailBox.hidden = true;
+});
 
 
 // ======================================

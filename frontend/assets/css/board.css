@@ -448,3 +448,32 @@ body {
   overflow: hidden;
 }
 
+/* INPUT DE E-MAIL NO POPOVER */
+.email-box {
+  padding: 10px 12px;
+  border-top: 1px solid var(--line);
+  background: #fff;
+}
+
+.email-wrap {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.email-box .input {
+  flex: 1;
+  height: 26px;
+}
+
+.email-btn {
+  padding: 0 14px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  background: var(--lane-bg);
+  color: #fff;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+
