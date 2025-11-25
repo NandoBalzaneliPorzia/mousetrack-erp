@@ -3,17 +3,21 @@ package com.comexapp.model;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "processo_arquivo")
 public class ProcessoArquivo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "nome_arquivo")
     private String nomeArquivo;
+
+    @Column(name = "tipo_arquivo")
     private String tipoArquivo;
 
     @Lob
-    @Column(columnDefinition = "bytea")
+    @Column(name = "dados_arquivo", columnDefinition = "bytea")
     private byte[] dadosArquivo;
 
     @ManyToOne
