@@ -14,12 +14,11 @@ public class EmailController {
 
     @PostMapping("/enviar")
 public String enviar(@RequestBody EmailRequestDTO req) {
-
-    String assunto = "Link do processo " + req.getProcessoId();
-    String texto = "Segue o link do processo:\n\n" + req.getLink();
-
-    emailService.enviarEmail(req.getEmail(), assunto, texto);
-
+    emailService.enviarEmail(
+        req.getPara(),
+        req.getAssunto(),
+        req.getMensagem()
+    );
     return "OK";
 }
 }

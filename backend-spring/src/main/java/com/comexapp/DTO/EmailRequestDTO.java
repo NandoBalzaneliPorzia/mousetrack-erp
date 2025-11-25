@@ -1,17 +1,16 @@
 package com.comexapp.DTO;
 
 public class EmailRequestDTO {
-    private String email;
-    private String processoId;
-    private String link;
+    private String para;
+    private String assunto;
+    private String mensagem;
 
-    // getters e setters
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+    public String getPara() { return para; }
+    public void setPara(String para) { this.para = para; }
 
-    public String getProcessoId() { return processoId; }
-    public void setProcessoId(String processoId) { this.processoId = processoId; }
+    public String getAssunto() { return assunto; }
+    public void setAssunto(String assunto) { this.assunto = assunto; }
 
-    public String getLink() { return link; }
-    public void setLink(String link) { this.link = link; }
+    public String getMensagem() { return mensagem; }
+    public void setMensagem(String mensagem) { this.mensagem = mensagem; }
 }
