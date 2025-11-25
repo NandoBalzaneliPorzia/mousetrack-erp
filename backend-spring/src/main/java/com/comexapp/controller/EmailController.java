@@ -2,6 +2,7 @@ package com.comexapp.controller;
 
 import com.comexapp.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
+import com.comexapp.DTO.EmailRequestDTO;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

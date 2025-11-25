@@ -183,11 +183,11 @@ emailSendBtn.addEventListener("click", async () => {
   try {
     const resp = await fetch("https://mousetrack-erp.onrender.com/email/enviar", {
       method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams({
-        email: email,
-        processoId: selectedCard.id,
-        link: link
+      headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+        para: email,
+        assunto: "Teste",
+        mensagem: "Olá ! Segue o link do processo: " + link
       })
     });
 
