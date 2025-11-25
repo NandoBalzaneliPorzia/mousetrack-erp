@@ -4,141 +4,52 @@
 const BASE_URL = 'https://mousetrack-erp.onrender.com';
 
 // containers das lanes no DOM
-const laneEls = {
-  aerea: document.getElementById('laneAerea'),
-  maritima: document.getElementById('laneMaritima')
-};
-const laneTitles = {
-  aerea: document.getElementById('lane2Title'),
-  maritima: document.getElementById('lane1Title')
-};
+const importAereaContainer = document.getElementById('laneAerea');
+const importMaritimaContainer = document.getElementById('laneMaritima');
+const exportAereaContainer = document.getElementById('export-aerea');
+const exportMaritimaContainer = document.getElementById('export-maritima');
 
 // ======================================
-// CHECKLISTS
+// FUNÇÃO PARA CRIAR CARDS (ATUALIZADA)
 // ======================================
-const checklists = {
-  importacao: {
-    aerea: [
-      "S.I Revisada/Recebida",
-      "Reserva com Cia Aérea",
-      "Carga Pronta",
-      "Carga Coletada",
-      "Carga Entregue: Aero Origem",
-      "Tracking Feito",
-      "LCL - Carga Solta Coletada",
-      "Carga Entregue: Aero Destino"
-    ],
-    maritima: [
-      "S.I Revisada/Recebida",
-      "Reserva com Armador",
-      "Carga Pronta",
-      "Carga Coletada",
-      "Carga Entregue: Porto Origem",
-      "Tracking Feito",
-      "FCL - Container Coletado",
-      "LCL - Carga Solta Coletada",
-      "Carga Entregue: Porto Destino"
-    ]
-  },
-  exportacao: {
-    aerea: [
-      "Reserva com Cia Aérea",
-      "Carga Pronta",
-      "Carga Coletada",
-      "Carga Entregue: Aero Origem",
-      "AWB Entregue Cia Aérea",
-      "DUE Liberada",
-      "Tracking Feito",
-      "Carga Entregue: Aero Destino",
-      "LCL - Carga Solta Coletada"
-    ],
-    maritima: [
-      "Reserva com Armador",
-      "Carga Pronta",
-      "Carga Coletada",
-      "BL/Draft Entregue para Armador",
-      "Carga Entregue: Porto Origem",
-      "DUE Liberada",
-      "Tracking Feito",
-      "Carga Entregue: Porto Destino",
-      "FCL - Container Coletado",
-      "LCL - Carga Solta Coletada"
-    ]
-  }
-};
+function createCardElement(p) {
+  const card = document.createElement('div');
+  card.className = 'card';
 
-let currentType = 'importacao';
+  card.dataset.codigo = p.codigo;
+  card.dataset.titulo = p.titulo;
 
-// ======================================
-// POPOVER ELEMENTS
-// ======================================
-const popover  = document.getElementById('cardPopover');
-const pTitle   = document.getElementById('popTitle');
-const pStart   = document.getElementById('pStart');
-const pEnd     = document.getElementById('pEnd');
-const pStatus  = document.getElementById('pStatus');
-const pObs     = document.getElementById('pObs');
-const pClose   = document.getElementById('pClose');
-const pAdd     = document.getElementById('pAdd');
-const docsBtn  = document.getElementById('docsMenuBtn');
-const docsMenu = document.getElementById('docsMenu');
-const mDelete  = document.getElementById('mDelete');
-const pChecklist = document.getElementById('pChecklist');
-
-let popCardRef = null;
-let popLaneRef = null;
-
-// ======================================
-// FUNÇÃO PARA CRIAR ELEMENTO DE CARD
-// ======================================
-function cardEl(card, laneKey) {
-  const el = document.createElement('article');
-  el.className = 'card';
-  el.tabIndex = 0;
-  el.dataset.code = card.id;
-  el.dataset.desc = card.desc.toLowerCase();
-  el.dataset.lane = laneKey;
-  el.innerHTML = `
+  card.innerHTML = `
     <div class="card-head">
-      <span class="code">${card.id}</span>
-      <span class="icons" aria-hidden="true">⚙︎ ＋</span>
+      <span class="code">${p.codigo}</span>
     </div>
-    <div class="desc">${card.desc}</div>
-    <div class="foot" aria-hidden="true">📎</div>
+    <div class="desc">${p.titulo}</div>
   `;
-  el.addEventListener('click', () => openPopover(card, laneKey, el));
-  el.addEventListener('keydown', e => { if(e.key==='Enter') openPopover(card, laneKey, el); });
-  return el;
+
+  // ➜ Ao clicar → abrir popover
+  card.addEventListener('click', () => abrirPopover(p));
+
+  return card;
 }
 
 // ======================================
-// FUNÇÃO RENDER CHECKLIST
+// FUNÇÃO PARA ABRIR O POPOVER (NOVA)
 // ======================================
-function renderChecklist(tipo, modal) {
-  pChecklist.innerHTML = ""; // limpa
-  const items = checklists[tipo][modal];
-  items.forEach(item => {
-    const label = document.createElement("label");
-    label.className = "check";
-    label.innerHTML = `
-      <input type="checkbox" class="pCheck round">
-      <span>${item}</span>
-    `;
-    pChecklist.appendChild(label);
-  });
-}
+function abrirPopover(p) {
+  const pop = document.getElementById("cardPopover");
 
-// ======================================
-// FUNÇÃO OPEN POPOVER
-// ======================================
-function openPopover(card, laneKey, cardEl){
-  popCardRef = card;
-  popLaneRef = laneKey;
+  // preencher campos
+  document.getElementById("popTitle").textContent = `${p.codigo} - ${p.titulo}`;
+  document.getElementById("pStart").value = p.inicio || "";
+  document.getElementById("pEnd").value = p.fim || "";
+  document.getElementById("pStatus").value = p.status || "Em andamento";
+  document.getElementById("pObs").value = p.observacao || "";
 
-  pTitle.textContent = `${card.id} - ${card.desc}`;
-  pStart.value = ''; pEnd.value = ''; pStatus.value = 'Em andamento'; pObs.value = '';
-  document.querySelectorAll('.pCheck').forEach(c=>c.checked=false);
+  // checklist dinâmico
+  const checklist = document.getElementById("pChecklist");
+  checklist.innerHTML = "";
 
+<<<<<<< HEAD
 <<<<<<< HEAD
   const lane = cardEl.closest('.lane');
   const laneRect = lane.getBoundingClientRect();
@@ -181,89 +92,114 @@ document.addEventListener('click', e=>{
   }
 <<<<<<< HEAD
 });
-
-// ======================================
-// MENU DOCUMENTOS
-// ======================================
-docsBtn.addEventListener('click', (e)=>{
-  e.stopPropagation();
-  docsMenu.toggleAttribute('hidden');
-});
-document.addEventListener('click', (e)=>{
-  if(!docsMenu.hidden && !docsMenu.contains(e.target) && e.target!==docsBtn){
-    docsMenu.setAttribute('hidden','');
+=======
+  if (p.checklist && Array.isArray(p.checklist)) {
+    p.checklist.forEach(item => {
+      const li = document.createElement("label");
+      li.className = "check";
+      li.innerHTML = `
+        <input type="checkbox" class="round" ${item.done ? "checked" : ""}>
+        <span>${item.label}</span>
+      `;
+      checklist.appendChild(li);
+    });
   }
-});
+>>>>>>> parent of 115da1b (ajustando card)
 
-// ======================================
-// EXCLUIR CARD
-// ======================================
-mDelete.addEventListener('click', ()=>{
-  if(!popCardRef) return;
-  if(!confirm(`Excluir o card "${popCardRef.id}"?`)) return;
-  const arr = seed[currentType][popLaneRef];
-  const idx = arr.findIndex(c=>c.id===popCardRef.id);
-  if(idx>=0) arr.splice(idx,1);
-  popover.hidden = true;
-  render();
-});
+  // mostrar popover
+  pop.hidden = false;
 
-// ======================================
-// ADICIONAR CARD
-// ======================================
-pAdd.addEventListener('click', ()=>{
-  const prefix = (currentType==='importacao'
-    ? (popLaneRef==='maritima'?'INM':'INA')
-    : (popLaneRef==='maritima'?'EXM':'EXA'));
-  const code = prompt('Código do card:', `${prefix}_`);
-  if(!code) return;
-  const desc = prompt('Descrição do card:', 'Descrição');
-  seed[currentType][popLaneRef].push({ id: code.trim(), desc: (desc||'').trim() || '—' });
-  render();
-});
+  // posicionar centralizado
+  const width = 560;
+  const x = (window.innerWidth - width) / 2;
+  const y = window.scrollY + 120;
 
-// ======================================
-// RENDER PRINCIPAL
-// ======================================
-function render(){
-  const data = seed[currentType];
-  laneTitles.maritima.textContent = (currentType === 'importacao' ? 'Importação Marítima' : 'Exportação Marítima');
-  laneTitles.aerea.textContent    = (currentType === 'importacao' ? 'Importação Aérea'    : 'Exportação Aérea');
-
-  ['maritima','aerea'].forEach(key=>{
-    laneEls[key].innerHTML = '';
-    data[key].forEach(card => laneEls[key].appendChild(cardEl(card,key)));
-  });
-
-  applySearch();
+  pop.style.left = `${x}px`;
+  pop.style.top = `${y}px`;
 }
 
 // ======================================
-// PESQUISA
+// BOTÃO FECHAR DO POPUP
 // ======================================
-const search = document.getElementById('search');
-search.addEventListener('input', applySearch);
-function applySearch(){
-  const q = (search.value||'').trim().toLowerCase();
-  document.querySelectorAll('.card').forEach(c=>{
-    const hit = c.dataset.code.toLowerCase().includes(q) || c.dataset.desc.includes(q);
-    c.style.display = hit ? '' : 'none';
-  });
+document.getElementById("pClose").addEventListener("click", () => {
+  document.getElementById("cardPopover").hidden = true;
+});
+
+// ======================================
+// CARREGAR PROCESSOS REMOTOS + LOCAIS
+// ======================================
+async function carregarProcessosRemotos() {
+  try {
+    const res = await fetch(`${BASE_URL}/api/processos`);
+    if (!res.ok) throw new Error('Falha ao buscar processos remotos');
+
+    const processos = await res.json();
+
+    [
+      importAereaContainer,
+      importMaritimaContainer,
+      exportAereaContainer,
+      exportMaritimaContainer
+    ].forEach(c => c.innerHTML = '');
+
+    processos.forEach(p => renderProcesso(p));
+
+    const processosLocais = JSON.parse(localStorage.getItem('processos') || '[]');
+
+    processosLocais.forEach(p => {
+      if (!document.querySelector(`[data-codigo="${p.codigo}"]`)) {
+        renderProcesso(p);
+      }
+    });
+
+  } catch (err) {
+    console.error("Erro ao carregar processos:", err);
+    renderLocalOnly();
+  }
+}
+
+function renderLocalOnly() {
+  const processos = JSON.parse(localStorage.getItem('processos') || '[]');
+  processos.forEach(p => renderProcesso(p));
 }
 
 // ======================================
-// SWITCH IMPORTAÇÃO/EXPORTAÇÃO
+// RENDERIZA UM PROCESSO NA LANE CORRETA
 // ======================================
-const typeBtn = document.getElementById('typeBtn');
-const typeMenu= document.getElementById('typeMenu');
-const typeLbl = document.getElementById('typeLabel');
+function renderProcesso(p) {
+  const tipo = (p.tipo && p.tipo.toLowerCase().includes('export'))
+    ? 'exportacao'
+    : 'importacao';
 
-typeBtn.addEventListener('click', ()=> typeMenu.toggleAttribute('hidden'));
-document.addEventListener('click', (e)=>{
-  if(!typeBtn.contains(e.target) && !typeMenu.contains(e.target)){
-    typeMenu.setAttribute('hidden','');
+  const lane = (p.modal && p.modal.toLowerCase().includes('marit'))
+    ? 'maritima'
+    : 'aerea';
+
+  const card = createCardElement(p);
+
+  if (tipo === 'importacao') {
+    if (lane === 'aerea') return importAereaContainer.appendChild(card);
+    if (lane === 'maritima') return importMaritimaContainer.appendChild(card);
+  } else {
+    if (lane === 'aerea') return exportAereaContainer.appendChild(card);
+    if (lane === 'maritima') return exportMaritimaContainer.appendChild(card);
   }
+}
+
+carregarProcessosRemotos();
+
+// ========================================================================
+// ALTERNAÇÃO IMPORTAÇÃO / EXPORTAÇÃO
+// ========================================================================
+const typeBtn = document.getElementById("typeBtn");
+const typeLabel = document.getElementById("typeLabel");
+const typeMenu = document.getElementById("typeMenu");
+
+// abre/fecha menu
+typeBtn.addEventListener("click", () => {
+  typeMenu.hidden = !typeMenu.hidden;
 });
+<<<<<<< HEAD
 typeMenu.querySelectorAll('li').forEach(li=>{
   li.addEventListener('click', ()=>{
     typeMenu.querySelectorAll('li').forEach(x=>x.classList.remove('active'));
@@ -340,6 +276,19 @@ function atualizarLanes(tipo) {
   });
 }
 
+=======
+
+// exibe apenas as lanes compatíveis
+function atualizarLanes(tipo) {
+  const lanes = document.querySelectorAll(".lane");
+  lanes.forEach(lane => {
+    const laneTipo = lane.dataset.type;
+    lane.style.display = laneTipo === tipo ? "block" : "none";
+  });
+}
+
+// filtra cards por tipo (import/export)
+>>>>>>> parent of 115da1b (ajustando card)
 function atualizarCards(tipoAtual) {
   const cards = document.querySelectorAll(".card");
 
@@ -359,9 +308,13 @@ function atualizarCards(tipoAtual) {
   });
 }
 
+<<<<<<< HEAD
 // ---------------------------------------------------------------------
 // MENU DE ALTERNAÇÃO
 // ---------------------------------------------------------------------
+=======
+// click no item do menu
+>>>>>>> parent of 115da1b (ajustando card)
 typeMenu.querySelectorAll("li").forEach(item => {
   item.addEventListener("click", () => {
     const tipo = item.dataset.type;
@@ -369,6 +322,7 @@ typeMenu.querySelectorAll("li").forEach(item => {
     typeLabel.textContent = item.textContent;
     typeMenu.hidden = true;
 
+<<<<<<< HEAD
     if (tipo === "importacao") {
       lane1Title.textContent = "Importação Marítima";
       lane2Title.textContent = "Importação Aérea";
@@ -380,10 +334,12 @@ typeMenu.querySelectorAll("li").forEach(item => {
     atualizarLanes(tipo);
     atualizarCards(tipo);
 >>>>>>> parent of b1d53f0 (arrumando lanes)
+=======
+    atualizarLanes(tipo);
+    atualizarCards(tipo);
+>>>>>>> parent of 115da1b (ajustando card)
   });
 });
 
-// ======================================
-// INIT
-// ======================================
-render();
+// estado inicial
+atualizarLanes("importacao");
