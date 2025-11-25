@@ -151,6 +151,10 @@ function openPopover(proc) {
   popover.style.left = `${left}px`;
   popover.style.top = `${top}px`;
 }
+pClose.addEventListener("click", () => {
+  popover.hidden = true;
+  selectedCard = null;
+});
 
 
 // ======================================
