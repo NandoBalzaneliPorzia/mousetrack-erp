@@ -10,7 +10,7 @@
   --bar:#2E4E45;
 
   /* ➜ NOVO: cor dos cards */
-  --card-bg:#CBD9D4;
+  --card-bg:#A3B8B2;
 }
 
 /* ============================== */
@@ -179,7 +179,7 @@ body {
 }
 
 .card {
-  background: var(--card-bg);
+  background: #A3B8B2;
   border-radius: 6px;
   padding: 14px 12px;
   cursor: pointer;
@@ -223,19 +223,6 @@ body {
   display: none;
 }
 
-.popover {
-  position: fixed;
-  z-index: 50;
-}
-
-.pop-box {
-  width: 560px;
-  background: var(--pop-bg);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  box-shadow: 0 12px 26px rgba(0,0,0,.20);
-  overflow: hidden;
-}
 
 .pop-head {
   display: flex;
@@ -440,3 +427,54 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+/* ====== POPOVER FIXADO ========== */
+.popover {
+  position: absolute;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+  pointer-events: none; /* deixamos para evitar bloquear */
+}
+
+/* CAIXA VISUAL DO POPOVER */
+.pop-box {
+  pointer-events: auto;
+  width: 535px;                   /* largura */
+  background: #ffffff;            /* COR BRANCA (igual o modelo) */
+  border-radius: 12px;
+  border: 1px solid #dcdcdc;
+  box-shadow: 0 6px 28px rgba(0,0,0,0.18);  /* sombra igual ao exemplo */
+  position: relative;
+  overflow: visible;
+}
+
+/* INPUT DE E-MAIL NO POPOVER */
+.email-box {
+  padding: 10px 12px;
+  border-top: 1px solid var(--line);
+  background: #fff;
+}
+
+.email-wrap {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.email-box .input {
+  flex: 1;
+  height: 26px;
+}
+
+.email-btn {
+  padding: 0 14px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  background: var(--lane-bg);
+  color: #fff;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+

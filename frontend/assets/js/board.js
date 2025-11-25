@@ -1,161 +1,304 @@
+// assets/js/board.js
 // ======================================
-// CONFIGURAÇÃO BASE
+// CONFIG
 // ======================================
-const BASE_URL = 'https://mousetrack-erp.onrender.com';
+const lanes = {
+  // ids que existem no seu HTML
+  "importacao-maritimo": document.getElementById("imp-maritima"),
+  "importacao-aereo": document.getElementById("imp-aerea"),
+  "exportacao-maritimo": document.getElementById("exp-maritima"),
+  "exportacao-aereo": document.getElementById("exp-aerea")
+};
 
-// containers das lanes no DOM
-const importAereaContainer = document.getElementById('laneAerea');
-const importMaritimaContainer = document.getElementById('laneMaritima');
-const exportAereaContainer = document.getElementById('export-aerea');
-const exportMaritimaContainer = document.getElementById('export-maritima');
+const popover  = document.getElementById('cardPopover');
+const pTitle   = document.getElementById('popTitle');
+const pChecklist = document.getElementById('pChecklist');
+const pClose   = document.getElementById('pClose');
+
+let selectedCard = null;
+let currentType = "importacao"; // default
 
 // ======================================
-// FUNÇÃO PARA CRIAR CARDS
+// CHECKLISTS
+// (mantive as no seu código original)
 // ======================================
-function createCardElement(p) {
-  const card = document.createElement('div');
-  card.className = 'card';
+const checklists = {
+  importacao: {
+    aereo: [
+      "S.I Revisada/Recebida", "Reserva com Cia Aérea", "Carga Pronta",
+      "Carga Coletada", "Carga Entregue: Aero Origem", "Tracking Feito",
+      "LCL - Carga Solta Coletada", "Carga Entregue: Aero Destino"
+    ],
+    maritimo: [
+      "S.I Revisada/Recebida", "Reserva com Armador", "Carga Pronta",
+      "Carga Coletada", "Carga Entregue: Porto Origem", "Tracking Feito",
+      "FCL - Container Coletado", "LCL - Carga Solta Coletada",
+      "Carga Entregue: Porto Destino"
+    ]
+  },
+  exportacao: {
+    aereo: [
+      "Reserva com Cia Aérea", "Carga Pronta", "Carga Coletada",
+      "Carga Entregue: Aero Origem", "AWB Entregue Cia Aérea",
+      "DUE Liberada", "Tracking Feito", "Carga Entregue: Aero Destino",
+      "LCL - Carga Solta Coletada"
+    ],
+    maritimo: [
+      "Reserva com Armador", "Carga Pronta", "Carga Coletada",
+      "BL/Draft Entregue para Armador", "Carga Entregue: Porto Origem",
+      "DUE Liberada", "Tracking Feito", "Carga Entregue: Porto Destino",
+      "FCL - Container Coletado", "LCL - Carga Solta Coletada"
+    ]
+  }
+};
 
-  card.dataset.codigo = p.codigo;
-  card.dataset.tipo = (p.tipo && p.tipo.toLowerCase().includes('export'))
-    ? 'exportacao'
-    : 'importacao';
+// ======================================
+// HELPERS: normalização de tipo/modal
+// ======================================
+function normalizeTipo(raw) {
+  if (!raw) return 'importacao';
+  const s = String(raw).toLowerCase();
+  if (s.includes('export')) return 'exportacao';
+  if (s.includes('exp')) return 'exportacao';
+  return 'importacao';
+}
 
-  card.innerHTML = `
-    <strong>${p.titulo}</strong>
-    <div>${p.codigo}</div>
+function normalizeModal(raw) {
+  if (!raw) return 'maritimo';
+  const s = String(raw).toLowerCase();
+  if (s.includes('aer') || s.includes('aéreo') || s.includes('aereo')) return 'aereo';
+  return 'maritimo';
+}
+
+function laneKeyFor(proc) {
+  const tipo = normalizeTipo(proc.tipo);
+  const modal = normalizeModal(proc.modal);
+  return `${tipo}-${modal}`;
+}
+
+// ======================================
+// CARD
+// ======================================
+function createCard(proc) {
+  const el = document.createElement('article');
+  el.className = 'card';
+  el.dataset.id = proc.id || proc.codigo || Math.random().toString(36).slice(2,9);
+
+  // exibição segura: usa código e título se existirem
+  const codigo = proc.codigo || el.dataset.id;
+  const titulo = proc.titulo || '(Sem título)';
+
+  el.innerHTML = `
+    <div class="card-head">
+      <span class="code">${codigo}</span>
+      <span class="icons"></span>
+    </div>
+    <div class="desc">${titulo}</div>
   `;
 
-  card.addEventListener('click', () => {
-    alert(`Abrir processo ${p.codigo}\nTítulo: ${p.titulo}`);
-  });
-
-  return card;
+  el.addEventListener("click", () => openPopover(proc));
+  return el;
 }
 
 // ======================================
-// CARREGAR PROCESSOS REMOTOS + LOCAIS
+// POPOVER
 // ======================================
-async function carregarProcessosRemotos() {
+function renderChecklist(tipo, modal) {
+  pChecklist.innerHTML = "";
+  const t = normalizeTipo(tipo);
+  const m = normalizeModal(modal);
+  const list = (checklists[t] && checklists[t][m]) || [];
+  list.forEach(txt => {
+    const lab = document.createElement("label");
+    lab.className = "check";
+    lab.innerHTML = `
+      <input type="checkbox">
+      <span>${txt}</span>
+    `;
+    pChecklist.appendChild(lab);
+  });
+}
+
+function openPopover(proc) {
+  selectedCard = proc;
+
+  const codigo = proc.codigo || proc.id || '(sem código)';
+  pTitle.textContent = `${codigo} - ${proc.titulo || '(Sem título)'}`;
+  renderChecklist(proc.tipo, proc.modal);
+
+  const cardEl = document.querySelector(`[data-id="${proc.id}"]`);
+  if (!cardEl) return;
+
+  popover.hidden = false;
+
+  // FORÇA A RENDERIZAÇÃO DO TAMANHO
+  const box = document.querySelector(".pop-box");
+  const boxWidth = box.offsetWidth;
+  const boxHeight = box.offsetHeight;
+
+  const rect = cardEl.getBoundingClientRect();
+
+  // Centralizado acima
+  let left = rect.left + rect.width / 2 - boxWidth / 2;
+  let top = rect.top - boxHeight - 14;
+
+  if (left < 10) left = 10;
+  if (left + boxWidth > window.innerWidth - 10)
+    left = window.innerWidth - boxWidth - 10;
+
+  if (top < 10) top = rect.bottom + 14;
+
+  popover.style.left = `${left}px`;
+  popover.style.top = `${top}px`;
+}
+pClose.addEventListener("click", () => {
+  popover.hidden = true;
+  selectedCard = null;
+});
+// BOTÃO "+" DO POPOVER ABRE INPUT DE E-MAIL
+const pAdd = document.getElementById("pAdd");
+const emailBox = document.getElementById("emailBox");
+const emailInput = document.getElementById("emailInput");
+const emailSendBtn = document.getElementById("emailSendBtn");
+
+pAdd.addEventListener("click", () => {
+  // alternar visibilidade do box
+  emailBox.hidden = !emailBox.hidden;
+
+  if (!emailBox.hidden) {
+    emailInput.focus();
+  }
+});
+// BOTÃO DE ENVIO DO E-MAIL (AGORA REAL!)
+emailSendBtn.addEventListener("click", async () => {
+  const email = emailInput.value.trim();
+  if (!email) {
+    alert("Digite um e-mail válido.");
+    return;
+  }
+
+  // link único do processo
+  const link = `${location.origin}/processo?id=${selectedCard.id}`;
+
   try {
-    const res = await fetch(`${BASE_URL}/api/processos`);
-    if (!res.ok) throw new Error('Falha ao buscar processos remotos');
-
-    const processos = await res.json();
-
-    [
-      importAereaContainer,
-      importMaritimaContainer,
-      exportAereaContainer,
-      exportMaritimaContainer
-    ].forEach(c => c.innerHTML = '');
-
-    processos.forEach(p => renderProcesso(p));
-
-    const processosLocais = JSON.parse(localStorage.getItem('processos') || '[]');
-
-    processosLocais.forEach(p => {
-      if (!document.querySelector(`[data-codigo="${p.codigo}"]`)) {
-        renderProcesso(p);
-      }
+    const resp = await fetch("https://mousetrack-erp.onrender.com/email/enviar", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+        para: email,
+        assunto: "Teste",
+        mensagem: "Olá ! Segue o link do processo: " + link
+      })
     });
 
+    if (!resp.ok) {
+      throw new Error("Erro ao enviar e-mail");
+    }
+
+    alert(`Link enviado para ${email}!`);
+    emailInput.value = "";
+    emailBox.hidden = true;
+
   } catch (err) {
-    console.error("Erro ao carregar processos:", err);
-    renderLocalOnly();
+    console.error("Erro ao enviar e-mail:", err);
+    alert("Falha ao enviar o e-mail. Tente novamente.");
   }
-}
-
-function renderLocalOnly() {
-  const processos = JSON.parse(localStorage.getItem('processos') || '[]');
-  processos.forEach(p => renderProcesso(p));
-}
-
-// ======================================
-// RENDERIZA UM PROCESSO NA LANE CORRETA
-// ======================================
-function renderProcesso(p) {
-  const tipo = (p.tipo && p.tipo.toLowerCase().includes('export'))
-    ? 'exportacao'
-    : 'importacao';
-
-  const lane = (p.modal && p.modal.toLowerCase().includes('marit'))
-    ? 'maritima'
-    : 'aerea';
-
-  const card = createCardElement(p);
-
-  if (tipo === 'importacao') {
-    if (lane === 'aerea') return importAereaContainer.appendChild(card);
-    if (lane === 'maritima') return importMaritimaContainer.appendChild(card);
-  } else {
-    if (lane === 'aerea') return exportAereaContainer.appendChild(card);
-    if (lane === 'maritima') return exportMaritimaContainer.appendChild(card);
-  }
-}
-
-carregarProcessosRemotos();
-
-// ========================================================================
-// NOVO SISTEMA DE ALTERNAÇÃO IMPORTAÇÃO / EXPORTAÇÃO
-// ========================================================================
-const typeBtn = document.getElementById("typeBtn");
-const typeLabel = document.getElementById("typeLabel");
-const typeMenu = document.getElementById("typeMenu");
-
-// abre/fecha menu
-typeBtn.addEventListener("click", () => {
-  typeMenu.hidden = !typeMenu.hidden;
 });
 
-// ---------------------------------------------------------------------
-// ALTERAÇÃO REAL — VISIBILIDADE POR DATASET
-// ---------------------------------------------------------------------
-function atualizarLanes(tipo) {
-  const lanes = document.querySelectorAll(".lane");
-
-  lanes.forEach(lane => {
-    const laneTipo = lane.dataset.type; // importacao | exportacao
-    lane.style.display = laneTipo === tipo ? "block" : "none";
+// ======================================
+// RENDER
+// ======================================
+function clearAllLanes() {
+  Object.values(lanes).forEach(l => {
+    if (l) l.innerHTML = "";
   });
 }
 
-// ---------------------------------------------------------------------
-// FILTRAGEM DE CARDS (opcional - mantém seu original)
-// ---------------------------------------------------------------------
-function atualizarCards(tipoAtual) {
-  const cards = document.querySelectorAll(".card");
+function renderBoard() {
+  clearAllLanes();
 
-  cards.forEach(card => {
-    const codigo = card.dataset.codigo?.toUpperCase() || "";
+  const processosRaw = localStorage.getItem("processos") || "[]";
+  let processos = [];
+  try {
+    processos = JSON.parse(processosRaw);
+  } catch (e) {
+    console.error("processos inválido no localStorage:", e);
+    processos = [];
+  }
 
-    const ehExport = codigo.startsWith("EX");
-    const ehImport = codigo.startsWith("IN");
+  processos.forEach(proc => {
+    // assegura campos mínimos
+    if (!proc.id) proc.id = (proc.codigo || Math.random().toString(36).slice(2,9));
+    if (!proc.codigo) proc.codigo = proc.id;
 
-    if (tipoAtual === "exportacao" && ehExport) {
-      card.style.display = "block";
-    } else if (tipoAtual === "importacao" && ehImport) {
-      card.style.display = "block";
+    const key = laneKeyFor(proc);
+    // se a lane existir e for do tipo atualmente visível -> anexa
+    if (lanes[key]) {
+      lanes[key].appendChild(createCard(proc));
     } else {
-      card.style.display = "none";
+      // se não existirem, opcionalmente logamos pra debug
+      // console.info("Lane não encontrada para", key, proc);
     }
   });
+
+  // atualiza visibilidade das lanes conforme currentType
+  updateLaneVisibility();
 }
 
-// ---------------------------------------------------------------------
-// MENU DE ALTERNAÇÃO (mantido)
-// ---------------------------------------------------------------------
-typeMenu.querySelectorAll("li").forEach(item => {
-  item.addEventListener("click", () => {
-    const tipo = item.dataset.type;
+// ======================================
+// TIPO SWITCH (mostrar só importacao OU exportacao)
+// ======================================
+const typeBtn = document.getElementById('typeBtn');
+const typeLabel = document.getElementById('typeLabel');
+const typeMenu = document.getElementById('typeMenu');
 
-    typeLabel.textContent = item.textContent;
-    typeMenu.hidden = true;
-
-    atualizarLanes(tipo);
-    atualizarCards(tipo);
+function updateLaneVisibility() {
+  // mostra apenas as lanes do currentType
+  Object.keys(lanes).forEach(k => {
+    const element = lanes[k].closest('.lane') || lanes[k]; // pega container da lane
+    const isMatch = k.startsWith(currentType);
+    if (element) element.style.display = isMatch ? '' : 'none';
   });
+
+  // atualiza label do botão
+  if (typeLabel) {
+    typeLabel.textContent = currentType === 'importacao' ? 'Importação' : 'Exportação';
+  }
+}
+
+// abertura do menu e escolha
+if (typeBtn && typeMenu) {
+  typeBtn.addEventListener('click', () => {
+    typeMenu.hidden = !typeMenu.hidden;
+  });
+
+  typeMenu.addEventListener('click', (ev) => {
+    const li = ev.target.closest('li[data-type]');
+    if (!li) return;
+    currentType = li.dataset.type === 'exportacao' ? 'exportacao' : 'importacao';
+    // fecha menu
+    typeMenu.hidden = true;
+    // re-render
+    renderBoard();
+  });
+}
+
+// esconde menu ao clicar fora
+document.addEventListener('click', (e) => {
+  if (!typeBtn) return;
+  if (!typeBtn.contains(e.target) && !typeMenu.contains(e.target)) {
+    if (typeMenu) typeMenu.hidden = true;
+  }
 });
 
-// estado inicial
-atualizarLanes("importacao");
+// -------------------------------------------------
+// Ouvir storage para atualizações vindas de outras abas/scripts
+// -------------------------------------------------
+window.addEventListener('storage', (ev) => {
+  if (ev.key === 'processos' || ev.key === null) {
+    renderBoard();
+  }
+});
+
+// inicializa
+renderBoard();
