@@ -12,18 +12,17 @@
 
 <body>
 
-  <!-- ✅ SIDEBAR PADRÃO -->
+  <!-- SIDEBAR -->
   <div id="sidebarMount"></div>
 
-  <!-- ✅ MAIN -->
   <main class="content page-with-sidebar">
 
-    <!-- ========== HEADER ========== -->
+    <!-- HEADER -->
     <header class="board-header">
       <h1>QUADRO PROCESSOS</h1>
 
       <div class="search-wrap">
-        <span class="loupe" aria-hidden="true">🔍</span>
+        <span class="loupe">🔍</span>
         <input id="search" class="search-input" type="search" placeholder="Pesquisar">
       </div>
 
@@ -40,76 +39,71 @@
       </div>
     </header>
 
-    <!-- ========== LANES ========== -->
+    <!-- LANES -->
     <section class="board-area">
 
-  <!-- Marítima -->
-  <div class="lane">
-    <div class="lane-head">
-      <h2 id="lane1Title">Importação Marítima</h2>
-    </div>
-    <div class="lane-cards" id="laneMaritima"></div>
-  </div>
-
-  <!-- Aérea -->
-  <div class="lane">
-    <div class="lane-head">
-      <h2 id="lane2Title">Importação Aérea</h2>
-    </div>
-    <div class="lane-cards" id="laneAerea"></div>
-  </div>
-
-</section>
-
-
-      <!-- ================================ -->
-      <!-- EXPORTAÇÃO MARÍTIMA -->
-      <!-- ================================ -->
-      <div class="lane" data-lane="maritima">
+      <!-- IMPORTAÇÃO MARÍTIMA -->
+      <div class="lane" data-lane="imp-maritima">
         <div class="lane-head">
-          <h2>Exportação Marítima</h2>
-          <button class="lane-add" data-add="exp-maritima" title="Adicionar card">＋</button>
+          <h2>Importação Marítima</h2>
+          <button class="lane-add" data-add="imp-maritima">＋</button>
         </div>
-        <div class="lane-cards" id="export-maritima"></div>
+        <div class="lane-cards" id="imp-maritima"></div>
       </div>
 
-      <!-- ================================ -->
+      <!-- IMPORTAÇÃO AÉREA -->
+      <div class="lane" data-lane="imp-aerea">
+        <div class="lane-head">
+          <h2>Importação Aérea</h2>
+          <button class="lane-add" data-add="imp-aerea">＋</button>
+        </div>
+        <div class="lane-cards" id="imp-aerea"></div>
+      </div>
+
+      <!-- EXPORTAÇÃO MARÍTIMA -->
+      <div class="lane" data-lane="exp-maritima">
+        <div class="lane-head">
+          <h2>Exportação Marítima</h2>
+          <button class="lane-add" data-add="exp-maritima">＋</button>
+        </div>
+        <div class="lane-cards" id="exp-maritima"></div>
+      </div>
+
       <!-- EXPORTAÇÃO AÉREA -->
-      <!-- ================================ -->
-      <div class="lane" data-lane="aerea">
+      <div class="lane" data-lane="exp-aerea">
         <div class="lane-head">
           <h2>Exportação Aérea</h2>
-          <button class="lane-add" data-add="exp-aerea" title="Adicionar card">＋</button>
+          <button class="lane-add" data-add="exp-aerea">＋</button>
         </div>
-        <div class="lane-cards" id="export-aerea"></div>
+        <div class="lane-cards" id="exp-aerea"></div>
       </div>
 
     </section>
   </main>
 
-  <!-- ========== POPOVER ========== -->
+  <!-- POPOVER -->
   <div id="cardPopover" class="popover" hidden>
-    <div class="pop-box" role="dialog" aria-modal="false" aria-labelledby="popTitle">
+    <div class="pop-box" role="dialog" aria-modal="true" aria-labelledby="popTitle">
 
       <div class="pop-head">
-        <strong id="popTitle">INA_01 - Importação Geladeira</strong>
+        <strong id="popTitle">Título do Processo</strong>
 
         <div class="pop-actions">
-          <button type="button" class="icon-btn" id="pInspect" title="Inspecionar">
+          <button type="button" class="icon-btn" id="pInspect">
             <svg width="16" height="16" viewBox="0 0 24 24">
               <path d="M10 17a7 7 0 100-14 7 7 0 000 14zm11 4l-6-6"
                 fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
             </svg>
           </button>
 
-          <button type="button" class="icon-btn" id="pAdd" title="Adicionar">
+          <button type="button" class="icon-btn" id="pAdd">
             <svg width="16" height="16" viewBox="0 0 24 24">
               <path d="M12 5v14M5 12h14"
                 fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
             </svg>
           </button>
 
-          <button type="button" class="icon-btn" id="pClose" title="Fechar">
+          <button type="button" class="icon-btn" id="pClose">
             <svg width="16" height="16" viewBox="0 0 24 24">
               <path d="M6 6l12 12M18 6L6 18"
                 fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
@@ -185,7 +179,6 @@
     </div>
   </div>
 
-  <!-- scripts -->
   <script src="assets/js/api.js"></script>
   <script src="assets/js/nav.js"></script>
   <script src="assets/js/board.js"></script>
