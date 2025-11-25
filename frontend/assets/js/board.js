@@ -1,23 +1,26 @@
+// assets/js/board.js
 // ======================================
 // CONFIG
 // ======================================
-const BASE_URL = 'https://mousetrack-erp.onrender.com';
-
-// lanes no DOM
 const lanes = {
-  "importacao-maritimo": document.getElementById("laneMaritima"),
-  "importacao-aereo": document.getElementById("laneAerea"),
-  "exportacao-maritimo": document.getElementById("export-maritima"),
-  "exportacao-aereo": document.getElementById("export-aerea")
+  // ids que existem no seu HTML
+  "importacao-maritimo": document.getElementById("imp-maritima"),
+  "importacao-aereo": document.getElementById("imp-aerea"),
+  "exportacao-maritimo": document.getElementById("exp-maritima"),
+  "exportacao-aereo": document.getElementById("exp-aerea")
 };
 
-const laneTitles = {
-  "importacao-maritimo": document.getElementById("lane1Title"),
-  "importacao-aereo": document.getElementById("lane2Title")
-};
+const popover  = document.getElementById('cardPopover');
+const pTitle   = document.getElementById('popTitle');
+const pChecklist = document.getElementById('pChecklist');
+const pClose   = document.getElementById('pClose');
+
+let selectedCard = null;
+let currentType = "importacao"; // default
 
 // ======================================
 // CHECKLISTS
+// (mantive as no seu código original)
 // ======================================
 const checklists = {
   importacao: {
@@ -49,17 +52,29 @@ const checklists = {
   }
 };
 
-let currentType = "importacao";
-
 // ======================================
-// POPUP ELEMENTOS
+// HELPERS: normalização de tipo/modal
 // ======================================
-const popover  = document.getElementById('cardPopover');
-const pTitle   = document.getElementById('popTitle');
-const pChecklist = document.getElementById('pChecklist');
-const pClose   = document.getElementById('pClose');
+function normalizeTipo(raw) {
+  if (!raw) return 'importacao';
+  const s = String(raw).toLowerCase();
+  if (s.includes('export')) return 'exportacao';
+  if (s.includes('exp')) return 'exportacao';
+  return 'importacao';
+}
 
-let selectedCard = null;
+function normalizeModal(raw) {
+  if (!raw) return 'maritimo';
+  const s = String(raw).toLowerCase();
+  if (s.includes('aer') || s.includes('aéreo') || s.includes('aereo')) return 'aereo';
+  return 'maritimo';
+}
+
+function laneKeyFor(proc) {
+  const tipo = normalizeTipo(proc.tipo);
+  const modal = normalizeModal(proc.modal);
+  return `${tipo}-${modal}`;
+}
 
 // ======================================
 // CARD
@@ -67,18 +82,21 @@ let selectedCard = null;
 function createCard(proc) {
   const el = document.createElement('article');
   el.className = 'card';
-  el.dataset.id = proc.id;
+  el.dataset.id = proc.id || proc.codigo || Math.random().toString(36).slice(2,9);
+
+  // exibição segura: usa código e título se existirem
+  const codigo = proc.codigo || el.dataset.id;
+  const titulo = proc.titulo || '(Sem título)';
 
   el.innerHTML = `
     <div class="card-head">
-      <span class="code">${proc.codigo}</span>
+      <span class="code">${codigo}</span>
       <span class="icons">⚙︎ ＋</span>
     </div>
-    <div class="desc">${proc.titulo}</div>
+    <div class="desc">${titulo}</div>
   `;
 
   el.addEventListener("click", () => openPopover(proc));
-
   return el;
 }
 
@@ -87,7 +105,10 @@ function createCard(proc) {
 // ======================================
 function renderChecklist(tipo, modal) {
   pChecklist.innerHTML = "";
-  checklists[tipo][modal].forEach(txt => {
+  const t = normalizeTipo(tipo);
+  const m = normalizeModal(modal);
+  const list = (checklists[t] && checklists[t][m]) || [];
+  list.forEach(txt => {
     const lab = document.createElement("label");
     lab.className = "check";
     lab.innerHTML = `
@@ -100,33 +121,110 @@ function renderChecklist(tipo, modal) {
 
 function openPopover(proc) {
   selectedCard = proc;
-
-  pTitle.textContent = `${proc.codigo} - ${proc.titulo}`;
-
+  const codigo = proc.codigo || proc.id || '(sem código)';
+  pTitle.textContent = `${codigo} - ${proc.titulo || '(Sem título)'}`;
   renderChecklist(proc.tipo, proc.modal);
-
   popover.hidden = false;
 }
 
-pClose.addEventListener("click", () => popover.hidden = true);
+if (pClose) {
+  pClose.addEventListener("click", () => popover.hidden = true);
+}
 
 // ======================================
 // RENDER
 // ======================================
-function renderBoard() {
-  Object.values(lanes).forEach(l => l.innerHTML = "");
-
-  const processos = JSON.parse(localStorage.getItem("processos") || "[]");
-
-  processos.forEach(proc => {
-    const key = `${proc.tipo}-${proc.modal}`;
-    if (lanes[key]) {
-      lanes[key].appendChild(createCard(proc));
-    }
+function clearAllLanes() {
+  Object.values(lanes).forEach(l => {
+    if (l) l.innerHTML = "";
   });
 }
 
+function renderBoard() {
+  clearAllLanes();
+
+  const processosRaw = localStorage.getItem("processos") || "[]";
+  let processos = [];
+  try {
+    processos = JSON.parse(processosRaw);
+  } catch (e) {
+    console.error("processos inválido no localStorage:", e);
+    processos = [];
+  }
+
+  processos.forEach(proc => {
+    // assegura campos mínimos
+    if (!proc.id) proc.id = (proc.codigo || Math.random().toString(36).slice(2,9));
+    if (!proc.codigo) proc.codigo = proc.id;
+
+    const key = laneKeyFor(proc);
+    // se a lane existir e for do tipo atualmente visível -> anexa
+    if (lanes[key]) {
+      lanes[key].appendChild(createCard(proc));
+    } else {
+      // se não existirem, opcionalmente logamos pra debug
+      // console.info("Lane não encontrada para", key, proc);
+    }
+  });
+
+  // atualiza visibilidade das lanes conforme currentType
+  updateLaneVisibility();
+}
+
 // ======================================
-// INIT
+// TIPO SWITCH (mostrar só importacao OU exportacao)
 // ======================================
+const typeBtn = document.getElementById('typeBtn');
+const typeLabel = document.getElementById('typeLabel');
+const typeMenu = document.getElementById('typeMenu');
+
+function updateLaneVisibility() {
+  // mostra apenas as lanes do currentType
+  Object.keys(lanes).forEach(k => {
+    const element = lanes[k].closest('.lane') || lanes[k]; // pega container da lane
+    const isMatch = k.startsWith(currentType);
+    if (element) element.style.display = isMatch ? '' : 'none';
+  });
+
+  // atualiza label do botão
+  if (typeLabel) {
+    typeLabel.textContent = currentType === 'importacao' ? 'Importação' : 'Exportação';
+  }
+}
+
+// abertura do menu e escolha
+if (typeBtn && typeMenu) {
+  typeBtn.addEventListener('click', () => {
+    typeMenu.hidden = !typeMenu.hidden;
+  });
+
+  typeMenu.addEventListener('click', (ev) => {
+    const li = ev.target.closest('li[data-type]');
+    if (!li) return;
+    currentType = li.dataset.type === 'exportacao' ? 'exportacao' : 'importacao';
+    // fecha menu
+    typeMenu.hidden = true;
+    // re-render
+    renderBoard();
+  });
+}
+
+// esconde menu ao clicar fora
+document.addEventListener('click', (e) => {
+  if (!typeBtn) return;
+  if (!typeBtn.contains(e.target) && !typeMenu.contains(e.target)) {
+    if (typeMenu) typeMenu.hidden = true;
+  }
+});
+
+// -------------------------------------------------
+// Ouvir storage para atualizações vindas de outras abas/scripts
+// -------------------------------------------------
+window.addEventListener('storage', (ev) => {
+  if (ev.key === 'processos' || ev.key === null) {
+    renderBoard();
+  }
+});
+
+// inicializa
 renderBoard();
