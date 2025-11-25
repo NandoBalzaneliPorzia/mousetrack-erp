@@ -4,6 +4,7 @@ import com.comexapp.DTO.ProcessoRequestDTO;
 import com.comexapp.model.Processo;
 import com.comexapp.model.ProcessoArquivo;
 import com.comexapp.repository.ProcessoRepository;
+import com.comexapp.repository.ProcessoArquivoRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -13,27 +14,26 @@ import java.util.UUID;
 public class ProcessoService {
 
     private final ProcessoRepository repo;
+    private final ProcessoArquivoRepository arquivoRepo;
 
-    public ProcessoService(ProcessoRepository repo) {
+    public ProcessoService(ProcessoRepository repo, ProcessoArquivoRepository arquivoRepo) {
         this.repo = repo;
+        this.arquivoRepo = arquivoRepo;
     }
 
     public Processo criarProcesso(ProcessoRequestDTO dto) throws Exception {
 
-        // Criar processo básico
         Processo processo = new Processo();
         processo.setTitulo(dto.getTitulo());
         processo.setTipo(dto.getTipo());
         processo.setModal(dto.getModal());
         processo.setObservacao(dto.getObservacao());
 
-        // Código único
         processo.setCodigo(UUID.randomUUID().toString().substring(0, 8));
 
-        // Salva processo primeiro para gerar ID
+        // salva o processo primeiro para gerar o ID
         processo = repo.save(processo);
 
-        // Salvar arquivos
         if (dto.getArquivos() != null) {
             for (MultipartFile file : dto.getArquivos()) {
 
@@ -44,12 +44,15 @@ public class ProcessoService {
                     pa.setDadosArquivo(file.getBytes());
                     pa.setProcesso(processo);
 
+                    // salva o arquivo no banco
+                    pa = arquivoRepo.save(pa);
+
+                    // associa com o processo
                     processo.getArquivos().add(pa);
                 }
             }
         }
 
-        // Persistir arquivos e processo
         return repo.save(processo);
     }
 }
