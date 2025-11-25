@@ -1,6 +1,4 @@
 
-package com.comexapp.model;
-
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +39,10 @@ public class Processo {
     public String getCodigo() { return codigo; }
     public void setCodigo(String codigo) { this.codigo = codigo; }
 
-   ivos() { return arquivos; }
-    public void setArquivos(List<ProcessoArquivo> arquivos) { this.arquivos = arquivos; }
+    public List<ProcessoArquivo> getArquivos() {
+        return arquivos;
+    }
+    public void setArquivos(List<ProcessoArquivo> arquivos) {
+        this.arquivos = arquivos;
+    }
 }
