@@ -440,7 +440,7 @@ body {
 /* CAIXA VISUAL DO POPOVER */
 .pop-box {
   pointer-events: auto;
-  width: 500px;                   /* largura semelhante ao exemplo */
+  width: 535px;                   /* largura semelhante ao exemplo */
   background: #ffffff;            /* COR BRANCA (igual o modelo) */
   border-radius: 12px;
   border: 1px solid #dcdcdc;
