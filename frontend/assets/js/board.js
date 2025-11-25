@@ -129,38 +129,28 @@ function openPopover(proc) {
   const cardEl = document.querySelector(`[data-id="${proc.id}"]`);
   if (!cardEl) return;
 
-  // MOSTRAR TEMPORARIAMENTE FORA DA TELA PARA MEDIR
   popover.hidden = false;
-  popover.style.left = "-9999px";
-  popover.style.top = "-9999px";
 
-  const rect = cardEl.getBoundingClientRect();
+  // FORÇA A RENDERIZAÇÃO DO TAMANHO
   const box = document.querySelector(".pop-box");
-
   const boxWidth = box.offsetWidth;
   const boxHeight = box.offsetHeight;
 
-  // posição inicial (em cima)
-  let left = rect.left + rect.width/2 - boxWidth/2;
-  let top = rect.top - boxHeight - 10;
+  const rect = cardEl.getBoundingClientRect();
 
-  // garantir que não saia pela esquerda
+  // Centralizado acima
+  let left = rect.left + rect.width / 2 - boxWidth / 2;
+  let top = rect.top - boxHeight - 14;
+
   if (left < 10) left = 10;
-
-  // garantir que não saia pela direita
   if (left + boxWidth > window.innerWidth - 10)
     left = window.innerWidth - boxWidth - 10;
 
-  // se não couber em cima → descer
-  if (top < 10) top = rect.bottom + 10;
+  if (top < 10) top = rect.bottom + 14;
 
-  // aplicar posição final
   popover.style.left = `${left}px`;
   popover.style.top = `${top}px`;
 }
-pClose.addEventListener("click", () => {
-  popover.hidden = true;
-});
 
 
 // ======================================
