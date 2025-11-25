@@ -121,14 +121,42 @@ function renderChecklist(tipo, modal) {
 
 function openPopover(proc) {
   selectedCard = proc;
+
   const codigo = proc.codigo || proc.id || '(sem código)';
   pTitle.textContent = `${codigo} - ${proc.titulo || '(Sem título)'}`;
   renderChecklist(proc.tipo, proc.modal);
-  popover.hidden = false;
-}
 
-if (pClose) {
-  pClose.addEventListener("click", () => popover.hidden = true);
+  // --- POSICIONAMENTO ---
+  const cardEl = document.querySelector(`[data-id="${proc.id}"]`);
+  if (!cardEl) return;
+
+  const rect = cardEl.getBoundingClientRect();
+
+  // largura e altura da pop-box
+  const box = document.querySelector(".pop-box");
+  const boxWidth = box.offsetWidth;
+  const boxHeight = box.offsetHeight;
+
+  // calcula posição centralizada em cima do card
+  let left = rect.left + (rect.width / 2) - (boxWidth / 2);
+  let top = rect.top - boxHeight - 10; // sobe 10px acima do card
+
+  // ▶ Correções: não deixar cortar para os lados
+  if (left < 10) left = 10;
+  if (left + boxWidth > window.innerWidth - 10) {
+    left = window.innerWidth - boxWidth - 10;
+  }
+
+  // ▶ Correção: se não couber acima, abrir abaixo
+  if (top < 10) {
+    top = rect.bottom + 10;
+  }
+
+  // aplica a posição
+  popover.style.left = `${left}px`;
+  popover.style.top = `${top}px`;
+
+  popover.hidden = false;
 }
 
 // ======================================

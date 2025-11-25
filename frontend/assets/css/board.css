@@ -226,16 +226,14 @@ body {
 .popover {
   position: fixed;
   z-index: 50;
+  left: 0;
+  top: 0;
+  pointer-events: none; /* importante para não bloquear o click no fundo */
+}
+.pop-box {
+  pointer-events: auto; /* a caixa pode receber clique normalmente */
 }
 
-.pop-box {
-  width: 560px;
-  background: var(--pop-bg);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  box-shadow: 0 12px 26px rgba(0,0,0,.20);
-  overflow: hidden;
-}
 
 .pop-head {
   display: flex;
