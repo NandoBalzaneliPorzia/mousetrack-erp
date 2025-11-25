@@ -169,23 +169,41 @@ pAdd.addEventListener("click", () => {
     emailInput.focus();
   }
 });
-// BOTÃO DE ENVIO DO E-MAIL
-emailSendBtn.addEventListener("click", () => {
+// BOTÃO DE ENVIO DO E-MAIL (AGORA REAL!)
+emailSendBtn.addEventListener("click", async () => {
   const email = emailInput.value.trim();
-  // gera link único
+  if (!email) {
+    alert("Digite um e-mail válido.");
+    return;
+  }
+
+  // link único do processo
   const link = `${location.origin}/processo?id=${selectedCard.id}`;
 
-  // simulação (trocar por API real)
-  console.log("Enviar para:", email);
-  console.log("Processo:", selectedCard.id);
-  console.log("Link:", link);
+  try {
+    const resp = await fetch("https://mousetrack-erp.onrender.com/email/enviar", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: email,
+        processoId: selectedCard.id,
+        link: link
+      })
+    });
 
-  alert(`Link enviado para ${email}!`);
+    if (!resp.ok) {
+      throw new Error("Erro ao enviar e-mail");
+    }
 
-  emailInput.value = "";
-  emailBox.hidden = true;
+    alert(`Link enviado para ${email}!`);
+    emailInput.value = "";
+    emailBox.hidden = true;
+
+  } catch (err) {
+    console.error("Erro ao enviar e-mail:", err);
+    alert("Falha ao enviar o e-mail. Tente novamente.");
+  }
 });
-
 
 // ======================================
 // RENDER
