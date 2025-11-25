@@ -1,345 +1,216 @@
 // ======================================
-// CONFIGURAÇÃO BASE
+// CARREGA PROCESSOS DO LOCALSTORAGE
 // ======================================
-const BASE_URL = 'https://mousetrack-erp.onrender.com';
-
-// containers das lanes no DOM
-const importAereaContainer = document.getElementById('laneAerea');
-const importMaritimaContainer = document.getElementById('laneMaritima');
-const exportAereaContainer = document.getElementById('export-aerea');
-const exportMaritimaContainer = document.getElementById('export-maritima');
-
-// ======================================
-// FUNÇÃO PARA CRIAR CARDS (ATUALIZADA)
-// ======================================
-function createCardElement(p) {
-  const card = document.createElement('div');
-  card.className = 'card';
-
-  card.dataset.codigo = p.codigo;
-  card.dataset.titulo = p.titulo;
-
-  card.innerHTML = `
-    <div class="card-head">
-      <span class="code">${p.codigo}</span>
-    </div>
-    <div class="desc">${p.titulo}</div>
-  `;
-
-  // ➜ Ao clicar → abrir popover
-  card.addEventListener('click', () => abrirPopover(p));
-
-  return card;
+function loadProcessos() {
+  return JSON.parse(localStorage.getItem("processos") || "[]");
 }
 
 // ======================================
-// FUNÇÃO PARA ABRIR O POPOVER (NOVA)
+// AGRUPA PROCESSOS POR TIPO E MODAL
 // ======================================
-function abrirPopover(p) {
-  const pop = document.getElementById("cardPopover");
+function buildSeed() {
+  const processos = loadProcessos();
 
-  // preencher campos
-  document.getElementById("popTitle").textContent = `${p.codigo} - ${p.titulo}`;
-  document.getElementById("pStart").value = p.inicio || "";
-  document.getElementById("pEnd").value = p.fim || "";
-  document.getElementById("pStatus").value = p.status || "Em andamento";
-  document.getElementById("pObs").value = p.observacao || "";
+  const seed = {
+    importacao: { maritima: [], aerea: [] },
+    exportacao: { maritima: [], aerea: [] },
+  };
 
-  // checklist dinâmico
-  const checklist = document.getElementById("pChecklist");
-  checklist.innerHTML = "";
+  processos.forEach((p) => {
+    const tipo = p.tipo;       // importacao | exportacao
+    const modal = p.modal;     // maritima | aerea
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-  const lane = cardEl.closest('.lane');
-  const laneRect = lane.getBoundingClientRect();
-  const boxWidth = 560;
-  const left = Math.round(laneRect.left + (laneRect.width - boxWidth)/2);
-  const top  = Math.round(laneRect.top + 8);
+    seed[tipo][modal].push({
+      id: p.codigo,
+      desc: p.titulo,
+      obs: p.observacao || "",
+      anexos: p.arquivos || []
+    });
+  });
 
-  popover.style.left = `${left}px`;
-  popover.style.top  = `${top}px`;
-  popover.hidden = false;
+  return seed;
+}
 
-  docsMenu.setAttribute('hidden','');
-=======
-    // limpar lanes
-    [
-      importAereaContainer,
-      importMaritimaContainer,
-      exportAereaContainer,
-      exportMaritimaContainer
-    ].forEach(c => c.innerHTML = '');
+let seed = buildSeed();
+let currentType = "importacao";
 
-    // render remotos
-    processos.forEach(p => renderProcesso(p));
+// ======================================
+// ELEMENTOS DO DOM
+// ======================================
+const laneEls = {
+  aerea: document.getElementById("laneAerea"),
+  maritima: document.getElementById("laneMaritima")
+};
 
-    // render locais
-    const processosLocais = JSON.parse(localStorage.getItem('processos') || '[]');
->>>>>>> parent of b1d53f0 (arrumando lanes)
+const laneTitles = {
+  aerea: document.getElementById("lane2Title"),
+  maritima: document.getElementById("lane1Title")
+};
 
+// ======================================
+// CHECKLISTS
+// ======================================
+const checklists = {
+  importacao: {
+    aerea: [
+      "S.I Revisada/Recebida",
+      "Reserva com Cia Aérea",
+      "Carga Pronta",
+      "Carga Coletada",
+      "Carga Entregue: Aero Origem",
+      "Tracking Feito",
+      "LCL - Carga Solta Coletada",
+      "Carga Entregue: Aero Destino"
+    ],
+    maritima: [
+      "S.I Revisada/Recebida",
+      "Reserva com Armador",
+      "Carga Pronta",
+      "Carga Coletada",
+      "Carga Entregue: Porto Origem",
+      "Tracking Feito",
+      "FCL - Container Coletado",
+      "LCL - Carga Solta Coletada",
+      "Carga Entregue: Porto Destino"
+    ]
+  },
+  exportacao: {
+    aerea: [
+      "Reserva com Cia Aérea",
+      "Carga Pronta",
+      "Carga Coletada",
+      "Carga Entregue: Aero Origem",
+      "AWB Entregue Cia Aérea",
+      "DUE Liberada",
+      "Tracking Feito",
+      "Carga Entregue: Aero Destino",
+      "LCL - Carga Solta Coletada"
+    ],
+    maritima: [
+      "Reserva com Armador",
+      "Carga Pronta",
+      "Carga Coletada",
+      "BL/Draft Entregue para Armador",
+      "Carga Entregue: Porto Origem",
+      "DUE Liberada",
+      "Tracking Feito",
+      "Carga Entregue: Porto Destino",
+      "FCL - Container Coletado",
+      "LCL - Carga Solta Coletada"
+    ]
+  }
+};
+
+// ======================================
+// CRIA CARD
+// ======================================
+function cardEl(card, laneKey) {
+  const el = document.createElement("article");
+  el.className = "card";
+  el.dataset.code = card.id;
+  el.dataset.desc = card.desc.toLowerCase();
+  el.dataset.lane = laneKey;
+
+  el.innerHTML = `
+    <div class="card-head">
+      <span class="code">${card.id}</span>
+    </div>
+    <div class="desc">${card.desc}</div>
+  `;
+
+  el.addEventListener("click", () => openPopover(card, laneKey, el));
+  return el;
+}
+
+// ======================================
+// CHECKLIST NO POPOVER
+// ======================================
+function renderChecklist(tipo, modal) {
+  const wrap = document.getElementById("pChecklist");
+  wrap.innerHTML = "";
+
+  checklists[tipo][modal].forEach((txt) => {
+    wrap.innerHTML += `
+      <label class="check">
+        <input type="checkbox" class="pCheck">
+        <span>${txt}</span>
+      </label>
+    `;
+  });
+}
+
+// ======================================
+// ABRE POPOVER
+// ======================================
+function openPopover(card, laneKey) {
+  document.getElementById("popTitle").textContent = `${card.id} - ${card.desc}`;
   renderChecklist(currentType, laneKey);
+
+  const popover = document.getElementById("cardPopover");
+  popover.hidden = false;
 }
 
 // ======================================
 // FECHAR POPOVER
 // ======================================
-pClose.addEventListener('click', ()=> popover.hidden = true);
-document.addEventListener('keydown', e=>{ if(e.key==='Escape') popover.hidden = true; });
-document.addEventListener('click', e=>{
-  if(!popover.hidden && !popover.contains(e.target) && !e.target.closest('.card')) {
-    popover.hidden = true;
-  }
-<<<<<<< HEAD
-});
-=======
-  if (p.checklist && Array.isArray(p.checklist)) {
-    p.checklist.forEach(item => {
-      const li = document.createElement("label");
-      li.className = "check";
-      li.innerHTML = `
-        <input type="checkbox" class="round" ${item.done ? "checked" : ""}>
-        <span>${item.label}</span>
-      `;
-      checklist.appendChild(li);
-    });
-  }
->>>>>>> parent of 115da1b (ajustando card)
-
-  // mostrar popover
-  pop.hidden = false;
-
-  // posicionar centralizado
-  const width = 560;
-  const x = (window.innerWidth - width) / 2;
-  const y = window.scrollY + 120;
-
-  pop.style.left = `${x}px`;
-  pop.style.top = `${y}px`;
-}
-
-// ======================================
-// BOTÃO FECHAR DO POPUP
-// ======================================
-document.getElementById("pClose").addEventListener("click", () => {
+document.getElementById("pClose").onclick = () => {
   document.getElementById("cardPopover").hidden = true;
-});
+};
 
 // ======================================
-// CARREGAR PROCESSOS REMOTOS + LOCAIS
+// RENDERIZAÇÃO PRINCIPAL
 // ======================================
-async function carregarProcessosRemotos() {
-  try {
-    const res = await fetch(`${BASE_URL}/api/processos`);
-    if (!res.ok) throw new Error('Falha ao buscar processos remotos');
+function render() {
+  seed = buildSeed();
 
-    const processos = await res.json();
+  laneTitles.maritima.textContent =
+    currentType === "importacao" ? "Importação Marítima" : "Exportação Marítima";
 
-    [
-      importAereaContainer,
-      importMaritimaContainer,
-      exportAereaContainer,
-      exportMaritimaContainer
-    ].forEach(c => c.innerHTML = '');
+  laneTitles.aerea.textContent =
+    currentType === "importacao" ? "Importação Aérea" : "Exportação Aérea";
 
-    processos.forEach(p => renderProcesso(p));
-
-    const processosLocais = JSON.parse(localStorage.getItem('processos') || '[]');
-
-    processosLocais.forEach(p => {
-      if (!document.querySelector(`[data-codigo="${p.codigo}"]`)) {
-        renderProcesso(p);
-      }
+  ["maritima", "aerea"].forEach((k) => {
+    laneEls[k].innerHTML = "";
+    seed[currentType][k].forEach((card) => {
+      laneEls[k].appendChild(cardEl(card, k));
     });
-
-  } catch (err) {
-    console.error("Erro ao carregar processos:", err);
-    renderLocalOnly();
-  }
-}
-
-function renderLocalOnly() {
-  const processos = JSON.parse(localStorage.getItem('processos') || '[]');
-  processos.forEach(p => renderProcesso(p));
+  });
 }
 
 // ======================================
-// RENDERIZA UM PROCESSO NA LANE CORRETA
+// TIPO IMPORTAÇÃO / EXPORTAÇÃO
 // ======================================
-function renderProcesso(p) {
-  const tipo = (p.tipo && p.tipo.toLowerCase().includes('export'))
-    ? 'exportacao'
-    : 'importacao';
-
-  const lane = (p.modal && p.modal.toLowerCase().includes('marit'))
-    ? 'maritima'
-    : 'aerea';
-
-  const card = createCardElement(p);
-
-  if (tipo === 'importacao') {
-    if (lane === 'aerea') return importAereaContainer.appendChild(card);
-    if (lane === 'maritima') return importMaritimaContainer.appendChild(card);
-  } else {
-    if (lane === 'aerea') return exportAereaContainer.appendChild(card);
-    if (lane === 'maritima') return exportMaritimaContainer.appendChild(card);
-  }
-}
-
-carregarProcessosRemotos();
-
-// ========================================================================
-// ALTERNAÇÃO IMPORTAÇÃO / EXPORTAÇÃO
-// ========================================================================
 const typeBtn = document.getElementById("typeBtn");
-const typeLabel = document.getElementById("typeLabel");
 const typeMenu = document.getElementById("typeMenu");
 
-// abre/fecha menu
-typeBtn.addEventListener("click", () => {
-  typeMenu.hidden = !typeMenu.hidden;
-});
-<<<<<<< HEAD
-typeMenu.querySelectorAll('li').forEach(li=>{
-  li.addEventListener('click', ()=>{
-    typeMenu.querySelectorAll('li').forEach(x=>x.classList.remove('active'));
-    li.classList.add('active');
+typeBtn.onclick = () => typeMenu.toggleAttribute("hidden");
+
+typeMenu.querySelectorAll("li").forEach((li) => {
+  li.onclick = () => {
     currentType = li.dataset.type;
-    typeLbl.textContent = li.textContent;
-    typeMenu.setAttribute('hidden','');
-    render();
-=======
-}
 
-function renderLocalOnly() {
-  const processos = JSON.parse(localStorage.getItem('processos') || '[]');
-  processos.forEach(p => renderProcesso(p));
-}
-
-// ======================================
-// RENDERIZA UM PROCESSO NA LANE CORRETA
-// ======================================
-function renderProcesso(p) {
-  const tipo = (p.tipo && p.tipo.toLowerCase().includes('export'))
-    ? 'exportacao'
-    : 'importacao';
-
-  const lane = (p.modal && p.modal.toLowerCase().includes('marit'))
-    ? 'maritima'
-    : 'aerea';
-
-  const card = createCardElement(p);
-
-  if (tipo === 'importacao') {
-    if (lane === 'aerea') return importAereaContainer.appendChild(card);
-    if (lane === 'maritima') return importMaritimaContainer.appendChild(card);
-  } else {
-    if (lane === 'aerea') return exportAereaContainer.appendChild(card);
-    if (lane === 'maritima') return exportMaritimaContainer.appendChild(card);
-  }
-}
-
-carregarProcessosRemotos();
-
-// ========================================================================
-// NOVO SISTEMA DE ALTERNAÇÃO IMPORTAÇÃO / EXPORTAÇÃO
-// ========================================================================
-const typeBtn = document.getElementById("typeBtn");
-const typeLabel = document.getElementById("typeLabel");
-const typeMenu = document.getElementById("typeMenu");
-
-const lane1Title = document.getElementById("lane1Title");
-const lane2Title = document.getElementById("lane2Title");
-
-// abre/fecha menu
-typeBtn.addEventListener("click", () => {
-  typeMenu.hidden = !typeMenu.hidden;
-});
-
-// ---------------------------------------------------------------------
-// NOVO SISTEMA DE EXIBIÇÃO DE LANES
-// ---------------------------------------------------------------------
-function atualizarLanes(tipo) {
-  const lanes = document.querySelectorAll(".lane");
-
-  lanes.forEach(lane => {
-    const titulo = lane.querySelector("h2").textContent.toLowerCase();
-
-    const isImport = titulo.includes("importação");
-    const isExport = titulo.includes("exportação");
-
-    if (tipo === "importacao") {
-      lane.style.display = isImport ? "block" : "none";
-    } else {
-      lane.style.display = isExport ? "block" : "none";
-    }
-  });
-}
-
-=======
-
-// exibe apenas as lanes compatíveis
-function atualizarLanes(tipo) {
-  const lanes = document.querySelectorAll(".lane");
-  lanes.forEach(lane => {
-    const laneTipo = lane.dataset.type;
-    lane.style.display = laneTipo === tipo ? "block" : "none";
-  });
-}
-
-// filtra cards por tipo (import/export)
->>>>>>> parent of 115da1b (ajustando card)
-function atualizarCards(tipoAtual) {
-  const cards = document.querySelectorAll(".card");
-
-  cards.forEach(card => {
-    const codigo = card.dataset.codigo?.toUpperCase() || "";
-
-    const ehExport = codigo.startsWith("EX");
-    const ehImport = codigo.startsWith("IN");
-
-    if (tipoAtual === "exportacao" && ehExport) {
-      card.style.display = "block";
-    } else if (tipoAtual === "importacao" && ehImport) {
-      card.style.display = "block";
-    } else {
-      card.style.display = "none";
-    }
-  });
-}
-
-<<<<<<< HEAD
-// ---------------------------------------------------------------------
-// MENU DE ALTERNAÇÃO
-// ---------------------------------------------------------------------
-=======
-// click no item do menu
->>>>>>> parent of 115da1b (ajustando card)
-typeMenu.querySelectorAll("li").forEach(item => {
-  item.addEventListener("click", () => {
-    const tipo = item.dataset.type;
-
-    typeLabel.textContent = item.textContent;
+    document.getElementById("typeLabel").textContent = li.textContent;
     typeMenu.hidden = true;
+    render();
+  };
+});
 
-<<<<<<< HEAD
-    if (tipo === "importacao") {
-      lane1Title.textContent = "Importação Marítima";
-      lane2Title.textContent = "Importação Aérea";
-    } else {
-      lane1Title.textContent = "Exportação Marítima";
-      lane2Title.textContent = "Exportação Aérea";
-    }
+// ======================================
+// SEARCH
+// ======================================
+document.getElementById("search").addEventListener("input", function () {
+  const q = this.value.toLowerCase();
 
-    atualizarLanes(tipo);
-    atualizarCards(tipo);
->>>>>>> parent of b1d53f0 (arrumando lanes)
-=======
-    atualizarLanes(tipo);
-    atualizarCards(tipo);
->>>>>>> parent of 115da1b (ajustando card)
+  document.querySelectorAll(".card").forEach((c) => {
+    c.style.display =
+      c.dataset.code.toLowerCase().includes(q) ||
+      c.dataset.desc.includes(q)
+        ? ""
+        : "none";
   });
 });
 
-// estado inicial
-atualizarLanes("importacao");
+// ======================================
+// INIT
+// ======================================
+render();
