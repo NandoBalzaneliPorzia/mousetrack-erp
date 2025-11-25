@@ -91,7 +91,7 @@ function createCard(proc) {
   el.innerHTML = `
     <div class="card-head">
       <span class="code">${codigo}</span>
-      <span class="icons">⚙︎ ＋</span>
+      <span class="icons"></span>
     </div>
     <div class="desc">${titulo}</div>
   `;

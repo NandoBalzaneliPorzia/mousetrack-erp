@@ -223,17 +223,6 @@ body {
   display: none;
 }
 
-.popover {
-  position: fixed;
-  z-index: 50;
-  left: 0;
-  top: 0;
-  pointer-events: none; /* importante para não bloquear o click no fundo */
-}
-.pop-box {
-  pointer-events: auto; /* a caixa pode receber clique normalmente */
-}
-
 
 .pop-head {
   display: flex;
@@ -438,3 +427,24 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+/* ====== POPOVER FIXADO ========== */
+.popover {
+  position: fixed;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+  pointer-events: none; /* deixamos para evitar bloquear */
+}
+
+/* CAIXA VISUAL DO POPOVER */
+.pop-box {
+  pointer-events: auto;
+  width: 480px;                   /* largura semelhante ao exemplo */
+  background: #ffffff;            /* COR BRANCA (igual o modelo) */
+  border-radius: 12px;
+  border: 1px solid #dcdcdc;
+  box-shadow: 0 6px 28px rgba(0,0,0,0.18);  /* sombra igual ao exemplo */
+  overflow: hidden;
+}
+
