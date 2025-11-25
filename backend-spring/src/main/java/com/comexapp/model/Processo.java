@@ -1,3 +1,4 @@
+
 package com.comexapp.model;
 
 import jakarta.persistence.*;
@@ -5,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "processo")
 public class Processo {
 
     @Id
@@ -20,57 +22,25 @@ public class Processo {
     @OneToMany(mappedBy = "processo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProcessoArquivo> arquivos = new ArrayList<>();
 
-    // GETTERS E SETTERS
+    // Getters e Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public Long getId() {
-        return id;
-    }
+    public String getTitulo() { return titulo; }
+    public void setTitulo(String titulo) { this.titulo = titulo; }
 
-    public String getTitulo() {
-        return titulo;
-    }
+    public String getTipo() { return tipo; }
+    public void setTipo(String tipo) { this.tipo = tipo; }
 
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
-    }
+    public String getModal() { return modal; }
+    public void setModal(String modal) { this.modal = modal; }
 
-    public String getTipo() {
-        return tipo;
-    }
+    public String getObservacao() { return observacao; }
+    public void setObservacao(String observacao) { this.observacao = observacao; }
 
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
-    }
+    public String getCodigo() { return codigo; }
+    public void setCodigo(String codigo) { this.codigo = codigo; }
 
-    public String getModal() {
-        return modal;
-    }
-
-    public void setModal(String modal) {
-        this.modal = modal;
-    }
-
-    public String getObservacao() {
-        return observacao;
-    }
-
-    public void setObservacao(String observacao) {
-        this.observacao = observacao;
-    }
-
-    public String getCodigo() {
-        return codigo;
-    }
-
-    public void setCodigo(String codigo) {
-        this.codigo = codigo;
-    }
-
-    public List<ProcessoArquivo> getArquivos() {
-        return arquivos;
-    }
-
-    public void setArquivos(List<ProcessoArquivo> arquivos) {
-        this.arquivos = arquivos;
-    }
+   ivos() { return arquivos; }
+    public void setArquivos(List<ProcessoArquivo> arquivos) { this.arquivos = arquivos; }
 }

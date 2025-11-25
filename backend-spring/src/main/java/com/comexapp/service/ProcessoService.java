@@ -22,21 +22,17 @@ public class ProcessoService {
     }
 
     public Processo criarProcesso(ProcessoRequestDTO dto) throws Exception {
-
         Processo processo = new Processo();
         processo.setTitulo(dto.getTitulo());
         processo.setTipo(dto.getTipo());
         processo.setModal(dto.getModal());
         processo.setObservacao(dto.getObservacao());
-
         processo.setCodigo(UUID.randomUUID().toString().substring(0, 8));
 
-        // salva o processo primeiro para gerar o ID
         processo = repo.save(processo);
 
         if (dto.getArquivos() != null) {
             for (MultipartFile file : dto.getArquivos()) {
-
                 if (!file.isEmpty()) {
                     ProcessoArquivo pa = new ProcessoArquivo();
                     pa.setNomeArquivo(file.getOriginalFilename());
@@ -44,10 +40,7 @@ public class ProcessoService {
                     pa.setDadosArquivo(file.getBytes());
                     pa.setProcesso(processo);
 
-                    // salva o arquivo no banco
-                    pa = arquivoRepo.save(pa);
-
-                    // associa com o processo
+                    arquivoRepo.save(pa);
                     processo.getArquivos().add(pa);
                 }
             }
