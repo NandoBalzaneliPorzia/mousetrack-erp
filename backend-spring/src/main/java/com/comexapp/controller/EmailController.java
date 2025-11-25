@@ -13,12 +13,14 @@ public class EmailController {
     private EmailService emailService;
 
     @PostMapping("/enviar")
-public String enviar(@RequestBody EmailRequestDTO req) {
+public String enviar(@RequestBody EmailRequestDTO req) throws Exception {
+
     emailService.enviarEmail(
         req.getPara(),
         req.getAssunto(),
         req.getMensagem()
     );
+
     return "OK";
 }
 }
