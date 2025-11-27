@@ -1,3 +1,4 @@
+package com.comexapp.model;
 
 import jakarta.persistence.*;
 import java.util.ArrayList;
