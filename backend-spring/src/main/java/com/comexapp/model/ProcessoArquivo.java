@@ -1,4 +1,3 @@
-
 package com.comexapp.model;
 
 import jakarta.persistence.*;
@@ -13,7 +12,7 @@ public class ProcessoArquivo {
 
     @Lob
     @Column(name = "dados_arquivo", nullable = false)
-    private byte[] dadosArquivo;
+    private byte[] dadosArquivo;   // <- TEM QUE SER byte[]
 
     @Column(name = "nome_arquivo")
     private String nomeArquivo;

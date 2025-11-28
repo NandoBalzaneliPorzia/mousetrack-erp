@@ -18,7 +18,12 @@ public class Processo {
     private String observacao;
     private String codigo;
 
-    @OneToMany(mappedBy = "processo", cascade = CascadeType.ALL, orphanRemoval = true)
+    // Um processo tem vários arquivos
+    @OneToMany(
+        mappedBy = "processo",
+        cascade = CascadeType.ALL,
+        orphanRemoval = true
+    )
     private List<ProcessoArquivo> arquivos = new ArrayList<>();
 
     // Getters e Setters
@@ -43,6 +48,7 @@ public class Processo {
     public List<ProcessoArquivo> getArquivos() {
         return arquivos;
     }
+
     public void setArquivos(List<ProcessoArquivo> arquivos) {
         this.arquivos = arquivos;
     }

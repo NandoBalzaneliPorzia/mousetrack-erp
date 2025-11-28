@@ -1,12 +1,16 @@
 C:\Faculdade\QUARTO SEMESTRE\mousetrack-erp\backend-spring\src\main\java\com\comexapp\model\TipoUsuario.java
 C:\Faculdade\QUARTO SEMESTRE\mousetrack-erp\backend-spring\src\main\java\com\comexapp\repository\ClienteRepository.java
 C:\Faculdade\QUARTO SEMESTRE\mousetrack-erp\backend-spring\src\main\java\com\comexapp\config\SecurityBeans.java
+C:\Faculdade\QUARTO SEMESTRE\mousetrack-erp\backend-spring\src\main\java\com\comexapp\controller\EmailController.java
 C:\Faculdade\QUARTO SEMESTRE\mousetrack-erp\backend-spring\src\main\java\com\comexapp\controller\UserController.java
+C:\Faculdade\QUARTO SEMESTRE\mousetrack-erp\backend-spring\src\main\java\com\comexapp\DTO\EmailRequestDTO.java
 C:\Faculdade\QUARTO SEMESTRE\mousetrack-erp\backend-spring\src\main\java\com\comexapp\service\ShippingWordService.java
 C:\Faculdade\QUARTO SEMESTRE\mousetrack-erp\backend-spring\src\main\java\com\comexapp\DTO\NovaMensagemDTO.java
 C:\Faculdade\QUARTO SEMESTRE\mousetrack-erp\backend-spring\src\main\java\com\comexapp\DTO\ChatMessageDTO.java
 C:\Faculdade\QUARTO SEMESTRE\mousetrack-erp\backend-spring\src\main\java\com\comexapp\model\ChatThread.java
+C:\Faculdade\QUARTO SEMESTRE\mousetrack-erp\backend-spring\src\main\java\com\comexapp\repository\ProcessoArquivoRepository.java
 C:\Faculdade\QUARTO SEMESTRE\mousetrack-erp\backend-spring\src\main\java\com\comexapp\config\CorsConfig.java
+C:\Faculdade\QUARTO SEMESTRE\mousetrack-erp\backend-spring\src\main\java\com\comexapp\service\EmailService.java
 C:\Faculdade\QUARTO SEMESTRE\mousetrack-erp\backend-spring\src\main\java\com\comexapp\controller\AuthController.java
 C:\Faculdade\QUARTO SEMESTRE\mousetrack-erp\backend-spring\src\main\java\com\comexapp\DTO\ChatThreadSummaryDTO.java
 C:\Faculdade\QUARTO SEMESTRE\mousetrack-erp\backend-spring\src\main\java\com\comexapp\model\ChatMessage.java
@@ -16,6 +20,7 @@ C:\Faculdade\QUARTO SEMESTRE\mousetrack-erp\backend-spring\src\main\java\com\com
 C:\Faculdade\QUARTO SEMESTRE\mousetrack-erp\backend-spring\src\main\java\com\comexapp\config\DataLoader.java
 C:\Faculdade\QUARTO SEMESTRE\mousetrack-erp\backend-spring\src\main\java\com\comexapp\util\GenHash.java
 C:\Faculdade\QUARTO SEMESTRE\mousetrack-erp\backend-spring\src\main\java\com\comexapp\repository\ChatMessageRepository.java
+C:\Faculdade\QUARTO SEMESTRE\mousetrack-erp\backend-spring\src\main\java\com\comexapp\model\ProcessoArquivo.java
 C:\Faculdade\QUARTO SEMESTRE\mousetrack-erp\backend-spring\src\main\java\com\comexapp\controller\ChatController.java
 C:\Faculdade\QUARTO SEMESTRE\mousetrack-erp\backend-spring\src\main\java\com\comexapp\controller\ClienteController.java
 C:\Faculdade\QUARTO SEMESTRE\mousetrack-erp\backend-spring\src\main\java\com\comexapp\controller\ShippingController.java
