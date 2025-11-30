@@ -14,6 +14,7 @@ const popover  = document.getElementById('cardPopover');
 const pTitle   = document.getElementById('popTitle');
 const pChecklist = document.getElementById('pChecklist');
 const pClose   = document.getElementById('pClose');
+const pChatBtn = document.getElementById('pChatBtn');
 
 let selectedCard = null;
 let currentType = "importacao"; // default
@@ -155,6 +156,48 @@ pClose.addEventListener("click", () => {
   popover.hidden = true;
   selectedCard = null;
 });
+
+// BOTÃO DE CHAT DO CARD
+if (pChatBtn) {
+  pChatBtn.addEventListener("click", handleOpenChatFromCard);
+}
+
+async function handleOpenChatFromCard() {
+  if (!selectedCard) {
+    alert("Nenhum processo selecionado.");
+    return;
+  }
+
+  // Monta um título amigável pro chat usando o processo
+  const codigo = selectedCard.codigo || selectedCard.id || "";
+  const tituloProc = selectedCard.titulo || "";
+  const tituloThread = (codigo ? `${codigo} - ${tituloProc || "Processo"}` : (tituloProc || "Processo"));
+
+  try {
+    // Usa seu endpoint já existente: POST /api/chat/threads
+    const res = await fetch(api('/api/chat/threads'), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ titulo: tituloThread })
+    });
+
+    if (!res.ok) {
+      console.error("Erro ao criar thread de chat:", res.status, res.statusText);
+      alert("Não foi possível abrir o chat para este processo.");
+      return;
+    }
+
+    const thread = await res.json();
+
+    // Redireciona pra tela de chat já apontando pra essa thread
+    window.location.href = `chat.html?threadId=${thread.id}`;
+  } catch (err) {
+    console.error("Erro ao abrir chat a partir do card:", err);
+    alert("Erro ao abrir o chat. Tente novamente.");
+  }
+}
+
 // BOTÃO "+" DO POPOVER ABRE INPUT DE E-MAIL
 const pAdd = document.getElementById("pAdd");
 const emailBox = document.getElementById("emailBox");

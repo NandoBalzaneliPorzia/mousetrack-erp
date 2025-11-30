@@ -16,6 +16,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const inputEl       = document.getElementById('messageInput');
   const searchEl      = document.getElementById('searchInput');
 
+    const params = new URLSearchParams(window.location.search);
+  let initialThreadId = params.get('threadId');
+  if (initialThreadId) {
+    initialThreadId = Number(initialThreadId);
+  } else {
+    initialThreadId = null;
+  }
+
   let currentThreadId = null;
   let allThreads = [];
 
@@ -80,26 +88,40 @@ document.addEventListener('DOMContentLoaded', () => {
   // FUNÇÕES PRINCIPAIS
   // -----------------------------------------
 
-  async function loadThreads(selectFirst = true) {
-    try {
-      const res = await fetch(api('/api/chat/threads'), {
-        method: 'GET',
-        cache: 'no-store',
-        credentials: 'include'
-      });
+async function loadThreads(selectFirst = true) {
+  try {
+    const res = await fetch(api('/api/chat/threads'), {
+      method: 'GET',
+      cache: 'no-store',
+      credentials: 'include'
+    });
 
-      if (!res.ok) throw new Error('Falha ao carregar conversas');
+    if (!res.ok) throw new Error('Falha ao carregar conversas');
 
-      allThreads = await res.json();
-      renderThreadList(allThreads);
+    allThreads = await res.json();
+    renderThreadList(allThreads);
 
-      if (selectFirst && allThreads.length && !currentThreadId) {
+    if (allThreads.length) {
+      // Se veio um threadId pela URL, tenta abrir essa primeiro
+      if (initialThreadId) {
+        const found = allThreads.find(t => Number(t.id) === Number(initialThreadId));
+        if (found) {
+          openThread(found.id, found.titulo);
+          initialThreadId = null; // só usa uma vez
+          return;
+        }
+      }
+
+      // Senão, mantém o comportamento padrão (primeira da lista)
+      if (selectFirst && !currentThreadId) {
         openThread(allThreads[0].id, allThreads[0].titulo);
       }
-    } catch (err) {
-      console.error('[chat] erro ao carregar threads:', err);
     }
+  } catch (err) {
+    console.error('[chat] erro ao carregar threads:', err);
   }
+}
+
 
   function renderThreadList(list) {
     threadListEl.innerHTML = '';

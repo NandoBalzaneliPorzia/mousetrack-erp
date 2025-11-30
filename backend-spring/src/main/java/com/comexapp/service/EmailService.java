@@ -44,8 +44,10 @@ public class EmailService {
         }
 
         int status = con.getResponseCode();
+
         if (status != 201 && status != 200) {
-            throw new RuntimeException("Falha no envio (HTTP " + status + ")");
+            String errorMsg = new String(con.getErrorStream().readAllBytes());
+            throw new RuntimeException("Erro ao enviar e-mail (HTTP " + status + "): " + errorMsg);
         }
     }
 }
