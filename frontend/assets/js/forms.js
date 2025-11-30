@@ -1,24 +1,22 @@
 // assets/js/forms.js
 document.addEventListener('DOMContentLoaded', () => {
+
+  const BASE_URL = 'https://mousetrack-erp.onrender.com';
+
+  const form = document.getElementById('procForm');
   const input = document.getElementById('anexo');
   const fileText = document.getElementById('fileText');
-  const form = document.getElementById('procForm');
-
-  // Ajuste para seu backend
-  const BASE_URL = 'https://mousetrack-erp.onrender.com';
 
   if (input) {
     input.addEventListener('change', () => {
-      if (!input.files || input.files.length === 0) {
-        if (fileText) fileText.textContent = '';
+      if (!input.files?.length) {
+        fileText.textContent = '';
         return;
       }
-      if (fileText) {
-        fileText.textContent =
-          input.files.length === 1
-            ? input.files[0].name
-            : `${input.files.length} arquivos selecionados`;
-      }
+      fileText.textContent =
+        input.files.length === 1
+          ? input.files[0].name
+          : `${input.files.length} arquivos selecionados`;
     });
   }
 
@@ -27,25 +25,26 @@ document.addEventListener('DOMContentLoaded', () => {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
+    const titulo = form.titulo?.value || "";
+    const tipo = form.tipo?.value || "importacao";
+    const modal = form.modal?.value || "maritimo";
+    const observacao = form.observacao?.value || "";
+
     const formData = new FormData();
+    formData.append("titulo", titulo);
+    formData.append("tipo", tipo);
+    formData.append("modal", modal);
+    formData.append("observacao", observacao);
 
-    // campos do formulário — ajuste nomes conforme seu HTML
-    formData.append("titulo", form.titulo?.value || "");
-    formData.append("tipo", form.tipo?.value || "importacao");
-    formData.append("modal", form.modal?.value || "maritimo");
-    formData.append("observacao", form.observacao?.value || "");
-
-    // arquivos (se houver)
     if (input && input.files && input.files.length > 0) {
       for (let i = 0; i < input.files.length; i++) {
-        formData.append("arquivos", input.files[i]); // mesmo nome para MultipartFile[]
+        formData.append("arquivos", input.files[i]); // nome esperado pelo backend
       }
     }
 
-    // debug do FormData (útil)
     console.log("------ Enviando FormData ------");
-    for (const pair of formData.entries()) {
-      console.log(pair[0], pair[1]);
+    for (const [key, value] of formData.entries()) {
+      console.log(key, value);
     }
 
     try {
@@ -54,46 +53,44 @@ document.addEventListener('DOMContentLoaded', () => {
         body: formData
       });
 
-      const text = await res.text();
+      const rawText = await res.text();
       let data;
-      try { data = JSON.parse(text); } catch { data = text; }
+      try { data = JSON.parse(rawText); } catch { data = {}; }
 
       if (!res.ok) {
-        console.error("Erro HTTP:", res.status, text);
-        alert("❌ Erro ao criar processo: " + res.status);
+        console.error("Erro HTTP:", res.status, rawText);
+        alert("❌ Erro ao criar processo!");
         return;
       }
 
-      // 'data' é o processo criado pelo backend. Normaliza campos para o board.
-      const created = data || {};
+      const procId = data.id || data.codigo || ("local-" + Date.now());
 
-      // garante campos mínimos esperados pelo board.js
-      const procForBoard = {
-        id: created.id || created._id || created.codigo || ('local-' + Math.random().toString(36).slice(2,9)),
-        codigo: created.codigo || created.id || created._id || undefined,
-        titulo: created.titulo || form.titulo?.value || '(Sem título)',
-        tipo: created.tipo || form.tipo?.value || 'importacao',
-        modal: created.modal || form.modal?.value || 'maritimo',
-        observacao: created.observacao || form.observacao?.value || '',
-        // se quiser guardar arquivos/metadata, adicione aqui
+      const novoProcesso = {
+        id: procId,
+        codigo: data.codigo || procId,
+        titulo,
+        tipo,
+        modal,
+        observacao,
       };
 
-      // salva no localStorage (array processos)
-      const processos = JSON.parse(localStorage.getItem('processos') || '[]');
-      processos.push(procForBoard);
-      localStorage.setItem('processos', JSON.stringify(processos));
+      const processos = JSON.parse(localStorage.getItem("processos") || "[]");
+      processos.push(novoProcesso);
+      localStorage.setItem("processos", JSON.stringify(processos));
 
-      // dispara evento storage para forçar listeners (board.js) a re-render
-      window.dispatchEvent(new StorageEvent('storage', { key: 'processos', newValue: JSON.stringify(processos) }));
+      window.dispatchEvent(new StorageEvent('storage', {
+        key: 'processos',
+        newValue: JSON.stringify(processos),
+      }));
 
-      alert(`✅ Processo criado!\nCódigo: ${procForBoard.codigo || procForBoard.id}`);
+      alert(`🎯 Processo criado com sucesso!\nCódigo: ${novoProcesso.codigo}`);
 
       form.reset();
-      if (fileText) fileText.textContent = '';
+      if (fileText) fileText.textContent = "";
 
     } catch (err) {
-      console.error("❌ Erro ao criar processo:", err);
-      alert("❌ Falha ao criar processo. Veja console.");
+      console.error("❌ Falha ao criar processo:", err);
+      alert("❌ Falha ao criar processo. Verifique o console!");
     }
   });
 });
