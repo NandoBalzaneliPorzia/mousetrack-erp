@@ -29,15 +29,20 @@ public class EmailService {
         con.setRequestProperty("api-key", apiKey);
         con.setRequestProperty("content-type", "application/json");
         con.setDoOutput(true);
+  
+        String html = "<html><body>" + mensagem.replace("\n", "<br>") + "</body></html>";
+
 
         String json = """
+
         {
           "sender": { "name": "%s", "email": "%s" },
           "to": [{ "email": "%s" }],
-          "subject": "%s",
-          "htmlContent": "%s"
+           "subject": "%s",
+           "htmlContent": "%s"
         }
-        """.formatted(senderName, senderEmail, para, assunto, mensagem.replace("\n", "<br>"));
+        """.formatted(senderName, senderEmail, para, assunto, html);
+  
 
         try (OutputStream os = con.getOutputStream()) {
             os.write(json.getBytes());
