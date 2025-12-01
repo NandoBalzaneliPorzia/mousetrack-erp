@@ -1,5 +1,5 @@
 async function carregarProcesso() {
-  const codigo = location.pathname.split("/").pop();
+  const codigo = new URLSearchParams(location.search).get("codigo");
 
   const resp = await fetch(`https://mousetrack-erp.onrender.com/api/processos/codigo/${codigo}`);
   if (!resp.ok) {
