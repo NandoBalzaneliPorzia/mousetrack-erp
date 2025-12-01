@@ -15,8 +15,28 @@ document.addEventListener('DOMContentLoaded', () => {
   const formEl        = document.getElementById('chatForm');
   const inputEl       = document.getElementById('messageInput');
   const searchEl      = document.getElementById('searchInput');
+  const url = new URLSearchParams(location.search);
+  const processoId = url.get("processoId");
+  const threadId = url.get("threadId");
 
-    const params = new URLSearchParams(window.location.search);
+  if (processoId && !threadId) {
+  fetch(api(`/api/chat/threads/processo/${processoId}`), {
+    method: "POST",
+    credentials: "include"
+  })
+  .then(r => r.json())
+  .then(thread => {
+    location.href = `chat.html?threadId=${thread.id}`;
+  })
+  .catch(err => {
+    console.error("Erro ao criar thread:", err);
+    alert("Não foi possível abrir o chat deste processo.");
+  });
+
+  return; // evita rodar o chat antes de obter a thread
+}
+
+  const params = new URLSearchParams(window.location.search);
   let initialThreadId = params.get('threadId');
   if (initialThreadId) {
     initialThreadId = Number(initialThreadId);
