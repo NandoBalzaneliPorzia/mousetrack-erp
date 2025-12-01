@@ -5,6 +5,12 @@ function formatDate(dateStr) {
   return `${d}/${m}/${y}`;
 }
 
+const guestAccess = new URLSearchParams(location.search).get("processoId");
+if (guestAccess) {
+    window.location.href = `/processo.html?processoId=${guestAccess}`;
+}
+
+
 // Passos da timeline
 const STEPS = [
   { key: "booking", label: "Booking Confirmado", city: "NYC" },

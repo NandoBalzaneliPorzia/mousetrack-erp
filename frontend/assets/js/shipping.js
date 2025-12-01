@@ -1,4 +1,11 @@
 // Seleção de elementos
+
+const guestAccess = new URLSearchParams(location.search).get("processoId");
+if (guestAccess) {
+    window.location.href = `/processo.html?processoId=${guestAccess}`;
+}
+
+
 const modalBtn = document.getElementById('modalBtn');
 const modalMenu = document.getElementById('modalMenu');
 const modalItems = modalMenu.querySelectorAll('li');

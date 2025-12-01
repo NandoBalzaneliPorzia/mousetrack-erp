@@ -1,4 +1,10 @@
 // dados de exemplo (igual ao Figma)
+const guestAccess = new URLSearchParams(location.search).get("processoId");
+if (guestAccess) {
+    window.location.href = `/processo.html?processoId=${guestAccess}`;
+}
+
+
 const FOLDERS = {
   EX_01: {
     title: 'EX_01 - Exportação Geladeira',

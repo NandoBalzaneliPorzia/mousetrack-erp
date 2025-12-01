@@ -2,6 +2,13 @@
 // ======================================
 // CONFIG
 // ======================================
+
+const guestAccess = new URLSearchParams(location.search).get("processoId");
+if (guestAccess) {
+    window.location.href = `/processo.html?processoId=${guestAccess}`;
+}
+
+
 const lanes = {
   // ids que existem no seu HTML
   "importacao-maritimo": document.getElementById("imp-maritima"),

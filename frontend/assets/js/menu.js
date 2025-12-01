@@ -11,6 +11,12 @@ document.addEventListener("DOMContentLoaded", () => {
     "sair.svg": "index.html"
   };
 
+const guestAccess = new URLSearchParams(location.search).get("processoId");
+if (guestAccess) {
+    window.location.href = `/processo.html?processoId=${guestAccess}`;
+}
+
+
   // Seleciona todas as imagens dentro dos itens do menu
   const icons = document.querySelectorAll(".menu-item img");
 

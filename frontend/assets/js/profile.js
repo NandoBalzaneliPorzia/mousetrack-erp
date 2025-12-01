@@ -12,6 +12,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnAlterarImagem = document.getElementById('btnAlterarImagem');
   const avatarContainer = document.querySelector('.avatar-container');
 
+  const guestAccess = new URLSearchParams(location.search).get("processoId");
+  if (guestAccess) {
+      window.location.href = `/processo.html?processoId=${guestAccess}`;
+  }
+
+
   if (!form) {
     console.error('[profile] Form #perfilForm não encontrado');
     return;

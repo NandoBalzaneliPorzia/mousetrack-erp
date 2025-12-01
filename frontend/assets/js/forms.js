@@ -7,6 +7,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const input = document.getElementById('anexo');
   const fileText = document.getElementById('fileText');
 
+const guestAccess = new URLSearchParams(location.search).get("processoId");
+if (guestAccess) {
+    window.location.href = `/processo.html?processoId=${guestAccess}`;
+}
+
+
   if (input) {
     input.addEventListener('change', () => {
       if (!input.files?.length) {

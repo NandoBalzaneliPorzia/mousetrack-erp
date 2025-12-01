@@ -2,6 +2,12 @@
 const input = document.getElementById('repoSearch');
 const rows  = Array.from(document.querySelectorAll('#repoTbody tr'));
 
+const guestAccess = new URLSearchParams(location.search).get("processoId");
+if (guestAccess) {
+    window.location.href = `/processo.html?processoId=${guestAccess}`;
+}
+
+
 function applyFilter(){
   const q = (input?.value || '').trim().toLowerCase();
   rows.forEach(tr => {

@@ -1,9 +1,15 @@
 async function carregarProcesso() {
-  const codigo = new URLSearchParams(location.search).get("codigo");
+  const processoId = new URLSearchParams(location.search).get("processoId");
 
-  const resp = await fetch(`https://mousetrack-erp.onrender.com/api/processos/codigo/${codigo}`);
+  if (!processoId) {
+    document.body.innerHTML = "<h3>Processo inválido</h3>";
+    return;
+  }
+
+  const resp = await fetch(`https://mousetrack-erp.onrender.com/api/processos/${processoId}`);
+
   if (!resp.ok) {
-    document.getElementById("processo").innerHTML = "<h3>Processo não encontrado</h3>";
+    document.body.innerHTML = "<h3>Processo não encontrado</h3>";
     return;
   }
 
@@ -15,6 +21,21 @@ async function carregarProcesso() {
     <p><strong>Modal:</strong> ${proc.modal}</p>
     <p><strong>Observação:</strong> ${proc.observacao || '—'}</p>
   `;
+
+  document.getElementById("btnChat").addEventListener("click", abrirChat);
+}
+
+function abrirChat() {
+  const processoId = new URLSearchParams(location.search).get("processoId");
+
+  fetch(`https://mousetrack-erp.onrender.com/api/chat/threads/processo/${processoId}`, {
+    method: "POST",
+    credentials: "include"
+  })
+  .then(r => r.json())
+  .then(thread => {
+    window.location.href = `/chat.html?threadId=${thread.id}`;
+  });
 }
 
 carregarProcesso();

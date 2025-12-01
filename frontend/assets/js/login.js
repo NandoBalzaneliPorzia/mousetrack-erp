@@ -3,6 +3,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('loginForm');
   if (!form) return;
 
+const guestAccess = new URLSearchParams(location.search).get("processoId");
+if (guestAccess) {
+    window.location.href = `/processo.html?processoId=${guestAccess}`;
+}
+
+
   const submitBtn = form.querySelector('button[type="submit"]');
   const emailEl = document.getElementById('email');
   const senhaEl = document.getElementById('senha');

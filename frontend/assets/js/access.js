@@ -11,6 +11,12 @@ const cliSel = document.getElementById('accClient');
 const feedbackEl = document.getElementById('accFeedback');
 const genBtn = document.getElementById('btnGenPass');
 
+const guestAccess = new URLSearchParams(location.search).get("processoId");
+if (guestAccess) {
+    window.location.href = `/processo.html?processoId=${guestAccess}`;
+}
+
+
 // feedback
 function setFeedback(msg, error = false) {
   feedbackEl.textContent = msg;
