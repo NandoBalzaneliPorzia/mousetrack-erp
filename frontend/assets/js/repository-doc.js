@@ -1,72 +1,61 @@
-// dados de exemplo (igual ao Figma)
-const guestAccess = new URLSearchParams(location.search).get("processoId");
-if (guestAccess) {
-    window.location.href = `/processo.html?processoId=${guestAccess}`;
+// -----------------------------
+// PEGAR ID DO PROCESSO DA URL
+// -----------------------------
+function getParam(name) {
+  return new URL(window.location.href).searchParams.get(name);
 }
 
+const codigo = getParam("id"); // EX: ABC12345
 
-const FOLDERS = {
-  EX_01: {
-    title: 'EX_01 - Exportação Geladeira',
-    docs: [
-      { name: 'Invoice.pdf',         created: '25/08/2025' },
-      { name: 'Packaging_List.pdf',  created: '25/08/2025' },
-      { name: 'Orçamento.pdf',       created: '25/08/2025' },
-    ]
-  },
-  EX_02: {
-    title: 'EX_02 - Exportação Fogão',
-    docs: [
-      { name: 'Invoice.pdf',         created: '25/08/2025' },
-      { name: 'Romaneio.pdf',        created: '25/08/2025' },
-      { name: 'Packing.pdf',         created: '25/08/2025' },
-    ]
-  },
-  IN_01: {
-    title: 'IN_01 - Importação peças automotivas',
-    docs: [
-      { name: 'Invoice.pdf',         created: '25/08/2025' },
-      { name: 'Proforma.pdf',        created: '25/08/2025' },
-    ]
-  }
-};
 
-function getParam(name){
-  const url = new URL(window.location.href);
-  return url.searchParams.get(name);
-}
+// -----------------------------
+// CARREGAR DOCUMENTOS DO BACKEND
+// -----------------------------
+async function carregarDocumentos() {
+  const resp = await fetch(`http://localhost:8080/api/processos/${codigo}/arquivos`);
+  const docs = await resp.json();
 
-const id = (getParam('id') || 'EX_01').toUpperCase();
-const folder = FOLDERS[id] || FOLDERS.EX_01;
+  // Atualiza o título da página
+  const title = document.getElementById("folderTitle");
+  title.textContent = `Processo ${codigo}`;
 
-const titleEl = document.getElementById('folderTitle');
-const tbody   = document.getElementById('docsTbody');
-const input   = document.getElementById('docSearch');
+  const tbody = document.getElementById("docsTbody");
+  tbody.innerHTML = "";
 
-titleEl.textContent = folder.title;
+  docs.forEach(d => {
+    const tr = document.createElement("tr");
 
-function render(list){
-  tbody.innerHTML = '';
-  list.forEach(doc => {
-    const tr = document.createElement('tr');
-    tr.dataset.search = `${doc.name} ${doc.created}`.toLowerCase();
+    tr.dataset.search = `${d.nomeArquivo} ${d.dataCriacao || ""}`.toLowerCase();
+
     tr.innerHTML = `
-      <td class="col-icon" aria-hidden="true">
-        <img src="assets/img/icons/documento.svg" width="16" height="16" alt="">
+      <td class="col-icon">
+        <img src="assets/img/icons/documento.svg" width="16">
       </td>
-      <td>${doc.name}</td>
-      <td class="col-date">${doc.created}</td>
+      <td class="doc-link" data-file="${d.nomeArquivo}">
+        ${d.nomeArquivo}
+      </td>
+      <td class="col-date">${d.dataCriacao || "-"}</td>
     `;
+
+    // Clique para download
+    tr.querySelector(".doc-link").addEventListener("click", (e) => {
+      e.stopPropagation();
+      window.location.href = `http://localhost:8080/api/processos/${codigo}/download/${d.nomeArquivo}`;
+    });
+
     tbody.appendChild(tr);
   });
 }
 
-render(folder.docs);
+carregarDocumentos();
 
-function filterDocs(){
-  const q = (input.value || '').trim().toLowerCase();
-  Array.from(tbody.querySelectorAll('tr')).forEach(tr => {
-    tr.style.display = tr.dataset.search.includes(q) ? '' : 'none';
+
+// -----------------------------
+// FILTRO DE DOCUMENTOS
+// -----------------------------
+document.getElementById("docSearch").addEventListener("input", () => {
+  const q = docSearch.value.toLowerCase();
+  document.querySelectorAll("#docsTbody tr").forEach(tr => {
+    tr.style.display = tr.dataset.search.includes(q) ? "" : "none";
   });
-}
-input.addEventListener('input', filterDocs);
+});

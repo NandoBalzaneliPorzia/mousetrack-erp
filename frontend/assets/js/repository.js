@@ -1,27 +1,66 @@
-// Filtro simples
+// -------------------------------
+// VARIÁVEIS DO FILTRO
+// -------------------------------
 const input = document.getElementById('repoSearch');
-const rows  = Array.from(document.querySelectorAll('#repoTbody tr'));
+let rows = []; // será preenchido depois
 
-const guestAccess = new URLSearchParams(location.search).get("processoId");
-if (guestAccess) {
-    window.location.href = `/processo.html?processoId=${guestAccess}`;
-}
-
-
-function applyFilter(){
+function applyFilter() {
   const q = (input?.value || '').trim().toLowerCase();
   rows.forEach(tr => {
     const hay = (tr.dataset.search || '').toLowerCase();
     tr.style.display = hay.includes(q) ? '' : 'none';
   });
 }
+
 input?.addEventListener('input', applyFilter);
 
-// Navegação para a página de documentos (clicar na linha)
-rows.forEach(tr => {
-  const href = tr.dataset.href;
-  if(!href) return;
-  tr.addEventListener('click', () => {
-    window.location.href = href;
+
+// -------------------------------
+// FUNÇÃO PARA CARREGAR PROCESSOS
+// -------------------------------
+async function carregarProcessos() {
+  const resp = await fetch("http://localhost:8080/api/processos");
+  const lista = await resp.json();
+
+  const tbody = document.getElementById("repoTbody");
+  tbody.innerHTML = "";
+
+  lista.forEach(p => {
+    const tr = document.createElement("tr");
+
+    tr.dataset.href = `repository-doc.html?id=${p.codigo}`;
+    tr.dataset.search = `
+      ${p.codigo}
+      ${p.titulo}
+      ${p.responsavel || ""}
+      ${p.criado || ""}
+      ${p.quantidadeArquivos || ""}
+    `.toLowerCase();
+
+    tr.innerHTML = `
+      <td class="col-icon">
+        <img src="assets/img/icons/pastinha.svg" width="16">
+      </td>
+      <td>${p.codigo}</td>
+      <td>${p.titulo}</td>
+      <td>${p.responsavel || "-"}</td>
+      <td>${p.criado || "-"}</td>
+      <td class="col-qty">${p.quantidadeArquivos || 0}</td>
+    `;
+
+    tr.addEventListener("click", () => {
+      window.location.href = tr.dataset.href;
+    });
+
+    tbody.appendChild(tr);
   });
-});
+
+  // Atualiza lista usada pelo filtro
+  rows = Array.from(document.querySelectorAll('#repoTbody tr'));
+}
+
+
+// -------------------------------
+// INICIALIZA
+// -------------------------------
+carregarProcessos();
