@@ -3,11 +3,62 @@
 <head>
   <meta charset="UTF-8" />
   <title>Processo</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 30px;
+      background: #f7f7f7;
+    }
+
+    #processo {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      font-size: 16px;
+    }
+
+    #btnChat {
+      background: #007bff;
+      border: none;
+      color: white;
+      font-size: 20px;
+      border-radius: 50%;
+      width: 55px;
+      height: 55px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      box-shadow: 0px 4px 10px rgba(0,0,0,0.25);
+      transition: 0.2s;
+    }
+
+    #btnChat:hover {
+      background: #0056b3;
+      transform: scale(1.05);
+    }
+
+    #btnChat svg {
+      width: 24px;
+      height: 24px;
+      fill: white;
+    }
+  </style>
+
 </head>
 <body>
+
   <div id="processo"></div>
 
-  <button id="btnChat">Conversar sobre este processo</button>
+  <!-- Botão do chat (escondido até o JS habilitar) -->
+  <button id="btnChat" style="display:none;" title="Conversar sobre este processo">
+    💬
+  </button>
 
   <script src="/processo.js"></script>
 </body>

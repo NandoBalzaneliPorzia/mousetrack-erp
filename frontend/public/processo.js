@@ -1,41 +1,48 @@
+const params = new URLSearchParams(location.search);
+const codigo = params.get("codigo");
+const guest = params.get("guest") === "1"; // se for convidado
+const email = params.get("email"); // nome no chat
+
 async function carregarProcesso() {
-  const processoId = new URLSearchParams(location.search).get("processoId");
 
-  if (!processoId) {
-    document.body.innerHTML = "<h3>Processo inválido</h3>";
-    return;
-  }
+    if (!codigo) {
+        document.getElementById("processo").innerHTML =
+            "<h3>Código do processo não informado.</h3>";
+        return;
+    }
 
-  const resp = await fetch(`https://mousetrack-erp.onrender.com/api/processos/${processoId}`);
+    const resp = await fetch(`https://mousetrack-erp.onrender.com/api/processos/codigo/${codigo}`);
+    if (!resp.ok) {
+        document.getElementById("processo").innerHTML =
+            "<h3>Processo não encontrado</h3>";
+        return;
+    }
 
-  if (!resp.ok) {
-    document.body.innerHTML = "<h3>Processo não encontrado</h3>";
-    return;
-  }
+    const proc = await resp.json();
 
-  const proc = await resp.json();
+    document.getElementById("processo").innerHTML = `
+        <h2>${proc.codigo} - ${proc.titulo}</h2>
+        <p><strong>Tipo:</strong> ${proc.tipo}</p>
+        <p><strong>Modal:</strong> ${proc.modal}</p>
+        <p><strong>Observação:</strong> ${proc.observacao || '—'}</p>
+    `;
 
-  document.getElementById("processo").innerHTML = `
-    <h2>${proc.codigo} - ${proc.titulo}</h2>
-    <p><strong>Tipo:</strong> ${proc.tipo}</p>
-    <p><strong>Modal:</strong> ${proc.modal}</p>
-    <p><strong>Observação:</strong> ${proc.observacao || '—'}</p>
-  `;
+    // Se for convidado → exibe botão do chat
+    if (guest) {
+        document.getElementById("btnChat").style.display = "flex";
+    }
 
-  document.getElementById("btnChat").addEventListener("click", abrirChat);
+    document.getElementById("btnChat").addEventListener("click", () => abrirChat(proc.id));
 }
 
-function abrirChat() {
-  const processoId = new URLSearchParams(location.search).get("processoId");
+function abrirChat(processoId) {
 
-  fetch(`https://mousetrack-erp.onrender.com/api/chat/threads/processo/${processoId}`, {
-    method: "POST",
-    credentials: "include"
-  })
-  .then(r => r.json())
-  .then(thread => {
-    window.location.href = `/chat.html?threadId=${thread.id}`;
-  });
+    // Garante email no chat (nome do convidado)
+    const nome = email ? encodeURIComponent(email) : "Convidado";
+
+    const link = `https://mousetrack-frontend.onrender.com/chat.html?processo=${processoId}&guest=1&nome=${nome}`;
+
+    window.location.href = link;
 }
 
 carregarProcesso();
