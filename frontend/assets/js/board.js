@@ -221,7 +221,7 @@ emailSendBtn.addEventListener("click", async () => {
   }
 
   // link único do processo
-  const link = `${location.origin}/processo?id=${selectedCard.id}`;
+const link = `${location.origin}/processo/${selectedCard.codigo}`;
 
   try {
     const resp = await fetch("https://mousetrack-erp.onrender.com/email/enviar", {

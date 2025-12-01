@@ -81,4 +81,12 @@
                     .map(ResponseEntity::ok)
                     .orElse(ResponseEntity.notFound().build());
         }
+
+        @GetMapping("/codigo/{codigo}")
+public ResponseEntity<Processo> getByCodigo(@PathVariable String codigo) {
+    return repository.findByCodigo(codigo)
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.notFound().build());
+}
+
     }

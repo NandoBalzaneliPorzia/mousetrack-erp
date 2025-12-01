@@ -1,0 +1,20 @@
+async function carregarProcesso() {
+  const codigo = location.pathname.split("/").pop();
+
+  const resp = await fetch(`https://mousetrack-erp.onrender.com/api/processos/codigo/${codigo}`);
+  if (!resp.ok) {
+    document.getElementById("processo").innerHTML = "<h3>Processo não encontrado</h3>";
+    return;
+  }
+
+  const proc = await resp.json();
+
+  document.getElementById("processo").innerHTML = `
+    <h2>${proc.codigo} - ${proc.titulo}</h2>
+    <p><strong>Tipo:</strong> ${proc.tipo}</p>
+    <p><strong>Modal:</strong> ${proc.modal}</p>
+    <p><strong>Observação:</strong> ${proc.observacao || '—'}</p>
+  `;
+}
+
+carregarProcesso();
