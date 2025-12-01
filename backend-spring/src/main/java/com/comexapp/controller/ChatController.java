@@ -4,11 +4,14 @@ import com.comexapp.DTO.ChatThreadSummaryDTO;
 import com.comexapp.DTO.ChatMessageDTO;
 import com.comexapp.DTO.NovaMensagemDTO;
 import com.comexapp.model.ChatThread;
+import com.comexapp.model.Processo;
 import com.comexapp.model.ChatMessage;
 import com.comexapp.model.Usuario;
 import com.comexapp.repository.ChatThreadRepository;
 import com.comexapp.repository.ChatMessageRepository;
 import com.comexapp.repository.UsuarioRepository;
+import com.comexapp.repository.ProcessoRepository;
+
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,13 +26,18 @@ public class ChatController {
     private final ChatThreadRepository threadRepo;
     private final ChatMessageRepository messageRepo;
     private final UsuarioRepository usuarioRepo;
+    private final ProcessoRepository processoRepository;
+
+
 
     public ChatController(ChatThreadRepository threadRepo,
-                          ChatMessageRepository messageRepo,
-                          UsuarioRepository usuarioRepo) {
+                        ChatMessageRepository messageRepo,
+                        UsuarioRepository usuarioRepo,
+                        ProcessoRepository processoRepository) {
         this.threadRepo = threadRepo;
         this.messageRepo = messageRepo;
         this.usuarioRepo = usuarioRepo;
+        this.processoRepository = processoRepository;
     }
 
     // Lista de conversas (para a coluna da esquerda)
@@ -108,5 +116,28 @@ public class ChatController {
                 m.getEnviadoEm(),
                 m.isLido()
         );
+    }
+
+    @PostMapping("/threads/processo/{processoId}")
+    public ResponseEntity<ChatThread> criarOuObterThreadDoProcesso(@PathVariable Long processoId) {
+
+    Processo processo = processoRepository.findById(processoId)
+            .orElse(null);
+
+    if (processo == null) {
+        return ResponseEntity.badRequest().build();
+    }
+
+    ChatThread existente = threadRepo.findFirstByProcessoId(processoId);
+    if (existente != null) {
+        return ResponseEntity.ok(existente);
+    }
+
+    ChatThread novo = new ChatThread();
+        novo.setProcesso(processo);
+        novo.setTitulo(processo.getCodigo() + " - " + processo.getTitulo());
+
+        ChatThread salvo = threadRepo.save(novo);
+        return ResponseEntity.ok(salvo);
     }
 }

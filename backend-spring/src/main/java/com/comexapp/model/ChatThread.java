@@ -3,6 +3,7 @@ package com.comexapp.model;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import com.comexapp.model.Processo;
 
 @Entity
 @Table(name = "chat_threads")
@@ -36,6 +37,10 @@ public class ChatThread {
         this.atualizadoEm = LocalDateTime.now();
     }
 
+    @ManyToOne
+    @JoinColumn(name = "processo_id")
+    private Processo processo;
+
     // Getters e setters
 
     public Long getId() { return id; }
@@ -52,5 +57,14 @@ public class ChatThread {
 
     public List<ChatMessage> getMensagens() { return mensagens; }
     public void setMensagens(List<ChatMessage> mensagens) { this.mensagens = mensagens; }
+
+    public Processo getProcesso() {
+        return processo;
+    }
+
+    public void setProcesso(Processo processo) {
+        this.processo = processo;
+    }
+
 }
 

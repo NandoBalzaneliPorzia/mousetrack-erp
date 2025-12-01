@@ -7,5 +7,4 @@ import java.util.Optional;
 public interface ProcessoRepository extends JpaRepository<Processo, Long> {
 
     Optional<Processo> findByCodigo(String codigo);
-
 }

@@ -1,4 +1,5 @@
 com\comexapp\controller\ChatController.class
+com\comexapp\service\EmailService.class
 com\comexapp\DTO\ProcessoRequestDTO.class
 com\comexapp\model\Usuario.class
 com\comexapp\util\GenHash.class
@@ -21,10 +22,14 @@ com\comexapp\config\CorsConfig$1.class
 com\comexapp\DTO\ShippingInstructionDTO.class
 com\comexapp\repository\ClienteRepository.class
 com\comexapp\config\SecurityBeans.class
+com\comexapp\model\ProcessoArquivo.class
+com\comexapp\DTO\EmailRequestDTO.class
 com\comexapp\DTO\NovaMensagemDTO.class
 com\comexapp\repository\ProcessoRepository.class
 com\comexapp\service\ShippingWordService.class
+com\comexapp\repository\ProcessoArquivoRepository.class
 com\comexapp\service\ProcessoService.class
+com\comexapp\controller\EmailController.class
 com\comexapp\controller\HealthController.class
 com\comexapp\DTO\AtualizarPerfilDTO.class
 com\comexapp\controller\TesteController.class
