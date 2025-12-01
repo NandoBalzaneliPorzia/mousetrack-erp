@@ -50,12 +50,15 @@ public class EmailService {
 
         int status = con.getResponseCode();
 
+        System.out.println("BREVO STATUS = " + status); // <-- LOG para depuração
+
+        if (con.getErrorStream() != null) {
+    String err = new String(con.getErrorStream().readAllBytes());
+    System.out.println("BREVO ERROR BODY = " + err); // <-- LOG para depuração 
+}
+
         if (status != 201 && status != 200) {
-            String errorMsg = "";
-            if (con.getErrorStream() != null) {
-                errorMsg = new String(con.getErrorStream().readAllBytes());
-            }
-            throw new RuntimeException("Erro ao enviar e-mail (HTTP " + status + "): " + errorMsg);
-        }
+    throw new RuntimeException("Erro ao enviar e-mail (HTTP " + status + ")");
+}
     }
 }
