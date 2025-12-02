@@ -3,6 +3,8 @@ package com.comexapp.controller;
 import com.comexapp.DTO.ProcessoRequestDTO;
 import com.comexapp.model.Processo;
 import com.comexapp.repository.ProcessoRepository;
+import com.comexapp.model.ProcessoArquivo;
+import com.comexapp.repository.ProcessoArquivoRepository;
 import com.comexapp.service.ProcessoService;
 
 import java.util.List;
@@ -19,6 +21,9 @@ public class ProcessoController {
 
     private final ProcessoService service;
     private final ProcessoRepository repository;
+    @Autowired
+    private ProcessoArquivoRepository arquivoRepo;
+
 
     public ProcessoController(ProcessoService service, ProcessoRepository repository) {
         this.service = service;
