@@ -219,6 +219,39 @@ pAdd.addEventListener("click", () => {
     emailInput.focus();
   }
 });
+
+// ===============================
+// BOTÃO DE UPLOAD (pUpload)
+// ===============================
+const pUpload = document.getElementById("pUpload");
+
+if (pUpload) {
+  pUpload.addEventListener("click", () => {
+    if (!selectedCard) {
+      alert("Nenhum processo selecionado.");
+      return;
+    }
+
+    const input = document.createElement("input");
+    input.type = "file";
+    input.multiple = true;
+    input.accept = "*/*";
+
+    input.addEventListener("change", () => {
+      const files = Array.from(input.files);
+      if (!files.length) return;
+
+      console.log("Arquivos:", files);
+      console.log("Processo:", selectedCard);
+      alert(`${files.length} arquivo(s) selecionado(s).`);
+    });
+
+    input.click();
+  });
+}
+
+// 🔺🔺🔺 FIM DO CÓDIGO DO pUpload 🔺🔺🔺
+
 // BOTÃO DE ENVIO DO E-MAIL (AGORA REAL!)
 emailSendBtn.addEventListener("click", async () => {
   const email = emailInput.value.trim();

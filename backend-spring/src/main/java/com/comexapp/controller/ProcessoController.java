@@ -56,6 +56,21 @@ public class ProcessoController {
         }
     }
 
+    @PostMapping(value = "/{codigo}/arquivos", consumes = "multipart/form-data")
+public ResponseEntity<?> uploadArquivos(
+        @PathVariable String codigo,
+        @RequestPart("arquivos") MultipartFile[] arquivos
+) {
+    try {
+        Processo processo = service.salvarArquivosNoProcesso(codigo, arquivos);
+        return ResponseEntity.ok(processo);
+    } catch (Exception e) {
+        e.printStackTrace();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(Map.of("error", "Falha ao anexar arquivos", "detail", e.getMessage()));
+    }
+}
+
     // ================================
     //      LISTAR PROCESSOS
     // ================================
