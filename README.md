@@ -4,7 +4,7 @@
 
 Repositório para desenvolvimento do projeto integrador, apresentado no componente curricular Projeto Integrador IV, do curso de Sistemas de Informação, da Pontifícia Universidade Católica de Campinas - PUC.
 
-**Orientadora:** Lua Marcelo Muriana
+**Orientador:** Lua Marcelo Muriana
 
 ---
 
