@@ -73,7 +73,10 @@ public ResponseEntity<?> uploadArquivos(
 ) {
     try {
         Processo processo = service.salvarArquivosNoProcesso(codigo, arquivos);
-        return ResponseEntity.ok(processo);
+        // 🔥 NÃO retornar o processo inteiro (gera recursão + envia byte[] gigante)
+        return ResponseEntity.ok(Map.of(
+                "message", "Arquivos enviados",
+                "count", arquivos.length));
     } catch (Exception e) {
         e.printStackTrace();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)

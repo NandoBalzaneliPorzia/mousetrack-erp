@@ -22,6 +22,7 @@ public class ProcessoArquivo {
 
     @ManyToOne
     @JoinColumn(name = "processo_id")
+    @JsonIgnore   // impede recursão infinita
     private Processo processo;
 
     // Getters e Setters

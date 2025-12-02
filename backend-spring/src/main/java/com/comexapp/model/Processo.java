@@ -24,6 +24,7 @@ public class Processo {
         cascade = CascadeType.ALL,
         orphanRemoval = true
     )
+    @JsonIgnore    // impede enviar arquivos junto do processo
     private List<ProcessoArquivo> arquivos = new ArrayList<>();
 
     // Getters e Setters
