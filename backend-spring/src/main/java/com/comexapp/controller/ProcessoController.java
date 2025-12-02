@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,8 +22,7 @@ public class ProcessoController {
 
     private final ProcessoService service;
     private final ProcessoRepository repository;
-    @Autowired
-    private ProcessoArquivoRepository arquivoRepo;
+    private final ProcessoArquivoRepository arquivoRepo;
 
 
     public ProcessoController(ProcessoService service, ProcessoRepository repository) {
