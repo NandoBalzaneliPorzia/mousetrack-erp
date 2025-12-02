@@ -31,9 +31,12 @@ O comércio exterior brasileiro é caracterizado por uma cadeia logística compl
 
 ## 🛠️ CONSTRUÍDO COM
 
-- **Java** ()
-- **Figma** (Prototipação de telas)
-- **Trello** (Gestão de tarefas e sprints)
+- **Java**
+- **Javascript**
+- **HTML**
+- **CSS**
+- **Figma** 
+- **Trello** 
 - **Metodologias Ágeis (Scrum/PBL)**
 
 ---
