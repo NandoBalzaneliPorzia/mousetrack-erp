@@ -243,7 +243,21 @@ if (pUpload) {
 
       console.log("Arquivos:", files);
       console.log("Processo:", selectedCard);
-      alert(`${files.length} arquivo(s) selecionado(s).`);
+      const formData = new FormData();
+files.forEach(f => formData.append("arquivos", f));
+
+fetch(api(`/api/processos/${selectedCard.codigo}/arquivos`), {
+  method: "POST",
+  body: formData
+})
+.then(r => r.json())
+.then(res => {
+  alert("Arquivos enviados com sucesso!");
+})
+.catch(err => {
+  console.error(err);
+  alert("Erro ao enviar arquivos");
+});
     });
 
     input.click();

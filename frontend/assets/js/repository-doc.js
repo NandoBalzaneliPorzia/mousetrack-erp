@@ -5,14 +5,19 @@ function getParam(name) {
   return new URL(window.location.href).searchParams.get(name);
 }
 
-const codigo = getParam("id"); // EX: ABC12345
+let codigo = getParam("id") || getParam("codigo") || getParam("processoId");
+
+if (!codigo) {
+  alert("Código do processo não encontrado na URL.");
+  throw new Error("Código não encontrado");
+}
 
 
 // -----------------------------
 // CARREGAR DOCUMENTOS DO BACKEND
 // -----------------------------
 async function carregarDocumentos() {
-  const resp = await fetch(`http://localhost:8080/api/processos/${codigo}/arquivos`);
+  const resp = await fetch(api(`/api/processos/${codigo}/arquivos`));
   const docs = await resp.json();
 
   // Atualiza o título da página
@@ -25,22 +30,23 @@ async function carregarDocumentos() {
   docs.forEach(d => {
     const tr = document.createElement("tr");
 
-    tr.dataset.search = `${d.nomeArquivo} ${d.dataCriacao || ""}`.toLowerCase();
+    // Agora o campo certo é "nome" e "id"
+    tr.dataset.search = `${d.nome} ${d.dataCriacao || ""}`.toLowerCase();
 
     tr.innerHTML = `
       <td class="col-icon">
         <img src="assets/img/icons/documento.svg" width="16">
       </td>
-      <td class="doc-link" data-file="${d.nomeArquivo}">
-        ${d.nomeArquivo}
+      <td class="doc-link" data-id="${d.id}">
+        ${d.nome}
       </td>
       <td class="col-date">${d.dataCriacao || "-"}</td>
     `;
 
-    // Clique para download
+    // Clique para download (AZUL — AJUSTADO)
     tr.querySelector(".doc-link").addEventListener("click", (e) => {
       e.stopPropagation();
-      window.location.href = `http://localhost:8080/api/processos/${codigo}/download/${d.nomeArquivo}`;
+      window.location.href = api(`/api/processos/download/${d.id}`);
     });
 
     tbody.appendChild(tr);

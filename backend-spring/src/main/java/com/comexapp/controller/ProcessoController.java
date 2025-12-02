@@ -88,4 +88,40 @@ public ResponseEntity<?> uploadArquivos(
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+
+// ================================ LISTAR ARQUIVOS DE UM PROCESSO ================================
+    @GetMapping("/{codigo}/arquivos")
+public ResponseEntity<?> listarArquivos(@PathVariable String codigo) {
+    try {
+        Processo processo = repository.findByCodigo(codigo)
+                .orElseThrow(() -> new RuntimeException("Processo não encontrado"));
+
+        return ResponseEntity.ok(
+                processo.getArquivos().stream().map(a -> Map.of(
+                        "id", a.getId(),
+                        "nome", a.getNomeArquivo(),
+                        "tipo", a.getTipoArquivo()
+                ))
+        );
+
+    } catch (Exception e) {
+        return ResponseEntity.status(400).body(Map.of("error", e.getMessage()));
+    }
+}
+// ================================ DOWNLOAD DE ARQUIVO ================================
+@GetMapping("/download/{idArquivo}")
+public ResponseEntity<?> downloadArquivo(@PathVariable Long idArquivo) {
+    try {
+        ProcessoArquivo arq = arquivoRepo.findById(idArquivo)
+                .orElseThrow(() -> new RuntimeException("Arquivo não encontrado"));
+
+        return ResponseEntity.ok()
+                .header("Content-Disposition", "attachment; filename=\"" + arq.getNomeArquivo() + "\"")
+                .body(arq.getDadosArquivo());
+
+    } catch (Exception e) {
+        return ResponseEntity.status(400).body(Map.of("error", e.getMessage()));
+    }
+}
+
 }
