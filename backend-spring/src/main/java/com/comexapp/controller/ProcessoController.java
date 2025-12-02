@@ -25,9 +25,14 @@ public class ProcessoController {
     private final ProcessoArquivoRepository arquivoRepo;
 
 
-    public ProcessoController(ProcessoService service, ProcessoRepository repository) {
+    public ProcessoController(
+            ProcessoService service,
+            ProcessoRepository repository,
+            ProcessoArquivoRepository arquivoRepo
+    ) {
         this.service = service;
         this.repository = repository;
+        this.arquivoRepo = arquivoRepo;
     }
 
     // ================================
