@@ -1,6 +1,12 @@
 // server/handler/StaticFileHandler.java
 package server.handler;
 
+/*
+A classe StaticFileHandler.java é responsável por servir arquivos 
+estáticos (HTML, CSS, JS, imagens, etc.). Implementa HttpHandler 
+para processar requisições HTTP de arquivos
+*/
+
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 

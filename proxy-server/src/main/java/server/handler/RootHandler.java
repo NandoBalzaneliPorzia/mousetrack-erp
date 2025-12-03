@@ -1,5 +1,10 @@
 package server.handler;
 
+/*
+A classe RootHandler.java verifica se o servidor está funcionando corretamennte, 
+retornando uma mensagem JSON para qualquer requisição 
+*/
+
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import java.io.IOException;

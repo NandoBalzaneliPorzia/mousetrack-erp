@@ -19,6 +19,7 @@
 
         @Lob
         @Column(name = "dados_arquivo", nullable = false)
+        @com.fasterxml.jackson.annotation.JsonIgnore
         private byte[] dadosArquivo;
 
         @Column(name = "nome_arquivo")
