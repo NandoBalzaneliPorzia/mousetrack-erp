@@ -29,7 +29,9 @@ public class Processo {
     private List<ProcessoArquivo> arquivos = new ArrayList<>();
 
     // Retorna a quantidade de arquivos associados ao processo
-    @JsonProperty("quantidadeArquivos")
+@Transient
+private int quantidadeArquivos;
+
 public int getQuantidadeArquivos() {
     return arquivos != null ? arquivos.size() : 0;
 }
