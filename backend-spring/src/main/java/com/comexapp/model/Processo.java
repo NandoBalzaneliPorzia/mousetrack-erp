@@ -37,7 +37,7 @@ public class Processo {
 
     public int getQuantidadeArquivos() {
         return arquivos != null ? arquivos.size() : 0;
-    }}
+    }
 
     // Getters e Setters
     public Long getId() { return id; }
