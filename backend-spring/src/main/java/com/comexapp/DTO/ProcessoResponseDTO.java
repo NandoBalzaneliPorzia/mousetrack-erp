@@ -1,6 +1,6 @@
 package com.comexapp.DTO;
 
-public class ProcessoSendDTO {
+public class ProcessoResponseDTO {
 
     private Long id;
     private String codigo;

@@ -1,16 +1,13 @@
 package com.comexapp.controller;
 
 import com.comexapp.DTO.ProcessoRequestDTO;
+import com.comexapp.DTO.ProcessoResponseDTO;
 import com.comexapp.DTO.ProcessoArquivoDTO;
 import com.comexapp.model.Processo;
 import com.comexapp.model.ProcessoArquivo;
 import com.comexapp.repository.ProcessoRepository;
 import com.comexapp.repository.ProcessoArquivoRepository;
 import com.comexapp.service.ProcessoService;
-
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import java.util.List;
 import java.util.Map;
@@ -95,41 +92,40 @@ public class ProcessoController {
     //   LISTAR PROCESSOS
     // ================================
     @GetMapping
-public List<ProcessoSendDTO> listarProcessos() {
-    return repository.findAll().stream().map(p -> {
-        ProcessoSendDTO dto = new ProcessoSendDTO();
-        dto.setId(p.getId());
-        dto.setCodigo(p.getCodigo());
-        dto.setTitulo(p.getTitulo());
-        dto.setTipo(p.getTipo());
-        dto.setModal(p.getModal());
-        dto.setObservacao(p.getObservacao());
-        return dto;
-    }).toList();
-}
-
+    public List<ProcessoResponseDTO> listarProcessos() {
+        return repository.findAll().stream().map(p -> {
+            ProcessoResponseDTO dto = new ProcessoResponseDTO();
+            dto.setId(p.getId());
+            dto.setCodigo(p.getCodigo());
+            dto.setTitulo(p.getTitulo());
+            dto.setTipo(p.getTipo());
+            dto.setModal(p.getModal());
+            dto.setObservacao(p.getObservacao());
+            return dto;
+        }).toList();
+    }
 
     // ================================
     //   BUSCAR PROCESSO POR ID
     // ================================
     @GetMapping("/{id}")
-public ResponseEntity<ProcessoSendDTO> getProcesso(@PathVariable Long id) {
-    return repository.findById(id)
-            .map(p -> {
-                ProcessoSendDTO dto = new ProcessoSendDTO();
-                dto.setId(p.getId());
-                dto.setCodigo(p.getCodigo());
-                dto.setTitulo(p.getTitulo());
-                dto.setTipo(p.getTipo());
-                dto.setModal(p.getModal());
-                dto.setObservacao(p.getObservacao());
-                return ResponseEntity.ok(dto);
-            })
-            .orElse(ResponseEntity.notFound().build());
-}
+    public ResponseEntity<ProcessoResponseDTO> getProcesso(@PathVariable Long id) {
+        return repository.findById(id)
+                .map(p -> {
+                    ProcessoResponseDTO dto = new ProcessoResponseDTO();
+                    dto.setId(p.getId());
+                    dto.setCodigo(p.getCodigo());
+                    dto.setTitulo(p.getTitulo());
+                    dto.setTipo(p.getTipo());
+                    dto.setModal(p.getModal());
+                    dto.setObservacao(p.getObservacao());
+                    return ResponseEntity.ok(dto);
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
 
     // ================================
-    //   LISTAR ARQUIVOS DO PROCESSO (SEM BLOB)
+    //   LISTAR ARQUIVOS DO PROCESSO
     // ================================
     @GetMapping("/{codigo}/arquivos")
     public ResponseEntity<?> listarArquivos(@PathVariable String codigo) {
@@ -141,7 +137,7 @@ public ResponseEntity<ProcessoSendDTO> getProcesso(@PathVariable Long id) {
                 dto.setId(a.getId());
                 dto.setNomeArquivo(a.getNomeArquivo());
                 dto.setTipoArquivo(a.getTipoArquivo());
-                dto.setDataCriacao(a.getDataCriacao());
+                dto.setDataCriacao(a.getDataCriacao().toString());
                 dto.setProcessoCodigo(codigo);
                 return dto;
             }).toList();
@@ -184,7 +180,7 @@ public ResponseEntity<ProcessoSendDTO> getProcesso(@PathVariable Long id) {
                 dto.setId(a.getId());
                 dto.setNomeArquivo(a.getNomeArquivo());
                 dto.setTipoArquivo(a.getTipoArquivo());
-                dto.setDataCriacao(a.getDataCriacao());
+                dto.setDataCriacao(a.getDataCriacao().toString());
                 dto.setProcessoCodigo(a.getProcesso().getCodigo());
                 return dto;
             }).toList();
