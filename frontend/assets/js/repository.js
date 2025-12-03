@@ -19,7 +19,7 @@ input?.addEventListener('input', applyFilter);
 // FUNÇÃO PARA CARREGAR PROCESSOS
 // -------------------------------
 async function carregarProcessos() {
-  const resp = await fetch("https://mousetrack-erp.onrender.com/api");
+  const resp = await fetch("https://mousetrack-erp.onrender.com/api/processos");
   const lista = await resp.json();
 
   const tbody = document.getElementById("repoTbody");

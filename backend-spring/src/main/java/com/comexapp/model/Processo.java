@@ -28,6 +28,12 @@ public class Processo {
     @JsonIgnore    // impede enviar arquivos junto do processo
     private List<ProcessoArquivo> arquivos = new ArrayList<>();
 
+    // Retorna a quantidade de arquivos associados ao processo
+    @JsonProperty("quantidadeArquivos")
+public int getQuantidadeArquivos() {
+    return arquivos != null ? arquivos.size() : 0;
+}
+
     // Getters e Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
