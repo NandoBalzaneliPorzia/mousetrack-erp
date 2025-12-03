@@ -26,7 +26,7 @@ async function carregarProcessos() {
   tbody.innerHTML = "";
 
   lista.forEach(p => {
-    const quantidade = p.arquivos?.length ?? 0;
+    const quantidade = p.quantidadeArquivos ?? 0;
 
     const tr = document.createElement("tr");
 

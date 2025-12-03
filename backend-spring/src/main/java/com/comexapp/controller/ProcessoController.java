@@ -92,18 +92,24 @@ public class ProcessoController {
     //   LISTAR PROCESSOS
     // ================================
     @GetMapping
-    public List<ProcessoResponseDTO> listarProcessos() {
-        return repository.findAll().stream().map(p -> {
-            ProcessoResponseDTO dto = new ProcessoResponseDTO();
-            dto.setId(p.getId());
-            dto.setCodigo(p.getCodigo());
-            dto.setTitulo(p.getTitulo());
-            dto.setTipo(p.getTipo());
-            dto.setModal(p.getModal());
-            dto.setObservacao(p.getObservacao());
-            return dto;
-        }).toList();
-    }
+public List<ProcessoResponseDTO> listarProcessos() {
+    return repository.findAll().stream().map(p -> {
+        ProcessoResponseDTO dto = new ProcessoResponseDTO();
+        dto.setId(p.getId());
+        dto.setCodigo(p.getCodigo());
+        dto.setTitulo(p.getTitulo());
+        dto.setTipo(p.getTipo());
+        dto.setModal(p.getModal());
+        dto.setObservacao(p.getObservacao());
+        dto.setResponsavel(p.getResponsavel());
+        dto.setDataCriacao(p.getDataCriacao());
+
+        // AQUI!!!  👇
+        dto.setQuantidadeArquivos(p.getArquivos().size());
+
+        return dto;
+    }).toList();
+}
 
     // ================================
     //   BUSCAR PROCESSO POR ID

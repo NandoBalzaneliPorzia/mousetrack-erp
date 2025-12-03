@@ -8,6 +8,8 @@ public class ProcessoResponseDTO {
     private String tipo;
     private String modal;
     private String observacao;
+    private int quantidadeArquivos;
+
 
     // Getters e Setters
     public Long getId() { return id; }
@@ -15,6 +17,9 @@ public class ProcessoResponseDTO {
 
     public String getCodigo() { return codigo; }
     public void setCodigo(String codigo) { this.codigo = codigo; }
+
+    public int getQuantidadeArquivos() { return quantidadeArquivos; }
+    public void setQuantidadeArquivos(int quantidadeArquivos) { this.quantidadeArquivos = quantidadeArquivos; }
 
     public String getTitulo() { return titulo; }
     public void setTitulo(String titulo) { this.titulo = titulo; }
