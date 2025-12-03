@@ -108,7 +108,7 @@ public class ProcessoController {
     // ================================
     @GetMapping
     public List<ProcessoResponseDTO> listarProcessos() {
-        return repository.findAllWithArquivos().stream().map(p -> {
+        return repository.findAll().stream().map(p -> {
             ProcessoResponseDTO dto = new ProcessoResponseDTO();
             dto.setId(p.getId());
             dto.setCodigo(p.getCodigo());
@@ -118,7 +118,10 @@ public class ProcessoController {
             dto.setObservacao(p.getObservacao());
             dto.setResponsavel(p.getResponsavel());
             dto.setDataCriacao(p.getDataCriacao());
-            dto.setQuantidadeArquivos(p.getArquivos().size());
+            // Aqui, para quantidade de arquivos, use:
+            dto.setQuantidadeArquivos(
+                p.getArquivos() != null ? p.getArquivos().size() : 0
+            );
             return dto;
         }).toList();
     }
