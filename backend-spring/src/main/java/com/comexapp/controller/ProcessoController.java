@@ -156,7 +156,7 @@ public class ProcessoController {
                 dto.setId(a.getId());
                 dto.setNomeArquivo(a.getNomeArquivo());
                 dto.setTipoArquivo(a.getTipoArquivo());
-                dto.setDataCriacao(a.getDataCriacao().toString());
+                dto.setDataCriacao(a.getDataCriacao() != null ? a.getDataCriacao().toString() : null);
                 dto.setProcessoCodigo(codigo);
                 return dto;
             }).toList();
