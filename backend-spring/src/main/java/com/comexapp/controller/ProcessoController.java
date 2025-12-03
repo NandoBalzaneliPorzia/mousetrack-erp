@@ -1,6 +1,7 @@
 package com.comexapp.controller;
 
 import com.comexapp.DTO.ProcessoRequestDTO;
+import com.comexapp.DTO.ProcessoArquivoDTO;
 import com.comexapp.model.Processo;
 import com.comexapp.model.ProcessoArquivo;
 import com.comexapp.repository.ProcessoRepository;
@@ -109,21 +110,24 @@ public class ProcessoController {
     }
 
     // ================================
-    //   LISTAR ARQUIVOS DO PROCESSO
+    //   LISTAR ARQUIVOS DO PROCESSO (SEM BLOB)
     // ================================
     @GetMapping("/{codigo}/arquivos")
     public ResponseEntity<?> listarArquivos(@PathVariable String codigo) {
         try {
             List<ProcessoArquivo> arquivos = arquivoRepo.findByProcessoCodigo(codigo);
 
-            return ResponseEntity.ok(
-                    arquivos.stream().map(a -> Map.of(
-                            "id", a.getId(),
-                            "nome", a.getNomeArquivo(),
-                            "tipo", a.getTipoArquivo(),
-                            "dataCriacao", a.getDataCriacao()
-                    ))
-            );
+            List<ProcessoArquivoDTO> dtos = arquivos.stream().map(a -> {
+                ProcessoArquivoDTO dto = new ProcessoArquivoDTO();
+                dto.setId(a.getId());
+                dto.setNomeArquivo(a.getNomeArquivo());
+                dto.setTipoArquivo(a.getTipoArquivo());
+                dto.setDataCriacao(a.getDataCriacao());
+                dto.setProcessoCodigo(codigo);
+                return dto;
+            }).toList();
+
+            return ResponseEntity.ok(dtos);
 
         } catch (Exception e) {
             return ResponseEntity.status(400).body(Map.of("error", e.getMessage()));
@@ -149,23 +153,24 @@ public class ProcessoController {
     }
 
     // ================================
-    //   LISTAR PASTAS DO REPOSITÓRIO
+    //   LISTAR PASTAS DO REPOSITORIO
     // ================================
     @GetMapping("/repositorio")
     public ResponseEntity<?> listarPastasRepositorio() {
         try {
-            Path raiz = Paths.get("uploads");
+            List<ProcessoArquivo> arquivos = arquivoRepo.findAll();
 
-            if (!Files.exists(raiz)) {
-                return ResponseEntity.ok(List.of());
-            }
+            List<ProcessoArquivoDTO> dtos = arquivos.stream().map(a -> {
+                ProcessoArquivoDTO dto = new ProcessoArquivoDTO();
+                dto.setId(a.getId());
+                dto.setNomeArquivo(a.getNomeArquivo());
+                dto.setTipoArquivo(a.getTipoArquivo());
+                dto.setDataCriacao(a.getDataCriacao());
+                dto.setProcessoCodigo(a.getProcesso().getCodigo());
+                return dto;
+            }).toList();
 
-            List<String> pastas = Files.list(raiz)
-                    .filter(Files::isDirectory)
-                    .map(p -> p.getFileName().toString())
-                    .toList();
-
-            return ResponseEntity.ok(pastas);
+            return ResponseEntity.ok(dtos);
 
         } catch (Exception e) {
             return ResponseEntity.status(400).body(Map.of("error", e.getMessage()));
