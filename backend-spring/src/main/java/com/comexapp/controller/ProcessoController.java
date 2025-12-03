@@ -180,7 +180,7 @@ public class ProcessoController {
                 dto.setId(a.getId());
                 dto.setNomeArquivo(a.getNomeArquivo());
                 dto.setTipoArquivo(a.getTipoArquivo());
-                dto.setDataCriacao(a.getDataCriacao().toString());
+                dto.setDataCriacao(a.getDataCriacao());
                 dto.setProcessoCodigo(a.getProcesso().getCodigo());
                 return dto;
             }).toList();
