@@ -95,19 +95,38 @@ public class ProcessoController {
     //   LISTAR PROCESSOS
     // ================================
     @GetMapping
-    public List<Processo> listarProcessos() {
-        return repository.findAll();
-    }
+public List<ProcessoSendDTO> listarProcessos() {
+    return repository.findAll().stream().map(p -> {
+        ProcessoSendDTO dto = new ProcessoSendDTO();
+        dto.setId(p.getId());
+        dto.setCodigo(p.getCodigo());
+        dto.setTitulo(p.getTitulo());
+        dto.setTipo(p.getTipo());
+        dto.setModal(p.getModal());
+        dto.setObservacao(p.getObservacao());
+        return dto;
+    }).toList();
+}
+
 
     // ================================
     //   BUSCAR PROCESSO POR ID
     // ================================
     @GetMapping("/{id}")
-    public ResponseEntity<Processo> getProcesso(@PathVariable Long id) {
-        return repository.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
+public ResponseEntity<ProcessoSendDTO> getProcesso(@PathVariable Long id) {
+    return repository.findById(id)
+            .map(p -> {
+                ProcessoSendDTO dto = new ProcessoSendDTO();
+                dto.setId(p.getId());
+                dto.setCodigo(p.getCodigo());
+                dto.setTitulo(p.getTitulo());
+                dto.setTipo(p.getTipo());
+                dto.setModal(p.getModal());
+                dto.setObservacao(p.getObservacao());
+                return ResponseEntity.ok(dto);
+            })
+            .orElse(ResponseEntity.notFound().build());
+}
 
     // ================================
     //   LISTAR ARQUIVOS DO PROCESSO (SEM BLOB)
