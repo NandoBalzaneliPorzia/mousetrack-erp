@@ -5,7 +5,7 @@ function getParam(name) {
   return new URL(window.location.href).searchParams.get(name);
 }
 
-let codigo = getParam("id") || getParam("codigo") || getParam("processoId");
+let codigo = getParam("id");  // agora só "id" é necessário
 
 if (!codigo) {
   alert("Código do processo não encontrado na URL.");
@@ -37,12 +37,11 @@ async function carregarDocumentos() {
       <td class="doc-link" data-id="${d.id}">
         ${d.nome}
       </td>
-      <td class="col-date">${d.dataCriacao || "-"}</td>
+      <td class="col-date">${d.dataCriacao ? d.dataCriacao.slice(0, 10) : "-"}</td>
     `;
 
     // Clique para download
-    tr.querySelector(".doc-link").addEventListener("click", (e) => {
-      e.stopPropagation();
+    tr.querySelector(".doc-link").addEventListener("click", () => {
       window.location.href = api(`/api/processos/download/${d.id}`);
     });
 

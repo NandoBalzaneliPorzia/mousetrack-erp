@@ -16,6 +16,7 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class ProcessoService {
@@ -23,7 +24,6 @@ public class ProcessoService {
     private final ProcessoRepository repo;
     private final ProcessoArquivoRepository arquivoRepo;
 
-    // Pasta raiz
     private static final String ROOT_DIR = "uploads";
 
     public ProcessoService(ProcessoRepository repo, ProcessoArquivoRepository arquivoRepo) {
@@ -32,7 +32,7 @@ public class ProcessoService {
     }
 
     // ============================================================
-    //  CRIAR PROCESSO (FORMULÁRIO) + ARQUIVOS OPCIONAIS
+    //  CRIAR PROCESSO + ARQUIVOS DO FORMULÁRIO
     // ============================================================
     public Processo criarProcesso(ProcessoRequestDTO dto) throws Exception {
 
@@ -48,18 +48,16 @@ public class ProcessoService {
 
         processo = repo.save(processo);
 
-        // Criar pasta raiz
+        // Criar pastas
         Path rootPath = Paths.get(ROOT_DIR);
         Files.createDirectories(rootPath);
 
-        // Criar pasta do processo
         Path pastaProcesso = rootPath.resolve(processo.getCodigo());
         Files.createDirectories(pastaProcesso);
 
-        // Salvar arquivos do formulário
+        // Salvar arquivos iniciais
         if (dto.getArquivos() != null) {
             for (MultipartFile file : dto.getArquivos()) {
-
                 if (file != null && !file.isEmpty()) {
 
                     ProcessoArquivo pa = new ProcessoArquivo();
@@ -72,8 +70,7 @@ public class ProcessoService {
                     arquivoRepo.save(pa);
                     processo.getArquivos().add(pa);
 
-                    Path destino = pastaProcesso.resolve(file.getOriginalFilename());
-                    Files.write(destino, file.getBytes());
+                    Files.write(pastaProcesso.resolve(file.getOriginalFilename()), file.getBytes());
                 }
             }
         }
@@ -82,7 +79,7 @@ public class ProcessoService {
     }
 
     // ============================================================
-    //  ANEXAR ARQUIVOS EM UM PROCESSO EXISTENTE (via card)
+    //  ANEXAR ARQUIVOS APÓS O CARD EXISTIR
     // ============================================================
     public Processo salvarArquivosNoProcesso(String codigo, MultipartFile[] arquivos) throws Exception {
 
@@ -93,7 +90,6 @@ public class ProcessoService {
         Files.createDirectories(pastaProcesso);
 
         for (MultipartFile file : arquivos) {
-
             if (file == null || file.isEmpty()) continue;
 
             ProcessoArquivo pa = new ProcessoArquivo();
@@ -106,8 +102,7 @@ public class ProcessoService {
             arquivoRepo.save(pa);
             processo.getArquivos().add(pa);
 
-            Path destino = pastaProcesso.resolve(file.getOriginalFilename());
-            Files.write(destino, file.getBytes());
+            Files.write(pastaProcesso.resolve(file.getOriginalFilename()), file.getBytes());
         }
 
         return repo.save(processo);

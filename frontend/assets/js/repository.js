@@ -26,6 +26,8 @@ async function carregarProcessos() {
   tbody.innerHTML = "";
 
   lista.forEach(p => {
+    const quantidade = p.arquivos?.length ?? 0;
+
     const tr = document.createElement("tr");
 
     tr.dataset.href = `repository-doc.html?id=${p.codigo}`;
@@ -33,8 +35,8 @@ async function carregarProcessos() {
       ${p.codigo}
       ${p.titulo}
       ${p.responsavel || ""}
-      ${p.criado || ""}
-      ${p.quantidadeArquivos || ""}
+      ${p.dataCriacao || ""}
+      ${quantidade}
     `.toLowerCase();
 
     tr.innerHTML = `
@@ -44,8 +46,8 @@ async function carregarProcessos() {
       <td>${p.codigo}</td>
       <td>${p.titulo}</td>
       <td>${p.responsavel || "-"}</td>
-      <td>${p.criado || "-"}</td>
-      <td class="col-qty">${p.quantidadeArquivos || 0}</td>
+      <td>${p.dataCriacao ? p.dataCriacao.slice(0, 10) : "-"}</td>
+      <td class="col-qty">${quantidade}</td>
     `;
 
     tr.addEventListener("click", () => {
