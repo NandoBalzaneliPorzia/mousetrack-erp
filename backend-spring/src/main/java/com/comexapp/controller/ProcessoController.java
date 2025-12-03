@@ -118,10 +118,8 @@ public class ProcessoController {
             dto.setObservacao(p.getObservacao());
             dto.setResponsavel(p.getResponsavel());
             dto.setDataCriacao(p.getDataCriacao());
-            // Aqui, para quantidade de arquivos, use:
-            dto.setQuantidadeArquivos(
-                p.getArquivos() != null ? p.getArquivos().size() : 0
-            );
+            // Aqui, conte os arquivos sem acessar a lista
+            dto.setQuantidadeArquivos(arquivoRepo.countByProcessoId(p.getId()));
             return dto;
         }).toList();
     }
