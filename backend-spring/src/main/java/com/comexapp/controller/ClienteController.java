@@ -1,5 +1,12 @@
 package com.comexapp.controller;
 
+/*
+A classe ClienteController.java Este arquivo define o controlador REST 
+para a entidade Cliente. Ele gerencia as operações CRUD (Criar, Ler, 
+Atualizar, Deletar) para clientes, expondo endpoints HTTP para interagir 
+com o banco de dados de clientes.
+*/
+
 import com.comexapp.model.Cliente;
 import com.comexapp.repository.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;

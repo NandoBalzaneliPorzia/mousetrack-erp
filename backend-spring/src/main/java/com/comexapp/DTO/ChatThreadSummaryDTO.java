@@ -1,5 +1,11 @@
 package com.comexapp.DTO;
 
+/*
+A classe ChatThreadSummaryDTO.java representa um DTO para o resumo de 
+um tópico de chat (thread). Contém informações essenciais como ID, 
+título, última mensagem e o número de mensagens não lidas.
+*/
+
 public class ChatThreadSummaryDTO {
 
     private Long id;

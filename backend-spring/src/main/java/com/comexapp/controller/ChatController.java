@@ -1,5 +1,12 @@
 package com.comexapp.controller;
 
+/*
+A classe ChatController.java é um controlador REST que gerencia as operações 
+relacionadas ao chat da aplicação, incluindo listagem de conversas, envio e 
+recebimento de mensagens, e criação de novas threads de chat, inclusive 
+associadas a processos.
+*/
+
 import com.comexapp.DTO.ChatThreadSummaryDTO;
 import com.comexapp.DTO.ChatMessageDTO;
 import com.comexapp.DTO.NovaMensagemDTO;

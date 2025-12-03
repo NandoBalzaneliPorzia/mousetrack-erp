@@ -1,5 +1,10 @@
 package com.comexapp.DTO;
 
+/*
+A classe NovaMensagemDTO.java para representar uma nova mensagem a ser enviada.
+Contendo o ID do autor e o conteúdo da mensagem.
+*/
+
 public class NovaMensagemDTO {
 
     private Long autorId;

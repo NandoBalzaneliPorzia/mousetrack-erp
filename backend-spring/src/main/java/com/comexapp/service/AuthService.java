@@ -1,5 +1,12 @@
 package com.comexapp.service;
 
+/*
+A classe AuthService.java gerencia a autenticação de usuários no sistema.
+Fornece funcionalidades para buscar usuários por email e validar credenciais 
+de login, verificando se a senha digitada corresponde ao hash armazenado no 
+banco de dados e se o usuário está ativo.
+*/
+
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;

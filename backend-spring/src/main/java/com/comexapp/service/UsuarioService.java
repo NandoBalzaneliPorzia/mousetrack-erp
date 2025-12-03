@@ -1,5 +1,12 @@
 package com.comexapp.service;
 
+/*
+A classe UsuarioService.java gerencia operações relacionadas a usuários, 
+incluindo atualização de senhas e geração de senhas aleatórias seguras. 
+Utiliza SecureRandom para criar senhas com caracteres alfanuméricos e 
+especiais, garantindo maior segurança no processo de recuperação de senha.
+*/
+
 import com.comexapp.repository.UsuarioRepository;
 import com.comexapp.model.Usuario;
 import org.springframework.stereotype.Service;

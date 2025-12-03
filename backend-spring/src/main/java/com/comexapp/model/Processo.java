@@ -1,5 +1,10 @@
 package com.comexapp.model;
 
+/*
+A classe Processo.java representa a entidade "Processo" no banco de dados,
+contendo informações sobre um processo e seu relacionamento com arquivos.
+*/
+
 import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

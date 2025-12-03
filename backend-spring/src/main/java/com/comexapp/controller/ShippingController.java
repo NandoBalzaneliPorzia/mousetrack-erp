@@ -1,11 +1,18 @@
 package com.comexapp.controller;
 
+/*
+A classe ShippingController.java é um controlador REST responsável por gerenciar 
+operações relacionadas a instruções de embarque (shipping instructions). Ele expõe 
+um endpoint para gerar documentos Word (.docx) a partir de dados de instruções de embarque.
+*/
+
 import com.comexapp.DTO.ShippingInstructionDTO;
 import com.comexapp.service.ShippingWordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
+//definição endpoint REST geerando e devolvendo um arquivo word para download
 @RestController
 @RequestMapping("/api/shipping")
 public class ShippingController {

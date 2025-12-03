@@ -1,5 +1,20 @@
 package com.comexapp.controller;
 
+/*
+A cclasse ProcessoController.java é um controlador RESTful que gerencia operações relacionadas 
+a "Processos" e seus "Arquivos" associados. Ele fornece endpoints para:
+     - Criar novos processos, incluindo o upload de arquivos.
+    - Fazer upload de arquivos para processos existentes.
+    - Listar todos os processos.
+    - Buscar um processo específico por ID.
+    - Listar os arquivos de um processo específico.
+    - Realizar o download de arquivos.
+    - Listar todos os arquivos no repositório.
+ As operações envolvem a manipulação de DTOs (Data Transfer Objects) para requisições e respostas,
+ modelos de dados (Processo e ProcessoArquivo) e repositórios para persistência, além de um serviço 
+ (ProcessoService) para a lógica de negócio.
+*/
+
 import com.comexapp.DTO.ProcessoRequestDTO;
 import com.comexapp.DTO.ProcessoResponseDTO;
 import com.comexapp.DTO.ProcessoArquivoDTO;

@@ -1,5 +1,12 @@
 package com.comexapp.model;
 
+/*
+A classe ChatMessage.java representa uma mensagem de chat no sistema.
+Esta entidade armazena detalhes como o ID da mensagem, a conversa 
+(thread) à qual pertence, o autor da mensagem, o conteúdo, a data e 
+hora de envio, e se a mensagem foi lida.
+*/
+
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 

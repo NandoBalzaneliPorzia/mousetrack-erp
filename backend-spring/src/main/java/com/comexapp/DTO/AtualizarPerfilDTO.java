@@ -1,5 +1,10 @@
 package com.comexapp.DTO;
 
+/*
+A classe AtualizarPerfilDTO.java é usada para encapsular os dados necessários
+para a atualização do perfil de um usuário, incluindo telefone e senha.
+*/
+
 public class AtualizarPerfilDTO {
     private String telefone;
     private String novaSenha;

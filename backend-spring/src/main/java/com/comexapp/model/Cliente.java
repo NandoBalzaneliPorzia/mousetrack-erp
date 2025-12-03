@@ -1,5 +1,11 @@
 package com.comexapp.model;
 
+/*
+A classe Cliente.java representa a entidade 'Cliente' no banco de dados, 
+mapeando a tabela 'clientes'. Ela define os atributos de um cliente, 
+como ID, nome e CNPJ, e inclui os métodos de acesso (getters e setters).
+*/
+
 import jakarta.persistence.*;
 
 @Entity

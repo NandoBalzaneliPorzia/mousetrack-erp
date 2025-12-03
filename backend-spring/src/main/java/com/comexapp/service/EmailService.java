@@ -1,5 +1,12 @@
 package com.comexapp.service;
 
+/*
+A classe EmailService.java gerencia o envio de emails através da API 
+do Brevo (antigo Sendinblue). Utiliza credenciais configuradas no 
+application.properties para autenticação e envia emails em formato 
+HTML para destinatários especificados.
+*/
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 

@@ -1,5 +1,12 @@
 package com.comexapp.model;
 
+/*
+A classe ChatThread,java representa uma thread de chat dentro do sistema, 
+associada a um processo específico. Gerencia informações como título da 
+thread, datas de criação e atualização, e a lista de mensagens contidas 
+na thread.
+*/
+
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;

@@ -1,5 +1,12 @@
 package com.comexapp.model;
 
+/*
+A classe Usuario.java representa a entidade 'Usuario' no banco de dados.
+Ela mapeia a tabela 'usuarios' e define os atributos de um usuário,
+como ID, email, senha (hash), nome, telefone, tipo de usuário,
+status de atividade, ID do cliente associado e data de criação.
+*/
+
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 

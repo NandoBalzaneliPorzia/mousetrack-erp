@@ -1,6 +1,11 @@
 
 package com.comexapp.DTO;
 
+/*
+A classe ProcessoRequestDTO.java representa os dados de requisição
+de um processo, incluindo informações textuais e arquivos anexados.
+*/
+
 import org.springframework.web.multipart.MultipartFile;
 
 public class ProcessoRequestDTO {

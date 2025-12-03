@@ -1,5 +1,13 @@
 package com.comexapp.DTO;
 
+/*
+A classe ShippingInstructionDTO.java representa as informações de uma 
+instrução de embarque (Shipping Instruction). Utilizado para transportar 
+dados entre camadas da aplicação, como da interface do usuário para o 
+serviço ou vice-versa. Contém detalhes essenciais para o processo de 
+transporte de mercadorias, seja aéreo ou marítimo.
+*/
+
 public class ShippingInstructionDTO {
     private String origem;
     private String destino;

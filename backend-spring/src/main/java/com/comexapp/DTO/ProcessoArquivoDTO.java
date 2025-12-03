@@ -1,5 +1,11 @@
 package com.comexapp.DTO;
 
+/*
+A classe ProcessoArquivoDTO.java representa um DTO para informações de 
+um arquivo de processo. Ela encapsula dados como ID, nome, tipo, data 
+de criação e código do processo associado ao arquivo.
+*/
+
 import java.time.LocalDateTime;
 
 public class ProcessoArquivoDTO {

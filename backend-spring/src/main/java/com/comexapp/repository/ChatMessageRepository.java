@@ -1,5 +1,13 @@
 package com.comexapp.repository;
 
+/*
+A classe ChatMessageRepository é uma interface que define um repositório para a 
+entidade ChatMessage, fornecendo métodos para operações de persistência e 
+consulta de mensagens de chat. Inclui funcionalidades para buscar mensagens por 
+ID de conversa em ordem cronológica, contar mensagens não lidas e obter a última 
+mensagem de uma conversa.
+*/
+
 import com.comexapp.model.ChatMessage;
 import org.springframework.data.jpa.repository.JpaRepository;
 

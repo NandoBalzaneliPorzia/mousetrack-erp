@@ -1,5 +1,12 @@
 package com.comexapp.service;
 
+/*
+A classe ShippingWordService.java gera um Word contendo instruções de embarque 
+(Shipping Instructions). Utiliza a biblioteca Apache POI para criar um documento 
+formatado com título, tabela de informações e rodapé, retornando o arquivo em 
+formato de array de bytes para download ou armazenamento
+*/
+
 import com.comexapp.DTO.ShippingInstructionDTO;
 import org.apache.poi.xwpf.usermodel.*;
 import org.springframework.stereotype.Service;

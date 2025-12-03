@@ -1,5 +1,12 @@
 package com.comexapp.service;
 
+/*
+A classe ProcessoService.java gerencia a criação e manipulação de processos no sistema.
+Fornece funcionalidades para criar novos processos com arquivos anexados, salvar arquivos 
+no sistema de arquivos local e no banco de dados, e adicionar novos arquivos a processos 
+existentes.
+*/
+
 import com.comexapp.DTO.ProcessoRequestDTO;
 import com.comexapp.model.Processo;
 import com.comexapp.model.ProcessoArquivo;

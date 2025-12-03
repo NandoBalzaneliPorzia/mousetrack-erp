@@ -1,5 +1,12 @@
 package com.comexapp.controller;
 
+/*
+A classe UserController.java é um controlador REST que gerencia 
+operações relacionadas a usuários, incluindo a criação de novos 
+usuários, atualização de telefone e senha. Ele interage com os 
+repositórios de Usuário e Cliente para persistência de dados
+*/
+
 import com.comexapp.model.Usuario;
 import com.comexapp.model.Cliente;
 import com.comexapp.model.TipoUsuario;

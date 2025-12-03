@@ -1,5 +1,12 @@
 package com.comexapp.DTO;
 
+/*
+A classe ProcessoResponseDTO.java representa um DTO para a resposta de um processo.
+Ela encapsula os dados de um processo que serão enviados como resposta a uma requisição,
+incluindo informações como ID, código, título, tipo, modal, observação, responsável,
+data de criação e quantidade de arquivos associados.
+*/
+
 public class ProcessoResponseDTO {
 
     private Long id;

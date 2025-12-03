@@ -1,5 +1,12 @@
 package com.comexapp.controller;
 
+/*
+A classe HealthController.java é um controlador que fornece endpoints 
+para verificar a saúde (health check) e a versão da aplicação. É útil 
+para monitoramento e para garantir que o serviço está em execução e 
+respondendo corretamente.
+*/
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.Map;
