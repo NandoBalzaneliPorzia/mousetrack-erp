@@ -2,6 +2,7 @@ package com.comexapp.model;
 
 import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,10 +25,14 @@ public class Processo {
 
     private String responsavel;
 
+    // ============================================================
+    //  RELACIONAMENTO CORRIGIDO
+    // ============================================================
     @OneToMany(
-        mappedBy = "processo",
-        cascade = CascadeType.ALL,
-        orphanRemoval = true
+            mappedBy = "processo",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
     )
     @JsonIgnore
     private List<ProcessoArquivo> arquivos = new ArrayList<>();
@@ -39,7 +44,10 @@ public class Processo {
         return arquivos != null ? arquivos.size() : 0;
     }
 
-    // Getters e Setters
+    // ============================================================
+    //  GETTERS E SETTERS
+    // ============================================================
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -61,15 +69,9 @@ public class Processo {
     public String getResponsavel() { return responsavel; }
     public void setResponsavel(String responsavel) { this.responsavel = responsavel; }
 
-
     public String getCodigo() { return codigo; }
     public void setCodigo(String codigo) { this.codigo = codigo; }
 
-    public List<ProcessoArquivo> getArquivos() {
-        return arquivos;
-    }
-
-    public void setArquivos(List<ProcessoArquivo> arquivos) {
-        this.arquivos = arquivos;
-    }
+    public List<ProcessoArquivo> getArquivos() { return arquivos; }
+    public void setArquivos(List<ProcessoArquivo> arquivos) { this.arquivos = arquivos; }
 }
