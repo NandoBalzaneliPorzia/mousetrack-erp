@@ -9,6 +9,7 @@ específico pelo seu código.
 */
 
 import com.comexapp.model.ProcessoArquivo;
+import com.comexapp.DTO.ProcessoArquivoDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,6 +17,14 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface ProcessoArquivoRepository extends JpaRepository<ProcessoArquivo, Long> {
+
+    // NÃO use mais este método para listagem na API!
+    // List<ProcessoArquivo> findByProcessoCodigo(String codigo);
+
+    // Novo método: retorna apenas DTOs, sem o campo LOB
+    @Query("SELECT new com.comexapp.DTO.ProcessoArquivoDTO(a.id, a.nomeArquivo, a.tipoArquivo, a.dataCriacao, a.processo.codigo) " +
+           "FROM ProcessoArquivo a WHERE a.processo.codigo = :codigo")
+    List<ProcessoArquivoDTO> findDTOByProcessoCodigo(@Param("codigo") String codigo);
 
     List<ProcessoArquivo> findByProcessoCodigo(String codigo);
 

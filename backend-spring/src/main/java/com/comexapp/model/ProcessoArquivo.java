@@ -33,7 +33,6 @@
 
         @ManyToOne
         @JoinColumn(name = "processo_id")
-        @JsonIgnore
         private Processo processo;
 
         // Getters e Setters

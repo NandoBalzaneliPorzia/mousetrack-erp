@@ -15,4 +15,8 @@ import java.util.Optional;
 
     public interface ProcessoRepository extends JpaRepository<Processo, Long> {
         Optional<Processo> findByCodigo(String codigo);
+
+        // Método customizado para buscar processos com arquivos
+        @Query("SELECT DISTINCT p FROM Processo p LEFT JOIN FETCH p.arquivos")
+        List<Processo> findAllWithArquivos();
 }
