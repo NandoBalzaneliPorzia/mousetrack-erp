@@ -111,11 +111,11 @@ public ResponseEntity<?> listarArquivos(@PathVariable String codigo) {
 
         return ResponseEntity.ok(
                 processo.getArquivos().stream().map(a -> Map.of(
-                        "id", a.getId(),
-                        "nome", a.getNomeArquivo(),
-                        "tipo", a.getTipoArquivo()
-                ))
-        );
+    "id", a.getId(),
+    "nome", a.getNomeArquivo(),
+    "tipo", a.getTipoArquivo(),
+    "dataCriacao", a.getDataCriacao() != null ? a.getDataCriacao().toString() : ""
+)));
 
     } catch (Exception e) {
         return ResponseEntity.status(400).body(Map.of("error", e.getMessage()));

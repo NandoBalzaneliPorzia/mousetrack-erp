@@ -13,22 +13,29 @@ public class ProcessoArquivo {
 
     @Lob
     @Column(name = "dados_arquivo", nullable = false)
-    private byte[] dadosArquivo;   // <- TEM QUE SER byte[]
+    private byte[] dadosArquivo;
 
     @Column(name = "nome_arquivo")
     private String nomeArquivo;
+
+    @Column(name = "data_criacao")
+    private String dataCriacao;
 
     @Column(name = "tipo_arquivo")
     private String tipoArquivo;
 
     @ManyToOne
     @JoinColumn(name = "processo_id")
-    @JsonIgnore   // impede recursão infinita
+    @JsonIgnore
     private Processo processo;
 
     // Getters e Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
+
+    public String getDataCriacao() { return dataCriacao; }
+    public void setDataCriacao(String dataCriacao) { this.dataCriacao = dataCriacao; }
+
 
     public byte[] getDadosArquivo() { return dadosArquivo; }
     public void setDadosArquivo(byte[] dadosArquivo) { this.dadosArquivo = dadosArquivo; }

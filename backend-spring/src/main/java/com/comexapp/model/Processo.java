@@ -19,22 +19,25 @@ public class Processo {
     private String observacao;
     private String codigo;
 
-    // Um processo tem vários arquivos
+    @Column(name = "data_criacao")
+    private String dataCriacao;
+
+    private String responsavel;
+
     @OneToMany(
         mappedBy = "processo",
         cascade = CascadeType.ALL,
         orphanRemoval = true
     )
-    @JsonIgnore    // impede enviar arquivos junto do processo
+    @JsonIgnore
     private List<ProcessoArquivo> arquivos = new ArrayList<>();
 
-    // Retorna a quantidade de arquivos associados ao processo
-@Transient
-private int quantidadeArquivos;
+    @Transient
+    private int quantidadeArquivos;
 
-public int getQuantidadeArquivos() {
-    return arquivos != null ? arquivos.size() : 0;
-}
+    public int getQuantidadeArquivos() {
+        return arquivos != null ? arquivos.size() : 0;
+    }}
 
     // Getters e Setters
     public Long getId() { return id; }
@@ -51,6 +54,13 @@ public int getQuantidadeArquivos() {
 
     public String getObservacao() { return observacao; }
     public void setObservacao(String observacao) { this.observacao = observacao; }
+
+    public String getDataCriacao() { return dataCriacao; }
+    public void setDataCriacao(String dataCriacao) { this.dataCriacao = dataCriacao; }
+
+    public String getResponsavel() { return responsavel; }
+    public void setResponsavel(String responsavel) { this.responsavel = responsavel; }
+
 
     public String getCodigo() { return codigo; }
     public void setCodigo(String codigo) { this.codigo = codigo; }

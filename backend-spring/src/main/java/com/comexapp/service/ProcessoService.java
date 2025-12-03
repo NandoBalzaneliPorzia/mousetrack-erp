@@ -12,6 +12,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.ArrayList;
 
@@ -21,7 +23,7 @@ public class ProcessoService {
     private final ProcessoRepository repo;
     private final ProcessoArquivoRepository arquivoRepo;
 
-    // Pasta raiz onde todos os processos serão salvos
+    // Pasta raiz
     private static final String ROOT_DIR = "uploads";
 
     public ProcessoService(ProcessoRepository repo, ProcessoArquivoRepository arquivoRepo) {
@@ -30,7 +32,7 @@ public class ProcessoService {
     }
 
     // ============================================================
-    //  MÉTODO EXISTENTE — CRIAR PROCESSO
+    //  CRIAR PROCESSO (FORMULÁRIO) + ARQUIVOS OPCIONAIS
     // ============================================================
     public Processo criarProcesso(ProcessoRequestDTO dto) throws Exception {
 
@@ -40,25 +42,31 @@ public class ProcessoService {
         processo.setModal(dto.getModal());
         processo.setObservacao(dto.getObservacao());
         processo.setCodigo(UUID.randomUUID().toString().substring(0, 8));
-
         processo.setArquivos(new ArrayList<>());
+        processo.setDataCriacao(LocalDateTime.now().toString());
+        processo.setResponsavel("Sistema");
 
         processo = repo.save(processo);
 
+        // Criar pasta raiz
         Path rootPath = Paths.get(ROOT_DIR);
         Files.createDirectories(rootPath);
 
+        // Criar pasta do processo
         Path pastaProcesso = rootPath.resolve(processo.getCodigo());
         Files.createDirectories(pastaProcesso);
 
+        // Salvar arquivos do formulário
         if (dto.getArquivos() != null) {
             for (MultipartFile file : dto.getArquivos()) {
+
                 if (file != null && !file.isEmpty()) {
 
                     ProcessoArquivo pa = new ProcessoArquivo();
                     pa.setNomeArquivo(file.getOriginalFilename());
                     pa.setTipoArquivo(file.getContentType());
                     pa.setDadosArquivo(file.getBytes());
+                    pa.setDataCriacao(LocalDateTime.now().toString());
                     pa.setProcesso(processo);
 
                     arquivoRepo.save(pa);
@@ -74,39 +82,34 @@ public class ProcessoService {
     }
 
     // ============================================================
-    //  NOVO MÉTODO — ADICIONAR ARQUIVOS DEPOIS QUE O PROCESSO EXISTE
+    //  ANEXAR ARQUIVOS EM UM PROCESSO EXISTENTE (via card)
     // ============================================================
     public Processo salvarArquivosNoProcesso(String codigo, MultipartFile[] arquivos) throws Exception {
 
-        // Buscar processo pelo código
         Processo processo = repo.findByCodigo(codigo)
                 .orElseThrow(() -> new RuntimeException("Processo não encontrado: " + codigo));
 
-        // Criar pasta do processo se ainda não existir
         Path pastaProcesso = Paths.get(ROOT_DIR).resolve(codigo);
         Files.createDirectories(pastaProcesso);
 
-        // Processar cada arquivo
         for (MultipartFile file : arquivos) {
 
             if (file == null || file.isEmpty()) continue;
 
-            // Salvar no banco
             ProcessoArquivo pa = new ProcessoArquivo();
             pa.setNomeArquivo(file.getOriginalFilename());
             pa.setTipoArquivo(file.getContentType());
             pa.setDadosArquivo(file.getBytes());
+            pa.setDataCriacao(LocalDateTime.now().toString());
             pa.setProcesso(processo);
 
             arquivoRepo.save(pa);
             processo.getArquivos().add(pa);
 
-            // Salvar fisicamente
             Path destino = pastaProcesso.resolve(file.getOriginalFilename());
             Files.write(destino, file.getBytes());
         }
 
-        // Retornar processo atualizado com os novos anexos
         return repo.save(processo);
     }
 }

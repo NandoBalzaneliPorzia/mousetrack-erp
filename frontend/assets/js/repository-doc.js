@@ -20,7 +20,6 @@ async function carregarDocumentos() {
   const resp = await fetch(api(`/api/processos/${codigo}/arquivos`));
   const docs = await resp.json();
 
-  // Atualiza o título da página
   const title = document.getElementById("folderTitle");
   title.textContent = `Processo ${codigo}`;
 
@@ -29,8 +28,6 @@ async function carregarDocumentos() {
 
   docs.forEach(d => {
     const tr = document.createElement("tr");
-
-    // Agora o campo certo é "nome" e "id"
     tr.dataset.search = `${d.nome} ${d.dataCriacao || ""}`.toLowerCase();
 
     tr.innerHTML = `
@@ -43,7 +40,7 @@ async function carregarDocumentos() {
       <td class="col-date">${d.dataCriacao || "-"}</td>
     `;
 
-    // Clique para download (AZUL — AJUSTADO)
+    // Clique para download
     tr.querySelector(".doc-link").addEventListener("click", (e) => {
       e.stopPropagation();
       window.location.href = api(`/api/processos/download/${d.id}`);
@@ -60,7 +57,8 @@ carregarDocumentos();
 // FILTRO DE DOCUMENTOS
 // -----------------------------
 document.getElementById("docSearch").addEventListener("input", () => {
-  const q = docSearch.value.toLowerCase();
+  const q = document.getElementById("docSearch").value.toLowerCase();
+
   document.querySelectorAll("#docsTbody tr").forEach(tr => {
     tr.style.display = tr.dataset.search.includes(q) ? "" : "none";
   });
