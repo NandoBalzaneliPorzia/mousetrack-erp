@@ -1,10 +1,10 @@
 package com.comexapp.repository;
 
 /*
-A classe ProcessoRepository.java é um repositório que gerencia a entidade
-Processo no banco de dados, fornecendo operações de persistência e consulta 
-de processos. Inclui funcionalidade para buscar um processo específico pelo 
-seu código único.
+A interface ProcessoRepository é um repositório Spring Data JPA para a entidade Processo.
+Ela fornece operações padrão de CRUD e métodos customizados, incluindo:
+- Busca de um processo pelo código único
+- Busca de todos os processos trazendo também os arquivos associados
 */
 
 import com.comexapp.model.Processo;
@@ -13,10 +13,12 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 import java.util.Optional;
 
-    public interface ProcessoRepository extends JpaRepository<Processo, Long> {
-        Optional<Processo> findByCodigo(String codigo);
+public interface ProcessoRepository extends JpaRepository<Processo, Long> {
 
-        // Método customizado para buscar processos com arquivos
-        @Query("SELECT DISTINCT p FROM Processo p LEFT JOIN FETCH p.arquivos")
-        List<Processo> findAllWithArquivos();
+    // Busca um processo pelo código único
+    Optional<Processo> findByCodigo(String codigo);
+
+    // Busca todos os processos e carrega também os arquivos associados (fetch join)
+    @Query("SELECT DISTINCT p FROM Processo p LEFT JOIN FETCH p.arquivos")
+    List<Processo> findAllWithArquivos();
 }

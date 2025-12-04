@@ -1,11 +1,16 @@
 package com.comexapp.DTO;
 
 /*
-A classe ChatMessageDTO.java representa um DTO - Objeto de Transferência de Dados
-para mensagens de chat, encapsulando informações como ID, autor, conteúdo, data 
-de envio e status de leitura.
+A classe ChatMessageDTO.java é um DTO (Data Transfer Object) usado para transferir
+informações de mensagens de chat entre o backend e o frontend. 
+Ela encapsula os dados essenciais da mensagem, como:
+- id: identificador único da mensagem
+- autorId: ID do usuário que enviou a mensagem
+- autorNome: nome do usuário autor
+- conteudo: texto da mensagem
+- enviadoEm: data e hora do envio
+- lido: status indicando se a mensagem foi lida
 */
-
 import java.time.LocalDateTime;
 
 public class ChatMessageDTO {

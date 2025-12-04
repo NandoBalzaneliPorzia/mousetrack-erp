@@ -1,10 +1,10 @@
 package com.comexapp.service;
 
 /*
-A classe ShippingWordService.java gera um Word contendo instruções de embarque 
-(Shipping Instructions). Utiliza a biblioteca Apache POI para criar um documento 
-formatado com título, tabela de informações e rodapé, retornando o arquivo em 
-formato de array de bytes para download ou armazenamento
+A classe ShippingWordService.java gera um documento Word (.docx) contendo
+informações de instruções de embarque (Shipping Instructions). Utiliza Apache POI
+para criar o documento, adicionando título, tabela de dados e rodapé, e retorna
+o arquivo como array de bytes para download ou armazenamento.
 */
 
 import com.comexapp.DTO.ShippingInstructionDTO;
@@ -29,7 +29,7 @@ public class ShippingWordService {
             titleRun.setFontSize(16);
             titleRun.addBreak();
 
-            // === SEÇÃO DE INFORMAÇÕES ===
+            // === TABELA DE INFORMAÇÕES ===
             XWPFTable table = document.createTable();
             table.setWidth("100%");
 
@@ -62,7 +62,7 @@ public class ShippingWordService {
             footerRun.setFontSize(10);
             footerRun.setItalic(true);
 
-            // === FINALIZA ===
+            // === RETORNA BYTE ARRAY ===
             document.write(out);
             return out.toByteArray();
 
@@ -73,14 +73,11 @@ public class ShippingWordService {
     }
 
     private void addRow(XWPFTable table, String label, String value) {
-    XWPFTableRow row = table.createRow();
-
-    // Garante que a linha tenha ao menos 2 células
-    while (row.getTableCells().size() < 2) {
-        row.addNewTableCell();
+        XWPFTableRow row = table.createRow();
+        while (row.getTableCells().size() < 2) {
+            row.addNewTableCell();
+        }
+        row.getCell(0).setText(label);
+        row.getCell(1).setText(value != null ? value : "");
     }
-
-    row.getCell(0).setText(label);
-    row.getCell(1).setText(value != null ? value : "");
-}
 }

@@ -1,10 +1,13 @@
 package com.comexapp.DTO;
 
 /*
-A classe NovaMensagemDTO.java para representar uma nova mensagem a ser enviada.
-Contendo o ID do autor e o conteúdo da mensagem.
+A classe NovaMensagemDTO.java é um DTO (Data Transfer Object) usado para 
+representar os dados de uma nova mensagem de chat que será enviada. 
+Contém:
+- autorId: ID do usuário que está enviando a mensagem
+- conteudo: texto da mensagem
+Esse DTO é enviado do frontend para o backend ao criar uma nova mensagem.
 */
-
 public class NovaMensagemDTO {
 
     private Long autorId;
@@ -16,4 +19,3 @@ public class NovaMensagemDTO {
     public String getConteudo() { return conteudo; }
     public void setConteudo(String conteudo) { this.conteudo = conteudo; }
 }
-

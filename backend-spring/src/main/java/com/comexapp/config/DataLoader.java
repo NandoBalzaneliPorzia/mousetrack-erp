@@ -1,10 +1,10 @@
 package com.comexapp.config;
 
 /*
-A classe DataLoader.java é uma classe de configuração que roda na inicialização 
-da aplicação para garantir a existência de um usuário de teste padrão no banco 
-de dados, criando-o com e-mail, senha e permissões pré-definidos caso ainda não 
-exista.
+A classe DataLoader.java é responsável por executar ações durante a inicialização
+da aplicação Spring Boot. Seu objetivo principal é garantir que um usuário de teste
+padrão (admin) exista no banco de dados, criando-o caso ainda não tenha sido criado.
+Isso facilita testes e acesso inicial à aplicação sem precisar criar manualmente um usuário.
 */
 
 import java.util.concurrent.atomic.AtomicLong;
@@ -27,8 +27,8 @@ public class DataLoader implements CommandLineRunner {
         this.passwordEncoder = passwordEncoder;
     }
 
-    //método executado automaticamente quando a aplicação Spring Boot inicia
-    //resumindo, garante que um usuário admin padrão para fazer login e testar a aplicação
+    // Método executado automaticamente na inicialização do Spring Boot
+    // Verifica se o usuário de teste já existe; caso não exista, cria um usuário admin padrão
     @Override
     public void run(String... args) throws Exception {
         AtomicLong clienteIdCounter = new AtomicLong(1000);
@@ -43,7 +43,7 @@ public class DataLoader implements CommandLineRunner {
                 user.setAtivo(true);
                 user.setClienteId(clienteIdCounter.getAndIncrement());
 
-                // definição da senha para login 
+                // Define a senha padrão para login
                 user.setSenhaHash(passwordEncoder.encode("123456"));
 
                 usuarioRepository.save(user);

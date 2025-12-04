@@ -1,11 +1,10 @@
 package com.comexapp.repository;
 
 /*
-A classe ProcessoArquivoRepository.java é um repositório que gerencia a 
-entidade ProcessoArquivo no banco de dados, fornecendo operações de 
-persistência e consulta de arquivos associados a processos. Inclui 
-funcionalidade para buscar todos os arquivos vinculados a um processo 
-específico pelo seu código.
+A interface ProcessoArquivoRepository é um repositório Spring Data JPA para a entidade ProcessoArquivo.
+Ela fornece métodos para operações CRUD e consultas específicas, como:
+- Buscar arquivos de um processo pelo código (em DTO para não trazer dados binários)
+- Contar a quantidade de arquivos de um processo
 */
 
 import com.comexapp.model.ProcessoArquivo;
@@ -18,17 +17,15 @@ import java.util.List;
 
 public interface ProcessoArquivoRepository extends JpaRepository<ProcessoArquivo, Long> {
 
-    // NÃO use mais este método para listagem na API!
-    // List<ProcessoArquivo> findByProcessoCodigo(String codigo);
-
-    // Novo método: retorna apenas DTOs, sem o campo LOB
+    // Retorna apenas DTOs sem o campo LOB, filtrando pelo código do processo
     @Query("SELECT new com.comexapp.DTO.ProcessoArquivoDTO(a.id, a.nomeArquivo, a.tipoArquivo, a.dataCriacao, a.processo.codigo) " +
            "FROM ProcessoArquivo a WHERE a.processo.codigo = :codigo")
     List<ProcessoArquivoDTO> findDTOByProcessoCodigo(@Param("codigo") String codigo);
 
+    // Retorna a lista completa de arquivos de um processo
     List<ProcessoArquivo> findByProcesso_Codigo(String codigo);
 
-    // Método para contar arquivos por processo (usando o id do processo)
+    // Conta a quantidade de arquivos de um processo pelo id do processo
     @Query("SELECT COUNT(a) FROM ProcessoArquivo a WHERE a.processo.id = :processoId")
     int countByProcessoId(@Param("processoId") Long processoId);
 }

@@ -1,9 +1,12 @@
 package com.comexapp.model;
 
 /*
-A classe Cliente.java representa a entidade 'Cliente' no banco de dados, 
-mapeando a tabela 'clientes'. Ela define os atributos de um cliente, 
-como ID, nome e CNPJ, e inclui os métodos de acesso (getters e setters).
+A classe Cliente.java representa a entidade 'Cliente' no banco de dados.
+Ela mapeia a tabela 'clientes' e define os atributos principais de um cliente:
+- id: chave primária
+- nome: nome do cliente (único e obrigatório)
+- cnpj: número de identificação fiscal (opcional, com limite de 50 caracteres)
+Inclui getters e setters para manipulação desses atributos.
 */
 
 import jakarta.persistence.*;
@@ -23,27 +26,12 @@ public class Cliente {
     private String cnpj;
 
     // Getters e Setters
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public String getNome() { return nome; }
+    public void setNome(String nome) { this.nome = nome; }
 
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getCnpj() {
-        return cnpj;
-    }
-
-    public void setCnpj(String cnpj) {
-        this.cnpj = cnpj;
-    }
+    public String getCnpj() { return cnpj; }
+    public void setCnpj(String cnpj) { this.cnpj = cnpj; }
 }

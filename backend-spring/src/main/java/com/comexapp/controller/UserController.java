@@ -1,10 +1,11 @@
 package com.comexapp.controller;
 
 /*
-A classe UserController.java é um controlador REST que gerencia 
-operações relacionadas a usuários, incluindo a criação de novos 
-usuários, atualização de telefone e senha. Ele interage com os 
-repositórios de Usuário e Cliente para persistência de dados
+A classe UserController.java é um controlador REST responsável por gerenciar
+usuários na aplicação. Ele fornece endpoints para criar novos usuários,
+atualizar telefone e senha, além de um endpoint de teste para verificar
+conectividade. A classe interage com os repositórios de Usuario e Cliente
+para persistir e consultar dados no banco.
 */
 
 import com.comexapp.model.Usuario;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 import java.util.Optional;
 
+// Controlador REST para operações relacionadas a usuários
 @RestController
 @RequestMapping("/api/usuarios")
 public class UserController {
@@ -30,12 +32,13 @@ public class UserController {
     @Autowired
     private ClienteRepository clienteRepository;
 
+    // Endpoint de teste simples para verificar se o controller está funcionando
     @GetMapping("/teste")
     public String teste() {
         return "Controller funcionando!";
     }
 
-    // 🔹 Criar novo usuário (usando clienteId vindo do front)
+    // Endpoint para criar um novo usuário (recebe dados do front-end)
     @PostMapping
     public ResponseEntity<?> criarUsuario(@RequestBody Map<String, Object> dados) {
         try {
@@ -48,10 +51,12 @@ public class UserController {
             String tipoUsuarioStr = (String) dados.get("tipoUsuario");
             Integer clienteId = (Integer) dados.get("clienteId");
 
+            // Valida campos obrigatórios
             if (email == null || senha == null || nome == null || clienteId == null) {
                 return ResponseEntity.badRequest().body("Campos obrigatórios ausentes.");
             }
 
+            // Verifica se o email já está cadastrado
             if (usuarioRepository.findByEmail(email).isPresent()) {
                 return ResponseEntity.badRequest().body("Email já cadastrado.");
             }
@@ -61,6 +66,7 @@ public class UserController {
                 return ResponseEntity.badRequest().body("Cliente não encontrado.");
             }
 
+            // Cria e salva o usuário
             Usuario usuario = new Usuario();
             usuario.setEmail(email);
             usuario.setSenhaHash(senha);
@@ -83,7 +89,7 @@ public class UserController {
         }
     }
 
-    // 🔹 Atualizar telefone
+    // Endpoint para atualizar o telefone de um usuário existente
     @PutMapping("/{id}")
     public ResponseEntity<?> atualizarTelefone(@PathVariable Long id, @RequestBody Map<String, String> body) {
         Optional<Usuario> usuarioOpt = usuarioRepository.findById(id);
@@ -100,7 +106,7 @@ public class UserController {
         return ResponseEntity.ok("Telefone atualizado com sucesso!");
     }
 
-    // 🔹 Atualizar senha
+    // Endpoint para atualizar a senha de um usuário existente
     @PutMapping("/{id}/senha")
     public ResponseEntity<?> atualizarSenha(@PathVariable Long id, @RequestBody Map<String, String> body) {
         Optional<Usuario> usuarioOpt = usuarioRepository.findById(id);

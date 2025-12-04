@@ -1,10 +1,11 @@
 package com.comexapp.service;
 
 /*
-A classe AuthService.java gerencia a autenticação de usuários no sistema.
-Fornece funcionalidades para buscar usuários por email e validar credenciais 
-de login, verificando se a senha digitada corresponde ao hash armazenado no 
-banco de dados e se o usuário está ativo.
+A classe AuthService.java é responsável por gerenciar a autenticação de usuários.
+Ela fornece métodos para:
+- Buscar um usuário pelo email
+- Validar login comparando a senha digitada com o hash armazenado
+- Verificar se o usuário está ativo
 */
 
 import java.util.Optional;
@@ -27,11 +28,12 @@ public class AuthService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    // Busca um usuário pelo email
     public Usuario buscarPorEmail(String email) {
-        Optional<Usuario> opt = usuarioRepository.findByEmail(email);
-        return opt.orElse(null);
+        return usuarioRepository.findByEmail(email).orElse(null);
     }
 
+    // Valida o login comparando a senha digitada com o hash e verifica se o usuário está ativo
     public boolean validarLogin(String email, String senhaDigitada) {
         Optional<Usuario> opt = usuarioRepository.findByEmail(email);
         if (opt.isEmpty()) {

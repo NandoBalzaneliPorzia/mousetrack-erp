@@ -1,13 +1,19 @@
 package com.comexapp.model;
 
 /*
-A classe Processo.java representa a entidade "Processo" no banco de dados,
-contendo informações sobre um processo e seu relacionamento com arquivos.
+A classe Processo.java representa a entidade "Processo" no banco de dados.
+Ela encapsula informações básicas do processo, como título, tipo, modal,
+observações, data de criação, código único, responsável, e seu relacionamento
+com arquivos associados (ProcessoArquivo). 
+
+Inclui:
+- Relacionamento OneToMany com ProcessoArquivo (arquivos associados)
+- Propriedade transiente quantidadeArquivos para controle local
+- Getters e setters para todos os campos
 */
 
 import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +39,7 @@ public class Processo {
     private String responsavel;
 
     // ============================================================
-    //  RELACIONAMENTO CORRIGIDO
+    //  RELACIONAMENTO COM ARQUIVOS DO PROCESSO
     // ============================================================
     @OneToMany(
             mappedBy = "processo",
@@ -44,6 +50,7 @@ public class Processo {
     @JsonIgnore
     private List<ProcessoArquivo> arquivos = new ArrayList<>();
 
+    // Campo transiente não persistido no banco, apenas para lógica interna
     @Transient
     private int quantidadeArquivos;
 

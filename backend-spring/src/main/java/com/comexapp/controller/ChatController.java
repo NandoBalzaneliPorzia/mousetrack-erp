@@ -1,10 +1,15 @@
 package com.comexapp.controller;
 
 /*
-A classe ChatController.java é um controlador REST que gerencia as operações 
-relacionadas ao chat da aplicação, incluindo listagem de conversas, envio e 
-recebimento de mensagens, e criação de novas threads de chat, inclusive 
-associadas a processos.
+A classe ChatController.java é um controlador REST responsável por gerenciar
+as funcionalidades de chat da aplicação.
+
+Funcionalidades principais:
+- Listar todas as threads de chat (para exibição na coluna de conversas)
+- Listar mensagens de uma thread específica, marcando-as como lidas
+- Enviar nova mensagem em uma thread
+- Criar nova thread de chat
+- Criar ou obter automaticamente a thread de chat associada a um processo
 */
 
 import com.comexapp.DTO.ChatThreadSummaryDTO;
@@ -19,7 +24,6 @@ import com.comexapp.repository.ChatMessageRepository;
 import com.comexapp.repository.UsuarioRepository;
 import com.comexapp.repository.ProcessoRepository;
 
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,24 +34,26 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/chat")
 public class ChatController {
 
+    // Repositórios para acessar threads, mensagens, usuários e processos
     private final ChatThreadRepository threadRepo;
     private final ChatMessageRepository messageRepo;
     private final UsuarioRepository usuarioRepo;
     private final ProcessoRepository processoRepository;
 
-
-
+    // Construtor: injeta os repositórios
     public ChatController(ChatThreadRepository threadRepo,
-                        ChatMessageRepository messageRepo,
-                        UsuarioRepository usuarioRepo,
-                        ProcessoRepository processoRepository) {
+                          ChatMessageRepository messageRepo,
+                          UsuarioRepository usuarioRepo,
+                          ProcessoRepository processoRepository) {
         this.threadRepo = threadRepo;
         this.messageRepo = messageRepo;
         this.usuarioRepo = usuarioRepo;
         this.processoRepository = processoRepository;
     }
 
-    // Lista de conversas (para a coluna da esquerda)
+    // GET /threads
+    // Lista todas as threads de chat para exibição na coluna da esquerda
+    // Inclui pré-visualização da última mensagem e contagem de mensagens não lidas
     @GetMapping("/threads")
     public List<ChatThreadSummaryDTO> listarThreads() {
         return threadRepo.findAll().stream().map(thread -> {
@@ -63,7 +69,9 @@ public class ChatController {
         }).collect(Collectors.toList());
     }
 
-    // Mensagens de uma conversa específica
+    // GET /threads/{id}/messages
+    // Lista todas as mensagens de uma thread específica
+    // Marca mensagens como lidas ao retornar
     @GetMapping("/threads/{id}/messages")
     public ResponseEntity<List<ChatMessageDTO>> listarMensagens(@PathVariable Long id) {
         if (!threadRepo.existsById(id)) {
@@ -72,7 +80,7 @@ public class ChatController {
 
         List<ChatMessage> mensagens = messageRepo.findByThreadIdOrderByEnviadoEmAsc(id);
 
-        // marca como lidas
+        // Marca todas as mensagens como lidas
         mensagens.forEach(m -> m.setLido(true));
         messageRepo.saveAll(mensagens);
 
@@ -83,7 +91,8 @@ public class ChatController {
         return ResponseEntity.ok(dto);
     }
 
-    // Enviar nova mensagem
+    // POST /threads/{id}/messages
+    // Envia uma nova mensagem em uma thread existente
     @PostMapping("/threads/{id}/messages")
     public ResponseEntity<ChatMessageDTO> enviarMensagem(
             @PathVariable Long id,
@@ -104,7 +113,8 @@ public class ChatController {
         return ResponseEntity.ok(toMessageDTO(salvo));
     }
 
-    // Criar nova conversa (se um dia quiser abrir dinamicamente)
+    // POST /threads
+    // Cria uma nova thread de chat manualmente
     @PostMapping("/threads")
     public ResponseEntity<ChatThread> criarThread(@RequestBody ChatThread thread) {
         if (thread.getTitulo() == null || thread.getTitulo().isBlank()) {
@@ -114,6 +124,7 @@ public class ChatController {
         return ResponseEntity.ok(salvo);
     }
 
+    // Converte entidade ChatMessage em DTO para envio via API
     private ChatMessageDTO toMessageDTO(ChatMessage m) {
         return new ChatMessageDTO(
                 m.getId(),
@@ -125,22 +136,26 @@ public class ChatController {
         );
     }
 
+    // POST /threads/processo/{processoId}
+    // Cria ou retorna a thread de chat associada a um processo
+    // Se a thread já existir para o processo, apenas retorna ela
+    // Se não existir, cria uma nova thread com título baseado no código do processo
     @PostMapping("/threads/processo/{processoId}")
     public ResponseEntity<ChatThread> criarOuObterThreadDoProcesso(@PathVariable Long processoId) {
 
-    Processo processo = processoRepository.findById(processoId)
-            .orElse(null);
+        Processo processo = processoRepository.findById(processoId)
+                .orElse(null);
 
-    if (processo == null) {
-        return ResponseEntity.badRequest().build();
-    }
+        if (processo == null) {
+            return ResponseEntity.badRequest().build();
+        }
 
-    ChatThread existente = threadRepo.findFirstByProcessoId(processoId);
-    if (existente != null) {
-        return ResponseEntity.ok(existente);
-    }
+        ChatThread existente = threadRepo.findFirstByProcessoId(processoId);
+        if (existente != null) {
+            return ResponseEntity.ok(existente);
+        }
 
-    ChatThread novo = new ChatThread();
+        ChatThread novo = new ChatThread();
         novo.setProcesso(processo);
         novo.setTitulo(processo.getCodigo() + " - " + processo.getTitulo());
 

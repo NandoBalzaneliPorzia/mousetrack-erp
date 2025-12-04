@@ -1,5 +1,12 @@
 package com.comexapp.controller;
 
+/*
+A classe ProcessoController.java é um controlador REST responsável por gerenciar 
+todas as operações relacionadas à entidade Processo. Ela fornece endpoints para 
+criação de processos, upload e download de arquivos, listagem de processos, 
+consulta por ID ou código e acesso aos arquivos relacionados a cada processo.
+*/
+
 import com.comexapp.DTO.ProcessoRequestDTO;
 import com.comexapp.DTO.ProcessoResponseDTO;
 import com.comexapp.DTO.ProcessoArquivoDTO;
@@ -47,6 +54,7 @@ public class ProcessoController {
             @RequestPart(value = "arquivos", required = false) MultipartFile[] arquivos
     ) {
         try {
+            // Monta DTO com os dados do formulário
             ProcessoRequestDTO dto = new ProcessoRequestDTO();
             dto.setTitulo(titulo);
             dto.setTipo(tipo);
@@ -54,8 +62,10 @@ public class ProcessoController {
             dto.setObservacao(observacao);
             dto.setArquivos(arquivos);
 
+            // Chama serviço para criar processo
             Processo created = service.criarProcesso(dto);
 
+            // Retorna o processo criado com status 201
             return ResponseEntity.status(HttpStatus.CREATED).body(created);
 
         } catch (Exception e) {
@@ -74,8 +84,10 @@ public class ProcessoController {
             @RequestPart("arquivos") MultipartFile[] arquivos
     ) {
         try {
+            // Salva os arquivos anexados ao processo
             service.salvarArquivosNoProcesso(codigo, arquivos);
 
+            // Retorna sucesso com quantidade de arquivos enviados
             return ResponseEntity.ok(Map.of(
                     "message", "Arquivos enviados com sucesso!",
                     "count", arquivos.length
@@ -93,6 +105,7 @@ public class ProcessoController {
     // ================================
     @GetMapping
     public List<ProcessoResponseDTO> listarProcessos() {
+        // Retorna lista de todos os processos com quantidade de arquivos
         return repository.findAll().stream().map(p -> {
             ProcessoResponseDTO dto = new ProcessoResponseDTO();
             dto.setId(p.getId());
@@ -115,6 +128,7 @@ public class ProcessoController {
     public ResponseEntity<ProcessoResponseDTO> getProcesso(@PathVariable Long id) {
         return repository.findById(id)
                 .map(p -> {
+                    // Converte entidade para DTO e retorna
                     ProcessoResponseDTO dto = new ProcessoResponseDTO();
                     dto.setId(p.getId());
                     dto.setCodigo(p.getCodigo());
@@ -133,6 +147,7 @@ public class ProcessoController {
     @GetMapping("/{codigo}/arquivos")
     public ResponseEntity<?> listarArquivos(@PathVariable String codigo) {
         try {
+            // Busca lista de arquivos como DTOs (sem o conteúdo binário)
             List<ProcessoArquivoDTO> dtos = arquivoRepo.findDTOByProcessoCodigo(codigo);
             return ResponseEntity.ok(dtos);
         } catch (Exception e) {
@@ -147,9 +162,11 @@ public class ProcessoController {
     @GetMapping("/download/{idArquivo}")
     public ResponseEntity<?> downloadArquivo(@PathVariable Long idArquivo) {
         try {
+            // Busca arquivo pelo ID
             ProcessoArquivo arq = arquivoRepo.findById(idArquivo)
                     .orElseThrow(() -> new RuntimeException("Arquivo não encontrado"));
 
+            // Retorna arquivo como attachment
             return ResponseEntity.ok()
                     .header("Content-Disposition", "attachment; filename=\"" + arq.getNomeArquivo() + "\"")
                     .body(arq.getDadosArquivo());
@@ -165,8 +182,10 @@ public class ProcessoController {
     @GetMapping("/repositorio")
     public ResponseEntity<?> listarPastasRepositorio() {
         try {
+            // Busca todos os arquivos do banco
             List<ProcessoArquivo> arquivos = arquivoRepo.findAll();
 
+            // Converte para DTOs resumidos
             List<ProcessoArquivoDTO> dtos = arquivos.stream().map(a ->
                 new ProcessoArquivoDTO(
                     a.getId(),
@@ -184,14 +203,15 @@ public class ProcessoController {
             return ResponseEntity.status(400).body(Map.of("error", e.getMessage()));
         }
     }
-    // ================================
-    //   endpoint de busca de processo por codigo
-    // ================================
 
+    // ================================
+    //   BUSCAR PROCESSO POR CÓDIGO
+    // ================================
     @GetMapping("/codigo/{codigo}")
     public ResponseEntity<ProcessoResponseDTO> getProcessoPorCodigo(@PathVariable String codigo) {
         return repository.findByCodigo(codigo)
                 .map(p -> {
+                    // Converte entidade para DTO e retorna
                     ProcessoResponseDTO dto = new ProcessoResponseDTO();
                     dto.setId(p.getId());
                     dto.setCodigo(p.getCodigo());

@@ -1,9 +1,8 @@
 package com.comexapp.repository;
 
 /*
-A classe ClienteRepository.java é um repositório que gerencia a entidade 
-Cliente no banco de dados, oferecendo operações padrão de CRUD (criar, 
-ler, atualizar e deletar) por meio da interface JpaRepository.
+A interface ClienteRepository é um repositório Spring Data JPA para a entidade Cliente.
+Permite realizar operações CRUD no banco de dados, como salvar, buscar, atualizar e deletar clientes.
 */
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,5 +11,5 @@ import com.comexapp.model.Cliente;
 
 @Repository
 public interface ClienteRepository extends JpaRepository<Cliente, Long> {
-    // você pode adicionar métodos personalizados aqui no futuro
+    // Possibilidade de adicionar métodos personalizados no futuro
 }

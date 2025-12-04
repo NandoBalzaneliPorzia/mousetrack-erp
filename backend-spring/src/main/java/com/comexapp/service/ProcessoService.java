@@ -2,9 +2,8 @@ package com.comexapp.service;
 
 /*
 A classe ProcessoService.java gerencia a criação e manipulação de processos no sistema.
-Fornece funcionalidades para criar novos processos com arquivos anexados, salvar arquivos 
-no sistema de arquivos local e no banco de dados, e adicionar novos arquivos a processos 
-existentes.
+Ela permite criar novos processos com arquivos anexados, salvar arquivos no sistema 
+de arquivos local e no banco de dados, e adicionar arquivos a processos existentes.
 */
 
 import com.comexapp.DTO.ProcessoRequestDTO;
@@ -23,7 +22,6 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class ProcessoService {
@@ -39,7 +37,7 @@ public class ProcessoService {
     }
 
     // ============================================================
-    //  CRIAR PROCESSO + ARQUIVOS DO FORMULÁRIO
+    //  CRIAR PROCESSO COM ARQUIVOS DO FORMULÁRIO
     // ============================================================
     public Processo criarProcesso(ProcessoRequestDTO dto) throws Exception {
 
@@ -55,14 +53,12 @@ public class ProcessoService {
 
         processo = repo.save(processo);
 
-        // Criar pastas
         Path rootPath = Paths.get(ROOT_DIR);
         Files.createDirectories(rootPath);
 
         Path pastaProcesso = rootPath.resolve(processo.getCodigo());
         Files.createDirectories(pastaProcesso);
 
-        // Salvar arquivos iniciais
         if (dto.getArquivos() != null) {
             for (MultipartFile file : dto.getArquivos()) {
                 if (file != null && !file.isEmpty()) {
@@ -86,7 +82,7 @@ public class ProcessoService {
     }
 
     // ============================================================
-    //  ANEXAR ARQUIVOS APÓS O CARD EXISTIR
+    //  ANEXAR ARQUIVOS A PROCESSO EXISTENTE
     // ============================================================
     public Processo salvarArquivosNoProcesso(String codigo, MultipartFile[] arquivos) throws Exception {
 

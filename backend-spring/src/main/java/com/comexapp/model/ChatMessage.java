@@ -2,9 +2,13 @@ package com.comexapp.model;
 
 /*
 A classe ChatMessage.java representa uma mensagem de chat no sistema.
-Esta entidade armazena detalhes como o ID da mensagem, a conversa 
-(thread) à qual pertence, o autor da mensagem, o conteúdo, a data e 
-hora de envio, e se a mensagem foi lida.
+Esta entidade é persistida no banco de dados e contém informações como:
+- ID da mensagem
+- Conversa (thread) à qual a mensagem pertence
+- Usuário autor da mensagem
+- Conteúdo da mensagem
+- Data e hora de envio
+- Status de leitura
 */
 
 import jakarta.persistence.*;
@@ -18,12 +22,12 @@ public class ChatMessage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // conversa à qual a mensagem pertence
+    // Relação Many-to-One com ChatThread (thread da mensagem)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "thread_id", nullable = false)
     private ChatThread thread;
 
-    // usuário que enviou
+    // Relação Many-to-One com Usuario (autor da mensagem)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "autor_id", nullable = false)
     private Usuario autor;
@@ -37,14 +41,14 @@ public class ChatMessage {
     @Column(name = "lido")
     private boolean lido;
 
+    // Configura valores padrão antes de persistir no banco
     @PrePersist
     public void prePersist() {
-        this.enviadoEm = LocalDateTime.now();
-        this.lido = false;
+        this.enviadoEm = LocalDateTime.now(); // define data/hora de envio atual
+        this.lido = false;                   // marca como não lida
     }
 
-    // Getters e setters
-
+    // Getters e Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -63,4 +67,3 @@ public class ChatMessage {
     public boolean isLido() { return lido; }
     public void setLido(boolean lido) { this.lido = lido; }
 }
-

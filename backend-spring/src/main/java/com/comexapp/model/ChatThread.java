@@ -1,10 +1,11 @@
 package com.comexapp.model;
 
 /*
-A classe ChatThread,java representa uma thread de chat dentro do sistema, 
-associada a um processo específico. Gerencia informações como título da 
-thread, datas de criação e atualização, e a lista de mensagens contidas 
-na thread.
+A classe ChatThread.java representa uma thread de chat dentro do sistema.
+Cada thread está associada a um processo e contém informações como:
+- título da thread
+- datas de criação e atualização
+- lista de mensagens associadas
 */
 
 import jakarta.persistence.*;
@@ -30,26 +31,30 @@ public class ChatThread {
     @Column(name = "atualizado_em")
     private LocalDateTime atualizadoEm;
 
+    // Relação One-to-Many com ChatMessage
+    // Cascade ALL garante persistência e remoção em cascata
     @OneToMany(mappedBy = "thread", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChatMessage> mensagens;
 
+    // Define datas automaticamente ao criar a thread
     @PrePersist
     public void prePersist() {
         this.criadoEm = LocalDateTime.now();
         this.atualizadoEm = this.criadoEm;
     }
 
+    // Atualiza a data de atualização sempre que houver alterações
     @PreUpdate
     public void preUpdate() {
         this.atualizadoEm = LocalDateTime.now();
     }
 
+    // Relação Many-to-One com Processo (thread associada a um processo)
     @ManyToOne
     @JoinColumn(name = "processo_id")
     private Processo processo;
 
     // Getters e setters
-
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -65,13 +70,6 @@ public class ChatThread {
     public List<ChatMessage> getMensagens() { return mensagens; }
     public void setMensagens(List<ChatMessage> mensagens) { this.mensagens = mensagens; }
 
-    public Processo getProcesso() {
-        return processo;
-    }
-
-    public void setProcesso(Processo processo) {
-        this.processo = processo;
-    }
-
+    public Processo getProcesso() { return processo; }
+    public void setProcesso(Processo processo) { this.processo = processo; }
 }
-

@@ -1,11 +1,13 @@
 package com.comexapp.DTO;
 
 /*
-A classe EmailRequestDTO.java representa um objeto de transferência de dados (DTO)
-para encapsular as informações necessárias para o envio de um e-mail. Inclui campos 
-para o destinatário ('para'), o assunto ('assunto')e o corpo da mensagem ('mensagem').
+A classe EmailRequestDTO.java é um DTO (Data Transfer Object) utilizado para 
+representar os dados necessários ao envio de um e-mail. Contém os campos:
+- para: endereço de e-mail do destinatário
+- assunto: assunto do e-mail
+- mensagem: corpo do e-mail
+Esses dados são enviados do frontend para o backend via requisição HTTP.
 */
-
 public class EmailRequestDTO {
     private String para;
     private String assunto;
