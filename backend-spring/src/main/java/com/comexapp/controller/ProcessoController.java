@@ -146,23 +146,12 @@ public class ProcessoController {
     // ================================
     //   LISTAR ARQUIVOS DO PROCESSO
     // ================================
+    // (NÃO acessa o campo LOB, nunca dá erro de LOB stream)
     @GetMapping("/{codigo}/arquivos")
     public ResponseEntity<?> listarArquivos(@PathVariable String codigo) {
         try {
-            List<ProcessoArquivo> arquivos = arquivoRepo.findByProcesso_Codigo(codigo);
-
-            List<ProcessoArquivoDTO> dtos = arquivos.stream().map(a -> {
-                ProcessoArquivoDTO dto = new ProcessoArquivoDTO();
-                dto.setId(a.getId());
-                dto.setNomeArquivo(a.getNomeArquivo());
-                dto.setTipoArquivo(a.getTipoArquivo());
-                dto.setDataCriacao(a.getDataCriacao() != null ? a.getDataCriacao().toString() : null);
-                dto.setProcessoCodigo(codigo);
-                return dto;
-            }).toList();
-
+            List<ProcessoArquivoDTO> dtos = arquivoRepo.findDTOByProcessoCodigo(codigo);
             return ResponseEntity.ok(dtos);
-
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(400).body(Map.of("error", e.getMessage()));
