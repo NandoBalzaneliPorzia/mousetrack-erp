@@ -129,3 +129,62 @@ body {
     padding: 14px 10px;
   }
 }
+
+  /*repository-doc*/
+
+.docs-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1.5em;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px #0001;
+}
+
+.docs-table th, .docs-table td {
+  padding: 12px 16px;
+  text-align: left;
+}
+
+.docs-table th {
+  background: #f5f5fa;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.docs-table tr {
+  transition: background 0.2s;
+}
+
+.docs-table tr:nth-child(even) {
+  background: #fafaff;
+}
+
+.docs-table tr:hover {
+  background: #f0f4ff;
+}
+
+.col-icon {
+  width: 36px;
+  text-align: center;
+}
+
+.doc-link {
+  color: #4b2aad;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.doc-link:hover {
+  color: #2a1a6b;
+  text-decoration: underline;
+}
+
+.col-date {
+  color: #888;
+  font-size: 0.98em;
+  white-space: nowrap;
+}
