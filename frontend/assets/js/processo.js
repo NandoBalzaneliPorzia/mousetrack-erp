@@ -2,6 +2,7 @@ const params = new URLSearchParams(location.search);
 const codigo = params.get("codigo");
 const guest = params.get("guest") === "1"; // se for convidado
 const email = params.get("email"); // nome no chat
+const urlParams = new URLSearchParams(window.location.search); //front chama endpoint link email
 
 async function carregarProcesso() {
 
@@ -44,5 +45,17 @@ function abrirChat(processoId) {
 
     window.location.href = link;
 }
+
+    fetch(`/api/processos/codigo/${codigo}`)
+    .then(resp => {
+        if (!resp.ok) throw new Error('Processo não encontrado');
+        return resp.json();
+    })
+    .then(data => {
+        // renderiza o card do processo com os dados recebidos
+    })
+    .catch(err => {
+        // mostra "Processo não encontrado"
+    });
 
 carregarProcesso();

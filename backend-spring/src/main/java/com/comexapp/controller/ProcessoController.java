@@ -184,4 +184,26 @@ public class ProcessoController {
             return ResponseEntity.status(400).body(Map.of("error", e.getMessage()));
         }
     }
+    // ================================
+    //   endpoint de busca de processo por codigo
+    // ================================
+
+    @GetMapping("/codigo/{codigo}")
+    public ResponseEntity<ProcessoResponseDTO> getProcessoPorCodigo(@PathVariable String codigo) {
+        return repository.findByCodigo(codigo)
+                .map(p -> {
+                    ProcessoResponseDTO dto = new ProcessoResponseDTO();
+                    dto.setId(p.getId());
+                    dto.setCodigo(p.getCodigo());
+                    dto.setTitulo(p.getTitulo());
+                    dto.setTipo(p.getTipo());
+                    dto.setModal(p.getModal());
+                    dto.setObservacao(p.getObservacao());
+                    dto.setResponsavel(p.getResponsavel());
+                    dto.setDataCriacao(p.getDataCriacao());
+                    dto.setQuantidadeArquivos(arquivoRepo.countByProcessoId(p.getId()));
+                    return ResponseEntity.ok(dto);
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
 }
