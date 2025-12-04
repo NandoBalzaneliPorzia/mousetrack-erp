@@ -19,7 +19,6 @@ async function carregarProcesso() {
   try {
     const resp = await fetch(`${BACKEND}/api/processos/codigo/${encodeURIComponent(codigo)}`);
     if (!resp.ok) {
-      // tenta ler JSON de erro, senão mostra mensagem padrão
       const err = await resp.json().catch(() => null);
       console.warn("Erro ao buscar processo:", err);
       processoEl.innerHTML = "<h3>Processo não encontrado</h3>";
@@ -28,17 +27,19 @@ async function carregarProcesso() {
 
     const proc = await resp.json();
 
+    // Render do card do processo usando as classes esperadas pelo CSS
     processoEl.innerHTML = `
       <h2>${escapeHtml(proc.codigo)} - ${escapeHtml(proc.titulo)}</h2>
-      <p><strong>Tipo:</strong> ${escapeHtml(proc.tipo || '')}</p>
-      <p><strong>Modal:</strong> ${escapeHtml(proc.modal || '')}</p>
-      <p><strong>Observação:</strong> ${escapeHtml(proc.observacao) || '—'}</p>
+      <div class="meta-row" aria-hidden="true">
+        <div class="meta"><strong>Tipo:</strong> ${escapeHtml(proc.tipo || '')}</div>
+        <div class="meta"><strong>Modal:</strong> ${escapeHtml(proc.modal || '')}</div>
+      </div>
+      <div class="observacao"><strong>Observação:</strong> ${escapeHtml(proc.observacao) || '—'}</div>
     `;
 
     // habilita botão chat para convidados
     if (guest && btnChat) {
       btnChat.style.display = "flex";
-      // (re)define listener
       btnChat.onclick = () => abrirChat(proc.id);
     }
 
@@ -81,20 +82,34 @@ function renderizarArquivos(arquivos) {
     return;
   }
 
-  const lista = arquivos.map(a => {
+  const itens = arquivos.map(a => {
     const nome = escapeHtml(a.nomeArquivo || "sem-nome");
     const data = a.dataCriacao ? escapeHtml(String(a.dataCriacao).slice(0,10)) : "";
-    // link absoluto para o backend (download)
-    const href = `${BACKEND}/api/processos/download/${encodeURIComponent(a.id)}`;
-    return `<li>
-      <a href="${href}" target="_blank" rel="noopener noreferrer">${nome}</a>
-      ${data ? ` <small>(${data})</small>` : ""}
-    </li>`;
+    const id = encodeURIComponent(a.id);
+    const hrefDownload = `${BACKEND}/api/processos/download/${id}`;
+
+    // ícone simples com extensão (ex: XML, PDF, XLS)
+    const ext = (a.nomeArquivo || "").split('.').pop().toUpperCase().slice(0,4) || "FILE";
+    const icon = escapeHtml(ext);
+
+    return `
+      <li>
+        <div class="file-left">
+          <span class="file-icon" aria-hidden="true">${icon}</span>
+          <a class="file-name" href="${hrefDownload}" target="_blank" rel="noopener noreferrer">${nome}</a>
+        </div>
+
+        <div class="file-actions">
+          <span class="file-meta">${data}</span>
+          <a class="btn-download" href="${hrefDownload}" target="_blank" rel="noopener noreferrer" title="Download ${nome}">Baixar</a>
+        </div>
+      </li>
+    `;
   }).join("");
 
   arquivosContainer.innerHTML = `
     <h3>Arquivos do Processo</h3>
-    <ul>${lista}</ul>
+    <ul>${itens}</ul>
   `;
 }
 
