@@ -4,23 +4,169 @@
   <meta charset="UTF-8" />
   <title>Processo</title>
 
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 30px;
-      background: #f7f7f7;
+    :root{
+      --bg:#f0f2f7;
+      --card:#ffffff;
+      --primary:#007bff;
+      --text:#222;
+      --muted:#6b7280;
+      --radius:12px;
+      --max-width:900px;
     }
 
-    #processo {
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      font-size: 16px;
+    html,body{
+      margin:0;
+      padding:0;
+      height:100%;
+      background:var(--bg);
+      font-family: "Inter", "Segoe UI", Roboto, Arial, sans-serif;
+      color:var(--text);
     }
 
+    .page {
+      max-width: var(--max-width);
+      margin: 32px auto;
+      padding: 0 20px;
+    }
+
+    /* Card do processo */
+    .card-processo {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 28px 30px;
+      box-shadow: 0 6px 20px rgba(15, 23, 42, 0.06);
+      margin-bottom: 28px;
+    }
+
+    .card-processo h2 {
+      margin: 0 0 8px 0;
+      font-size: 28px;
+      letter-spacing: -0.5px;
+    }
+
+    .meta-row {
+      display:flex;
+      gap:24px;
+      flex-wrap:wrap;
+      margin-top: 12px;
+    }
+
+    .meta {
+      font-size: 15px;
+      color:var(--muted);
+    }
+
+    .meta strong {
+      color:var(--text);
+      font-weight:600;
+      margin-right:6px;
+    }
+
+    .observacao {
+      margin-top:16px;
+      color:var(--muted);
+      font-size:15px;
+    }
+
+    /* Arquivos */
+    .arquivos-processo {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      box-shadow: 0 6px 20px rgba(15, 23, 42, 0.04);
+    }
+
+    .arquivos-processo h3 {
+      margin: 0 0 16px 0;
+      font-size: 20px;
+      color:var(--text);
+      display:inline-block;
+      padding-bottom:6px;
+      border-bottom:3px solid rgba(0,123,255,0.12);
+    }
+
+    .arquivos-processo ul {
+      list-style: none;
+      padding-left: 0;
+      margin-top: 14px;
+    }
+
+    .arquivos-processo li {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:10px 8px;
+      border-radius:8px;
+      transition: background .12s ease;
+    }
+
+    .arquivos-processo li:hover {
+      background: rgba(0,0,0,0.03);
+    }
+
+    .file-left {
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+
+    .file-icon {
+      width:36px;
+      height:36px;
+      border-radius:6px;
+      background: linear-gradient(135deg,#eef6ff,#e6f0ff);
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      color:var(--primary);
+      font-weight:700;
+      font-size:14px;
+      flex:0 0 36px;
+    }
+
+    .file-name {
+      color: var(--primary);
+      text-decoration:none;
+      font-weight:600;
+    }
+
+    .file-name:hover {
+      text-decoration: underline;
+    }
+
+    .file-meta {
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .file-actions {
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+
+    .btn-download {
+      background: transparent;
+      border: 1px solid rgba(0,0,0,0.08);
+      padding:6px 10px;
+      border-radius:8px;
+      color:var(--primary);
+      text-decoration:none;
+      font-weight:600;
+      font-size:14px;
+    }
+
+    .btn-download:hover {
+      background: rgba(0,123,255,0.06);
+    }
+
+    /* Chat button */
     #btnChat {
-      background: #007bff;
+      background: var(--primary);
       border: none;
       color: white;
       font-size: 20px;
@@ -32,33 +178,38 @@
       justify-content: center;
       cursor: pointer;
       position: fixed;
-      bottom: 20px;
-      right: 20px;
-      box-shadow: 0px 4px 10px rgba(0,0,0,0.25);
-      transition: 0.2s;
+      bottom: 24px;
+      right: 24px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+      transition: transform .12s ease, box-shadow .12s ease;
+      z-index: 1200;
     }
 
     #btnChat:hover {
-      background: #0056b3;
-      transform: scale(1.05);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 26px rgba(0,0,0,0.16);
     }
 
-    #btnChat svg {
-      width: 24px;
-      height: 24px;
-      fill: white;
+    /* Responsividade */
+    @media (max-width:600px){
+      .meta-row { gap:12px; }
+      .card-processo h2 { font-size:22px; }
+      .file-icon { width:32px; height:32px; flex:0 0 32px; }
     }
+
   </style>
 
 </head>
 <body>
 
-  <div id="processo"></div>
+  <div class="page">
+    <div id="processo" class="card-processo" aria-live="polite"></div>
 
-  <div id="arquivosContainer"></div>
+    <div id="arquivosContainer" class="arquivos-processo" aria-live="polite"></div>
+  </div>
 
   <!-- Botão do chat (escondido até o JS habilitar) -->
-  <button id="btnChat" style="display:none;" title="Conversar sobre este processo">
+  <button id="btnChat" style="display:none;" title="Conversar sobre este processo" aria-label="Abrir chat do processo">
     💬
   </button>
 
