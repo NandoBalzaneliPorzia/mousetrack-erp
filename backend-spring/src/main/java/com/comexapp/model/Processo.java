@@ -23,10 +23,12 @@ public class Processo {
     private String tipo;
     private String modal;
     private String observacao;
-    private String codigo;
 
     @Column(name = "data_criacao")
-    private String dataCriacao;
+    private String dataCriacao;    
+
+    @Column(unique = true)
+    private String codigo;
 
     private String responsavel;
 

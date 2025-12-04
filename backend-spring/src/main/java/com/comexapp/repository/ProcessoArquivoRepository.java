@@ -26,7 +26,7 @@ public interface ProcessoArquivoRepository extends JpaRepository<ProcessoArquivo
            "FROM ProcessoArquivo a WHERE a.processo.codigo = :codigo")
     List<ProcessoArquivoDTO> findDTOByProcessoCodigo(@Param("codigo") String codigo);
 
-    List<ProcessoArquivo> findByProcessoCodigo(String codigo);
+    List<ProcessoArquivo> findByProcesso_Codigo(String codigo);
 
     // Método para contar arquivos por processo (usando o id do processo)
     @Query("SELECT COUNT(a) FROM ProcessoArquivo a WHERE a.processo.id = :processoId")

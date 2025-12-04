@@ -149,7 +149,7 @@ public class ProcessoController {
     @GetMapping("/{codigo}/arquivos")
     public ResponseEntity<?> listarArquivos(@PathVariable String codigo) {
         try {
-            List<ProcessoArquivo> arquivos = arquivoRepo.findByProcessoCodigo(codigo);
+            List<ProcessoArquivo> arquivos = arquivoRepo.findByProcesso_Codigo(codigo);
 
             List<ProcessoArquivoDTO> dtos = arquivos.stream().map(a -> {
                 ProcessoArquivoDTO dto = new ProcessoArquivoDTO();
@@ -164,6 +164,7 @@ public class ProcessoController {
             return ResponseEntity.ok(dtos);
 
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(400).body(Map.of("error", e.getMessage()));
         }
     }
