@@ -16,6 +16,15 @@ public class ProcessoArquivoDTO {
     private String dataCriacao;
     private String processoCodigo;
 
+    //construtor spring data jpa - arquivo
+    public ProcessoArquivoDTO(Long id, String nomeArquivo, String tipoArquivo, String dataCriacao, String processoCodigo) {
+        this.id = id;
+        this.nomeArquivo = nomeArquivo;
+        this.tipoArquivo = tipoArquivo;
+        this.dataCriacao = dataCriacao;
+        this.processoCodigo = processoCodigo;
+    }
+
     public Long getId() {
         return id;
     }
@@ -50,4 +59,5 @@ public class ProcessoArquivoDTO {
     public void setProcessoCodigo(String processoCodigo) {
         this.processoCodigo = processoCodigo;
     }
+    
 }

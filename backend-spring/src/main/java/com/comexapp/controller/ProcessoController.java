@@ -1,20 +1,5 @@
 package com.comexapp.controller;
 
-/*
-A cclasse ProcessoController.java é um controlador RESTful que gerencia operações relacionadas 
-a "Processos" e seus "Arquivos" associados. Ele fornece endpoints para:
-     - Criar novos processos, incluindo o upload de arquivos.
-    - Fazer upload de arquivos para processos existentes.
-    - Listar todos os processos.
-    - Buscar um processo específico por ID.
-    - Listar os arquivos de um processo específico.
-    - Realizar o download de arquivos.
-    - Listar todos os arquivos no repositório.
- As operações envolvem a manipulação de DTOs (Data Transfer Objects) para requisições e respostas,
- modelos de dados (Processo e ProcessoArquivo) e repositórios para persistência, além de um serviço 
- (ProcessoService) para a lógica de negócio.
-*/
-
 import com.comexapp.DTO.ProcessoRequestDTO;
 import com.comexapp.DTO.ProcessoResponseDTO;
 import com.comexapp.DTO.ProcessoArquivoDTO;
@@ -118,7 +103,6 @@ public class ProcessoController {
             dto.setObservacao(p.getObservacao());
             dto.setResponsavel(p.getResponsavel());
             dto.setDataCriacao(p.getDataCriacao());
-            // Aqui, conte os arquivos sem acessar a lista
             dto.setQuantidadeArquivos(arquivoRepo.countByProcessoId(p.getId()));
             return dto;
         }).toList();
@@ -144,9 +128,8 @@ public class ProcessoController {
     }
 
     // ================================
-    //   LISTAR ARQUIVOS DO PROCESSO
+    //   LISTAR ARQUIVOS DO PROCESSO (SEM LOB)
     // ================================
-    // (NÃO acessa o campo LOB, nunca dá erro de LOB stream)
     @GetMapping("/{codigo}/arquivos")
     public ResponseEntity<?> listarArquivos(@PathVariable String codigo) {
         try {
@@ -177,26 +160,27 @@ public class ProcessoController {
     }
 
     // ================================
-    //   LISTAR PASTAS DO REPOSITORIO
+    //   LISTAR TODOS OS ARQUIVOS DO REPOSITÓRIO
     // ================================
     @GetMapping("/repositorio")
     public ResponseEntity<?> listarPastasRepositorio() {
         try {
             List<ProcessoArquivo> arquivos = arquivoRepo.findAll();
 
-            List<ProcessoArquivoDTO> dtos = arquivos.stream().map(a -> {
-                ProcessoArquivoDTO dto = new ProcessoArquivoDTO();
-                dto.setId(a.getId());
-                dto.setNomeArquivo(a.getNomeArquivo());
-                dto.setTipoArquivo(a.getTipoArquivo());
-                dto.setDataCriacao(a.getDataCriacao());
-                dto.setProcessoCodigo(a.getProcesso().getCodigo());
-                return dto;
-            }).toList();
+            List<ProcessoArquivoDTO> dtos = arquivos.stream().map(a ->
+                new ProcessoArquivoDTO(
+                    a.getId(),
+                    a.getNomeArquivo(),
+                    a.getTipoArquivo(),
+                    a.getDataCriacao(),
+                    a.getProcesso().getCodigo()
+                )
+            ).toList();
 
             return ResponseEntity.ok(dtos);
 
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(400).body(Map.of("error", e.getMessage()));
         }
     }
