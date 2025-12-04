@@ -1,98 +1,119 @@
-const params = new URLSearchParams(location.search);
+const BACKEND = "https://mousetrack-erp.onrender.com"; // Base URL do backend
+
+const params = new URLSearchParams(window.location.search);
 const codigo = params.get("codigo");
-const guest = params.get("guest") === "1"; // se for convidado
-const email = params.get("email"); // nome no chat
-const urlParams = new URLSearchParams(window.location.search); //front chama endpoint link email
+const guest = params.get("guest") === "1";
+const email = params.get("email");
+
+// Elementos
+const processoEl = document.getElementById("processo");
+const arquivosContainer = document.getElementById("arquivosContainer");
+const btnChat = document.getElementById("btnChat");
 
 async function carregarProcesso() {
+  if (!codigo) {
+    processoEl.innerHTML = "<h3>Código do processo não informado.</h3>";
+    return;
+  }
 
-    if (!codigo) {
-        document.getElementById("processo").innerHTML =
-            "<h3>Código do processo não informado.</h3>";
-        return;
-    }
-
-    const resp = await fetch(`https://mousetrack-erp.onrender.com/api/processos/codigo/${codigo}`);
+  try {
+    const resp = await fetch(`${BACKEND}/api/processos/codigo/${encodeURIComponent(codigo)}`);
     if (!resp.ok) {
-        document.getElementById("processo").innerHTML =
-            "<h3>Processo não encontrado</h3>";
-        return;
+      // tenta ler JSON de erro, senão mostra mensagem padrão
+      const err = await resp.json().catch(() => null);
+      console.warn("Erro ao buscar processo:", err);
+      processoEl.innerHTML = "<h3>Processo não encontrado</h3>";
+      return;
     }
 
     const proc = await resp.json();
 
-    document.getElementById("processo").innerHTML = `
-        <h2>${proc.codigo} - ${proc.titulo}</h2>
-        <p><strong>Tipo:</strong> ${proc.tipo}</p>
-        <p><strong>Modal:</strong> ${proc.modal}</p>
-        <p><strong>Observação:</strong> ${proc.observacao || '—'}</p>
+    processoEl.innerHTML = `
+      <h2>${escapeHtml(proc.codigo)} - ${escapeHtml(proc.titulo)}</h2>
+      <p><strong>Tipo:</strong> ${escapeHtml(proc.tipo || '')}</p>
+      <p><strong>Modal:</strong> ${escapeHtml(proc.modal || '')}</p>
+      <p><strong>Observação:</strong> ${escapeHtml(proc.observacao) || '—'}</p>
     `;
 
-    // Se for convidado → exibe botão do chat
-    if (guest) {
-        document.getElementById("btnChat").style.display = "flex";
+    // habilita botão chat para convidados
+    if (guest && btnChat) {
+      btnChat.style.display = "flex";
+      // (re)define listener
+      btnChat.onclick = () => abrirChat(proc.id);
     }
 
-    document.getElementById("btnChat").addEventListener("click", () => abrirChat(proc.id));
+    // carregar arquivos deste processo
+    await carregarArquivosDoProcesso(codigo);
+
+  } catch (e) {
+    console.error("Erro ao carregar processo:", e);
+    processoEl.innerHTML = "<h3>Erro ao carregar o processo. Tente novamente mais tarde.</h3>";
+  }
 }
 
-function abrirChat(processoId) {
+async function carregarArquivosDoProcesso(codigoDoProcesso) {
+  if (!arquivosContainer) return;
 
-    // Garante email no chat (nome do convidado)
-    const nome = email ? encodeURIComponent(email) : "Convidado";
+  arquivosContainer.innerHTML = "<p>Carregando arquivos...</p>";
 
-    const link = `https://mousetrack-frontend.onrender.com/chat.html?processo=${processoId}&guest=1&nome=${nome}`;
+  try {
+    const resp = await fetch(`${BACKEND}/api/processos/${encodeURIComponent(codigoDoProcesso)}/arquivos`);
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => null);
+      console.warn("Erro ao buscar arquivos:", err);
+      arquivosContainer.innerHTML = "<p>Não foi possível carregar os arquivos.</p>";
+      return;
+    }
 
-    window.location.href = link;
+    const arquivos = await resp.json();
+    renderizarArquivos(arquivos);
+  } catch (e) {
+    console.error("Erro ao carregar arquivos:", e);
+    arquivosContainer.innerHTML = "<p>Erro ao carregar arquivos.</p>";
+  }
 }
-
-carregarProcesso();
-
-    fetch(`/api/processos/codigo/${codigo}`)
-    .then(resp => {
-        if (!resp.ok) throw new Error('Processo não encontrado');
-        return resp.json();
-    })
-    .then(data => {
-        // renderiza o card do processo com os dados recebidos
-    })
-    .catch(err => {
-        // mostra "Processo não encontrado"
-    });
-
-// buscando dados do processo 
-fetch(`/api/processos/codigo/${codigo}`)
-  .then(resp => resp.json())
-  .then(processo => {
-
-
-    // buscando arquivos associados ao processo
-    fetch(`/api/processos/${codigo}/arquivos`)
-      .then(resp => resp.json())
-      .then(arquivos => {
-        renderizarArquivos(arquivos);
-      });
-  });
 
 function renderizarArquivos(arquivos) {
-  const container = document.getElementById('arquivosContainer');
-  if (!container) return;
+  if (!arquivosContainer) return;
 
-  if (!arquivos.length) {
-    container.innerHTML = "<p>Nenhum arquivo associado.</p>";
+  if (!Array.isArray(arquivos) || arquivos.length === 0) {
+    arquivosContainer.innerHTML = "<p>Nenhum arquivo associado.</p>";
     return;
   }
 
-  // Monta a lista de arquivos com link para download
-  container.innerHTML = `
+  const lista = arquivos.map(a => {
+    const nome = escapeHtml(a.nomeArquivo || "sem-nome");
+    const data = a.dataCriacao ? escapeHtml(String(a.dataCriacao).slice(0,10)) : "";
+    // link absoluto para o backend (download)
+    const href = `${BACKEND}/api/processos/download/${encodeURIComponent(a.id)}`;
+    return `<li>
+      <a href="${href}" target="_blank" rel="noopener noreferrer">${nome}</a>
+      ${data ? ` <small>(${data})</small>` : ""}
+    </li>`;
+  }).join("");
+
+  arquivosContainer.innerHTML = `
     <h3>Arquivos do Processo</h3>
-    <ul>
-      ${arquivos.map(a => `
-        <li>
-          <a href="/api/processos/download/${a.id}" target="_blank">${a.nomeArquivo}</a>
-          (${a.dataCriacao ? a.dataCriacao.slice(0,10) : ''})
-        </li>
-      `).join('')}
-    </ul>
+    <ul>${lista}</ul>
   `;
 }
+
+function abrirChat(processoId) {
+  const nome = email ? encodeURIComponent(email) : "Convidado";
+  const link = `https://mousetrack-frontend.onrender.com/chat.html?processo=${encodeURIComponent(processoId)}&guest=1&nome=${nome}`;
+  window.location.href = link;
+}
+
+/** Pequena função para escapar HTML ao injetar strings no innerHTML */
+function escapeHtml(str) {
+  if (str == null) return "";
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+// Inicializa a página
+carregarProcesso();
