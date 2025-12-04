@@ -46,6 +46,8 @@ function abrirChat(processoId) {
     window.location.href = link;
 }
 
+carregarProcesso();
+
     fetch(`/api/processos/codigo/${codigo}`)
     .then(resp => {
         if (!resp.ok) throw new Error('Processo não encontrado');
@@ -58,4 +60,39 @@ function abrirChat(processoId) {
         // mostra "Processo não encontrado"
     });
 
-carregarProcesso();
+// buscando dados do processo 
+fetch(`/api/processos/codigo/${codigo}`)
+  .then(resp => resp.json())
+  .then(processo => {
+
+
+    // buscando arquivos associados ao processo
+    fetch(`/api/processos/${codigo}/arquivos`)
+      .then(resp => resp.json())
+      .then(arquivos => {
+        renderizarArquivos(arquivos);
+      });
+  });
+
+function renderizarArquivos(arquivos) {
+  const container = document.getElementById('arquivosContainer');
+  if (!container) return;
+
+  if (!arquivos.length) {
+    container.innerHTML = "<p>Nenhum arquivo associado.</p>";
+    return;
+  }
+
+  // Monta a lista de arquivos com link para download
+  container.innerHTML = `
+    <h3>Arquivos do Processo</h3>
+    <ul>
+      ${arquivos.map(a => `
+        <li>
+          <a href="/api/processos/download/${a.id}" target="_blank">${a.nomeArquivo}</a>
+          (${a.dataCriacao ? a.dataCriacao.slice(0,10) : ''})
+        </li>
+      `).join('')}
+    </ul>
+  `;
+}
