@@ -33,19 +33,35 @@ window.session = {
 };
 
 // ---------- Helpers globais usados em outras páginas ----------
-/** Garante usuário logado; se não houver, alerta uma vez, redireciona e aborta a execução. */
-window.requireAuth = function requireAuth() {
-  const u = session.user;
-  if (!u) {
-    if (!window.__authWarned) {
-      window.__authWarned = true;
-      alert('Sessão expirada. Faça login novamente.');
+  /** Garante usuário logado; se não houver, alerta uma vez, redireciona e aborta a execução. */
+  window.requireAuth = function requireAuth() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const isGuest = urlParams.get("guest") === "1";
+    const page = location.pathname.toLowerCase();
+
+    const isGuestAllowedPage =
+      page.endsWith("processo.html") ||
+      page.endsWith("chat.html");
+
+    // Se é convidado acessando páginas públicas → NÃO exige login
+    if (isGuest && isGuestAllowedPage) {
+      return { id: null, guest: true };
     }
-    location.replace(LOGIN_PATH);
-    throw new Error('[auth] Usuário não autenticado');
-  }
-  return u;
-};
+
+    // Caso contrário, segue a regra normal de login
+    const u = session.user;
+    if (!u) {
+      if (!window.__authWarned) {
+        window.__authWarned = true;
+        alert("Sessão expirada. Faça login novamente.");
+      }
+      location.replace(LOGIN_PATH);
+      throw new Error("[auth] Usuário não autenticado");
+    }
+
+    return u;
+  };
+
 
 /** Retorna o id do usuário salvo na sessão. */
 window.getUsuarioId = function getUsuarioId() {
