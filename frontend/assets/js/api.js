@@ -65,7 +65,17 @@ window.getUsuarioId = function getUsuarioId() {
   }
 
   // Se não logado e tentou abrir página privada → volta pro login
+  // Se não logado e em modo convidado (guest=1), permite acesso a páginas públicas
+  const urlParams = new URLSearchParams(window.location.search);
+  const isGuest = urlParams.get("guest") === "1";
+  const isGuestPage =
+    location.pathname.endsWith("processo.html") ||
+    location.pathname.endsWith("chat.html");
+
   if (!isLogin && !session.user) {
+    if (isGuest && isGuestPage) {
+      return; // permite acesso ao convidado
+    }
     location.replace(LOGIN_PATH);
   }
 })();
