@@ -175,29 +175,28 @@ async function handleOpenChatFromCard() {
     return;
   }
 
-  // Monta um título amigável pro chat usando o processo
-  const codigo = selectedCard.codigo || selectedCard.id || "";
-  const tituloProc = selectedCard.titulo || "";
-  const tituloThread = (codigo ? `${codigo} - ${tituloProc || "Processo"}` : (tituloProc || "Processo"));
+  // id do processo no banco (é o que o backend espera)
+  const processoId = selectedCard.id;
+  if (!processoId) {
+    alert("Processo sem ID. Recarregue a página.");
+    return;
+  }
 
   try {
-    // Usa seu endpoint já existente: POST /api/chat/threads
-    const res = await fetch(api('/api/chat/threads'), {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({ titulo: tituloThread })
+    // usa o MESMO endpoint que o guest
+    const res = await fetch(api(`/api/chat/threads/processo/${processoId}`), {
+      method: "POST"
     });
 
     if (!res.ok) {
-      console.error("Erro ao criar thread de chat:", res.status, res.statusText);
+      console.error("Erro ao criar/obter thread de chat:", res.status, res.statusText);
       alert("Não foi possível abrir o chat para este processo.");
       return;
     }
 
     const thread = await res.json();
 
-    // Redireciona pra tela de chat já apontando pra essa thread
+    // interna abre a mesma thread vinculada ao processo
     window.location.href = `chat.html?threadId=${thread.id}`;
   } catch (err) {
     console.error("Erro ao abrir chat a partir do card:", err);

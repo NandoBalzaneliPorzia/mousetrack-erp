@@ -101,12 +101,18 @@ public class ChatController {
         ChatThread thread = threadRepo.findById(id).orElse(null);
         if (thread == null) return ResponseEntity.notFound().build();
 
-        Usuario autor = usuarioRepo.findById(body.getAutorId()).orElse(null);
-        if (autor == null) return ResponseEntity.badRequest().build();
-
         ChatMessage msg = new ChatMessage();
         msg.setThread(thread);
-        msg.setAutor(autor);
+
+        if (body.getAutorId() != null) {
+            Usuario autor = usuarioRepo.findById(body.getAutorId()).orElse(null);
+            if (autor == null) return ResponseEntity.badRequest().build();
+            msg.setAutor(autor);
+        } else {
+            msg.setAutor(null);
+            msg.setAutorGuest(body.getAutorNome() != null ? body.getAutorNome() : "Convidado");
+        }
+
         msg.setConteudo(body.getConteudo());
 
         ChatMessage salvo = messageRepo.save(msg);
@@ -126,10 +132,13 @@ public class ChatController {
 
     // Converte entidade ChatMessage em DTO para envio via API
     private ChatMessageDTO toMessageDTO(ChatMessage m) {
+        Long autorId = (m.getAutor() != null ? m.getAutor().getId() : null);
+        String nome = (m.getAutor() != null ? m.getAutor().getNome() : m.getAutorGuest());
+
         return new ChatMessageDTO(
                 m.getId(),
-                m.getAutor().getId(),
-                m.getAutor().getNome(),
+                autorId,
+                nome,
                 m.getConteudo(),
                 m.getEnviadoEm(),
                 m.isLido()

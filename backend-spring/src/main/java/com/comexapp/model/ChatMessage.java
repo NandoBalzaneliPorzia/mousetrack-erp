@@ -29,8 +29,11 @@ public class ChatMessage {
 
     // Relação Many-to-One com Usuario (autor da mensagem)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "autor_id", nullable = false)
-    private Usuario autor;
+    @JoinColumn(name = "autor_id", nullable = true)
+    private Usuario autor; // pode ser null para convidados
+
+    @Column(name = "autor_guest")
+    private String autorGuest; // nome do convidado
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String conteudo;
@@ -57,6 +60,9 @@ public class ChatMessage {
 
     public Usuario getAutor() { return autor; }
     public void setAutor(Usuario autor) { this.autor = autor; }
+
+    public String getAutorGuest() { return autorGuest; }
+    public void setAutorGuest(String autorGuest) { this.autorGuest = autorGuest; }
 
     public String getConteudo() { return conteudo; }
     public void setConteudo(String conteudo) { this.conteudo = conteudo; }

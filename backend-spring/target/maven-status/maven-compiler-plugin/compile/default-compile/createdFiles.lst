@@ -1,4 +1,5 @@
 com\comexapp\controller\ChatController.class
+com\comexapp\DTO\EventoRastreioDTO.class
 com\comexapp\service\EmailService.class
 com\comexapp\DTO\ProcessoRequestDTO.class
 com\comexapp\model\Usuario.class
@@ -18,10 +19,13 @@ com\comexapp\model\Cliente.class
 com\comexapp\controller\ShippingController.class
 com\comexapp\repository\ChatMessageRepository.class
 com\comexapp\model\TipoUsuario.class
+com\comexapp\DTO\ProcessoRastreioDTO.class
 com\comexapp\config\CorsConfig$1.class
+com\comexapp\DTO\ProcessoResponseDTO.class
 com\comexapp\DTO\ShippingInstructionDTO.class
 com\comexapp\repository\ClienteRepository.class
 com\comexapp\config\SecurityBeans.class
+com\comexapp\DTO\ProcessoArquivoDTO.class
 com\comexapp\model\ProcessoArquivo.class
 com\comexapp\DTO\EmailRequestDTO.class
 com\comexapp\DTO\NovaMensagemDTO.class

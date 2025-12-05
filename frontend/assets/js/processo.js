@@ -115,7 +115,8 @@ function renderizarArquivos(arquivos) {
 
 function abrirChat(processoId) {
   const nome = email ? encodeURIComponent(email) : "Convidado";
-  const link = `https://mousetrack-frontend.onrender.com/chat.html?processo=${encodeURIComponent(processoId)}&guest=1&nome=${nome}`;
+  // agora usamos processoId, que é o que o chat.js já procura
+  const link = `https://mousetrack-frontend.onrender.com/chat.html?processoId=${encodeURIComponent(processoId)}&guest=1&nome=${nome}`;
   window.location.href = link;
 }
 
