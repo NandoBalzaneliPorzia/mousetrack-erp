@@ -13,6 +13,17 @@ if (!isGuest && typeof requireAuth === "function") {
   }
 }
 
+// 🧩 Esconde sidebar + lista de threads para guest
+if (isGuest) {
+  const sidebar = document.querySelector(".sidebar");
+  if (sidebar) sidebar.style.display = "none";
+
+  const threadListWrapper = document.querySelector("#threadList")?.parentElement;
+  if (threadListWrapper) threadListWrapper.style.display = "none";
+
+  chatPanelEl?.classList?.remove("hidden");
+}
+
 // Elementos da UI
 const threadListEl  = document.getElementById('threadList');
 const chatPanelEl   = document.getElementById('chatPanel');

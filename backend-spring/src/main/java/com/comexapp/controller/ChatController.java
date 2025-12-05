@@ -152,9 +152,7 @@ public class ChatController {
     @PostMapping("/threads/processo/{processoId}")
     public ResponseEntity<ChatThread> criarOuObterThreadDoProcesso(@PathVariable Long processoId) {
 
-        Processo processo = processoRepository.findById(processoId)
-                .orElse(null);
-
+        Processo processo = processoRepository.findById(processoId).orElse(null);
         if (processo == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -169,6 +167,14 @@ public class ChatController {
         novo.setTitulo(processo.getCodigo() + " - " + processo.getTitulo());
 
         ChatThread salvo = threadRepo.save(novo);
+
+        // Mensagem automática
+        ChatMessage msg = new ChatMessage();
+        msg.setThread(salvo);
+        msg.setConteudo("Olá! Nossa equipe já pode ver suas mensagens.");
+        msg.setAutorGuest("Sistema");
+        messageRepo.save(msg);
+
         return ResponseEntity.ok(salvo);
     }
 }
