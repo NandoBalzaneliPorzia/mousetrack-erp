@@ -14,7 +14,7 @@ O comércio exterior brasileiro enfrenta desafios devido à descentralização d
 
 ---
 
-## 👣 SIGA OS PASSOS A BAIXO PARA EXPLORAR O MOUSS&TRACK
+## 👣 PASSO A PASSO PARA EXPLORAR O MOUSS&TRACK
 Acessar a Plataforma:
 1. Abra seu navegador de internet e acesse o link: https://mousetrack-frontend.onrender.com
 Explorar as Funcionalidades:
