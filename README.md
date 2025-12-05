@@ -15,9 +15,9 @@ O comércio exterior brasileiro enfrenta desafios devido à descentralização d
 ---
 
 ## 👣 PASSO A PASSO PARA EXPLORAR O MOUSS&TRACK
-Acessar a Plataforma:
+- Acessar a Plataforma:
 1. Abra seu navegador de internet e acesse o link: https://mousetrack-frontend.onrender.com
-Explorar as Funcionalidades:
+- Explorar as Funcionalidades:
 2. Uma vez na página inicial, você poderá realizar o login (se já tiver uma conta) ou explorar as funcionalidades disponíveis.
 A plataforma Mouss&Track oferece ferramentas para centralizar a gestão de processos de comércio exterior, incluindo organização de documentos, acompanhamento de atividades, comunicação via chat e visualização de status.
 Sinta-se à vontade para navegar pelas diferentes seções e interagir com os recursos para entender como o sistema simplifica a gestão logística.
