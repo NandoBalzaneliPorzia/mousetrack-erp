@@ -6,25 +6,12 @@ const nomeGuest = decodeURIComponent(params.get("nome") || "Convidado");
 
 // Se convidado, remover verificação de autenticação
 if (!isGuest && typeof requireAuth === "function") {
-  try {
-    requireAuth();
-  } catch (e) {
+  try { requireAuth(); } catch (e) {
     console.warn("RequireAuth bloqueou usuário: ", e);
   }
 }
 
-// 🧩 Esconde sidebar + lista de threads para guest
-if (isGuest) {
-  const sidebar = document.querySelector(".sidebar");
-  if (sidebar) sidebar.style.display = "none";
-
-  const threadListWrapper = document.querySelector("#threadList")?.parentElement;
-  if (threadListWrapper) threadListWrapper.style.display = "none";
-
-  chatPanelEl?.classList?.remove("hidden");
-}
-
-// Elementos da UI
+// Elementos da UI — declarados ANTES de usar!
 const threadListEl  = document.getElementById('threadList');
 const chatPanelEl   = document.getElementById('chatPanel');
 const messagesEl    = document.getElementById('messagesContainer');
@@ -33,28 +20,42 @@ const avatarEl      = document.getElementById('chatAvatar');
 const formEl        = document.getElementById('chatForm');
 const inputEl       = document.getElementById('messageInput');
 
+// Esconde interface não utilizada pelo guest
+if (isGuest) {
+  const sidebar = document.querySelector(".sidebar");
+  if (sidebar) sidebar.style.display = "none";
+
+  const wrapper = threadListEl?.parentElement;
+  if (wrapper) wrapper.style.display = "none";
+}
+
 // Thread atual
 let currentThreadId = null;
 
 // -------------------- GUEST: Criar thread do processo --------------------
 if (isGuest && processoGuest) {
+
+  window.__pendingRedirect = true;
+
   fetch(api(`/api/chat/threads/processo/${processoGuest}`), {
     method: "POST"
   })
   .then(r => r.json())
   .then(thread => {
-    location.href = `chat.html?threadId=${thread.id}&guest=1&processo=${processoGuest}&nome=${encodeURIComponent(nomeGuest)}`;
+    location.href =
+      `chat.html?threadId=${thread.id}&guest=1&nome=${encodeURIComponent(nomeGuest)}`;
   })
   .catch(err => {
     alert("Não foi possível abrir o chat deste processo (guest)");
     console.error(err);
   });
-
-  return;
 }
 
-// -------------------- Normal (usuário logado) --------------------
+// -------------------- Normal (ou guest já redirecionado) --------------------
 document.addEventListener("DOMContentLoaded", () => {
+
+  if (window.__pendingRedirect) return;
+
   const threadId = Number(params.get("threadId"));
   if (!threadId) {
     messagesEl.innerHTML = "<p>Nenhuma thread encontrada.</p>";
@@ -66,7 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
   loadMessages();
 });
 
-// -------------------- Carregar mensagens da thread --------------------
+// -------------------- Carregar mensagens --------------------
 async function loadMessages() {
   messagesEl.innerHTML = "<p class='chat-empty'>Carregando...</p>";
 
@@ -107,7 +108,6 @@ formEl.addEventListener("submit", async (ev) => {
     const msg = await res.json();
     appendMessageBubble(msg);
     inputEl.value = "";
-    inputEl.focus();
     scrollMessagesToBottom();
 
   } catch (err) {
