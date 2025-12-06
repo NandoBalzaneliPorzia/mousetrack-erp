@@ -361,17 +361,11 @@ function renderBoard() {
     // se a lane existir e for do tipo atualmente visível -> anexa
     if (lanes[key]) {
       lanes[key].appendChild(createCard(proc));
-    } else {
-      // se não existirem, opcionalmente logamos pra debug
-      // console.info("Lane não encontrada para", key, proc);
     }
   });
 
   // atualiza visibilidade das lanes conforme currentType
   updateLaneVisibility();
-
-  if (!proc.id) proc.id = (proc.codigo || Math.random().toString(36).slice(2,9));
-  if (!proc.codigo) proc.codigo = proc.id;
 }
 
 // ======================================
