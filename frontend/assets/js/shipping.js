@@ -64,8 +64,14 @@ modalItems.forEach(item => {
     const data = Object.fromEntries(new FormData(form).entries());
     data.tipo = form.id === 'formAereo' ? 'aereo' : 'maritmo';
 
+    if (form.id === 'formMaritmo' && data.armador) {
+      data.ciaAerea = data.armador;
+      delete data.armador; 
+        // Remove o campo "armador" do JSON enviado
+    }
+
     try {
-  const response = await fetch(api('/api/shipping/docx'), {
+    const response = await fetch(api('/api/shipping/docx'), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data)
