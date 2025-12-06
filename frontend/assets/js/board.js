@@ -213,8 +213,8 @@ if (pInspect) {
     }
 
     const codigo = selectedCard.codigo;
-    // abre a página de documentos do processo
-    window.location.href = `repository-doc.html?codigo=${encodeURIComponent(codigo)}`;
+    // abre a página de documentos do processo pelo
+    window.location.href = `repository-doc.html?id=${encodeURIComponent(codigo)}`;
   });
 }
 
