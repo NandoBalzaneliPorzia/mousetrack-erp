@@ -22,13 +22,13 @@ const pTitle   = document.getElementById('popTitle');
 const pChecklist = document.getElementById('pChecklist');
 const pClose   = document.getElementById('pClose');
 const pChatBtn = document.getElementById('pChatBtn');
+const pInspect = document.getElementById('pInspect');
 
 let selectedCard = null;
 let currentType = "importacao"; // default
 
 // ======================================
 // CHECKLISTS
-// (mantive as no seu código original)
 // ======================================
 const checklists = {
   importacao: {
@@ -204,6 +204,20 @@ async function handleOpenChatFromCard() {
   }
 }
 
+// BOTÃO INSPECT: ir para repository-doc do processo selecionado
+if (pInspect) {
+  pInspect.addEventListener("click", () => {
+    if (!selectedCard || !selectedCard.codigo) {
+      alert("Nenhum processo selecionado ou processo sem código.");
+      return;
+    }
+
+    const codigo = selectedCard.codigo;
+    // abre a página de documentos do processo
+    window.location.href = `repository-doc.html?codigo=${encodeURIComponent(codigo)}`;
+  });
+}
+
 // BOTÃO "+" DO POPOVER ABRE INPUT DE E-MAIL
 const pAdd = document.getElementById("pAdd");
 const emailBox = document.getElementById("emailBox");
@@ -339,6 +353,9 @@ function renderBoard() {
 
   // atualiza visibilidade das lanes conforme currentType
   updateLaneVisibility();
+
+  if (!proc.id) proc.id = (proc.codigo || Math.random().toString(36).slice(2,9));
+  if (!proc.codigo) proc.codigo = proc.id;
 }
 
 // ======================================
