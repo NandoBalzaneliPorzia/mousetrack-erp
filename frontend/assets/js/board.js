@@ -234,6 +234,63 @@ if (pInspectDocs) {
   });
 }
 
+// BOTÃO DOWNLOAD DOCS
+const pDownloadDocs = document.getElementById('pDownloadDocs');
+
+if (pDownloadDocs) {
+  pDownloadDocs.addEventListener("click", async () => {
+    if (!selectedCard || !selectedCard.codigo) {
+      alert("Nenhum processo selecionado ou processo sem código.");
+      return;
+    }
+
+    const codigo = selectedCard.codigo;
+
+    try {
+      // Busca a lista de arquivos do processo
+      const resp = await fetch(api(`/api/processos/${codigo}/arquivos`));
+      if (!resp.ok) {
+        alert("Erro ao carregar documentos do processo.");
+        return;
+      }
+
+      const docs = await resp.json();
+
+      if (!Array.isArray(docs) || docs.length === 0) {
+        alert("Nenhum documento encontrado para este processo.");
+        return;
+      }
+
+      // Se só tem 1 arquivo, baixa direto
+      if (docs.length === 1) {
+        window.location.href = api(`/api/processos/download/${docs[0].id}`);
+        return;
+      }
+
+      // Se tem vários, pergunta qual baixar
+      const lista = docs
+        .map((d, i) => `${i + 1} - ${d.nomeArquivo}`)
+        .join("\n");
+
+      const escolha = prompt(
+        `Arquivos deste processo:\n${lista}\n\nDigite o número do arquivo que deseja baixar:`
+      );
+
+      const index = Number(escolha) - 1;
+      if (isNaN(index) || index < 0 || index >= docs.length) {
+        return; // usuário cancelou ou digitou algo inválido
+      }
+
+      const docEscolhido = docs[index];
+      window.location.href = api(`/api/processos/download/${docEscolhido.id}`);
+
+    } catch (err) {
+      console.error("Erro ao buscar/baixar documentos:", err);
+      alert("Erro ao buscar documentos. Tente novamente.");
+    }
+  });
+}
+
 // BOTÃO "+" DO POPOVER ABRE INPUT DE E-MAIL
 const pAdd = document.getElementById("pAdd");
 const emailBox = document.getElementById("emailBox");
