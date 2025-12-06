@@ -204,7 +204,7 @@ async function handleOpenChatFromCard() {
   }
 }
 
-// BOTÃO INSPECT: ir para repository-doc do processo selecionado
+// BOTÃO INSPECT - lupa: ir para repository-doc do processo selecionado
 if (pInspect) {
   pInspect.addEventListener("click", () => {
     if (!selectedCard || !selectedCard.codigo) {
@@ -214,6 +214,22 @@ if (pInspect) {
 
     const codigo = selectedCard.codigo;
     // abre a página de documentos do processo pelo
+    window.location.href = `repository-doc.html?id=${encodeURIComponent(codigo)}`;
+  });
+}
+
+// BOTÃO INSPECT - docs
+const pInspectDocs = document.getElementById('pInspectDocs');
+
+if (pInspectDocs) {
+  pInspectDocs.addEventListener("click", () => {
+    if (!selectedCard || !selectedCard.codigo) {
+      alert("Nenhum processo selecionado ou processo sem código.");
+      return;
+    }
+
+    const codigo = selectedCard.codigo;
+    // abre a página de documentos do processo
     window.location.href = `repository-doc.html?id=${encodeURIComponent(codigo)}`;
   });
 }
