@@ -1,6 +1,7 @@
 package com.comexapp.controller;
 
 /*
+Responsável: Ana Beatriz Maranho
 A classe TesteController.java é um controlador REST simples utilizado para testar
 se o backend está respondendo corretamente. Ele fornece um endpoint que retorna
 uma mensagem de confirmação, útil para verificação rápida de conectividade.

@@ -1,6 +1,7 @@
 package com.comexapp.controller;
 
 /*
+Responsável: Eduardo Sanvido
 A classe ProcessoController.java é um controlador REST responsável por gerenciar 
 todas as operações relacionadas à entidade Processo. Ela fornece endpoints para 
 criação de processos, upload e download de arquivos, listagem de processos, 
@@ -139,6 +140,26 @@ public class ProcessoController {
                     return ResponseEntity.ok(dto);
                 })
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    // ================================
+    //   EXCLUIR PROCESSO POR ID
+    // ================================
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletarProcesso(@PathVariable Long id) {
+        // Verifica se o processo existe
+        if (!repository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        try {
+            // Exclui o processo (arquivos relacionados serão excluídos em cascata se configurado)
+            repository.deleteById(id);
+            return ResponseEntity.noContent().build(); // 204 No Content
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     // ================================

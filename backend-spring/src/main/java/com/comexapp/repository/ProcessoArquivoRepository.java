@@ -1,6 +1,7 @@
 package com.comexapp.repository;
 
 /*
+Responsável: Laura Pereira
 A interface ProcessoArquivoRepository é um repositório Spring Data JPA para a entidade ProcessoArquivo.
 Ela fornece métodos para operações CRUD e consultas específicas, como:
 - Buscar arquivos de um processo pelo código (em DTO para não trazer dados binários)

@@ -1,6 +1,7 @@
 package com.comexapp.controller;
 
 /*
+Responsável: Ana Beatriz Maranho
 A classe HealthController.java é um controlador REST usado para verificar 
 a saúde da aplicação e fornecer informações de versão. Permite monitoramento 
 simples para confirmar que o backend está ativo e funcionando corretamente.

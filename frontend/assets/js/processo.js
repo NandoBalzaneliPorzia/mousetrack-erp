@@ -1,3 +1,4 @@
+//Responsável: Nando Balzaneli
 const BACKEND = "https://mousetrack-erp.onrender.com"; // Base URL do backend
 
 const params = new URLSearchParams(window.location.search);

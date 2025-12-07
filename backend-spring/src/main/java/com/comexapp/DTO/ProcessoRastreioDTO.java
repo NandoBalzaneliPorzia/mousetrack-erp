@@ -3,6 +3,7 @@ package com.comexapp.DTO;
 import java.util.List;
 
 /*
+Responsável: Eduardo Sanvido
 A classe ProcessoRastreioDTO.java é um DTO (Data Transfer Object) que representa 
 as informações de rastreio de um processo de embarque ou transporte. 
 Inclui:

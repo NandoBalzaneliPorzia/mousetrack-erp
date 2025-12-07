@@ -1,6 +1,7 @@
 package com.comexapp.controller;
 
 /*
+Responsável: Nando Balzaneli
 A classe ChatController.java é um controlador REST responsável por gerenciar
 as funcionalidades de chat da aplicação.
 
@@ -149,11 +150,10 @@ public class ChatController {
     // Cria ou retorna a thread de chat associada a um processo
     // Se a thread já existir para o processo, apenas retorna ela
     // Se não existir, cria uma nova thread com título baseado no código do processo
-    @PostMapping("/threads/processo/{processoId}")
-    public ResponseEntity<ChatThread> criarOuObterThreadDoProcesso(@PathVariable Long processoId) {
+@PostMapping("/threads/processo/{processoId}")
+public ResponseEntity<ChatThread> criarOuObterThreadDoProcesso(@PathVariable Long processoId) {
 
         Processo processo = processoRepository.findById(processoId).orElse(null);
-
         if (processo == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -163,27 +163,19 @@ public class ChatController {
             return ResponseEntity.ok(existente);
         }
 
-        Usuario criador = null;
-        try {
-            if (processo.getResponsavel() != null && !processo.getResponsavel().isBlank()) {
-                criador = usuarioRepo.findByEmail(processo.getResponsavel()).orElse(null);
-            }
-        } catch (Exception e) {
-            System.out.println("⚠ Erro ao buscar responsável do processo: " + e.getMessage());
-        }
-
-        System.out.println("Responsável encontrado? " + (criador != null));
-
         ChatThread novo = new ChatThread();
         novo.setProcesso(processo);
         novo.setTitulo(processo.getCodigo() + " - " + processo.getTitulo());
 
-        if (criador != null) {
-            novo.getUsuarios().add(criador);
-        }
-
         ChatThread salvo = threadRepo.save(novo);
+
+        // Mensagem automática
+        ChatMessage msg = new ChatMessage();
+        msg.setThread(salvo);
+        msg.setConteudo("Olá! Nossa equipe já pode ver suas mensagens.");
+        msg.setAutorGuest("Sistema");
+        messageRepo.save(msg);
+
         return ResponseEntity.ok(salvo);
     }
-
 }

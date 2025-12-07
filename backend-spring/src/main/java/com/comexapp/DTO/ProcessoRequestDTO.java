@@ -3,6 +3,7 @@ package com.comexapp.DTO;
 import org.springframework.web.multipart.MultipartFile;
 
 /*
+Responsável: Eduardo Sanvido
 A classe ProcessoRequestDTO.java é um DTO (Data Transfer Object) usado para
 receber os dados enviados pelo frontend ao criar ou atualizar um processo.
 Ela encapsula:

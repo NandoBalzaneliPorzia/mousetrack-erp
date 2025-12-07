@@ -1,5 +1,8 @@
 package server.util;
 
+/*
+Responsável: Ana Beatriz Maranho
+Manipulação do JSON */
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class JsonUtil {

@@ -1,3 +1,4 @@
+//Responsável: Eduardo Sanvido
 // assets/js/board.js
 // ======================================
 // CONFIG
@@ -22,13 +23,13 @@ const pTitle   = document.getElementById('popTitle');
 const pChecklist = document.getElementById('pChecklist');
 const pClose   = document.getElementById('pClose');
 const pChatBtn = document.getElementById('pChatBtn');
+const pInspect = document.getElementById('pInspect');
 
 let selectedCard = null;
 let currentType = "importacao"; // default
 
 // ======================================
 // CHECKLISTS
-// (mantive as no seu código original)
 // ======================================
 const checklists = {
   importacao: {
@@ -175,33 +176,106 @@ async function handleOpenChatFromCard() {
     return;
   }
 
-  // id do processo no banco (é o que o backend espera)
+  // Usamos o ID do processo para passar para a página de chat
+  // A página chat.html será responsável por criar/obter a thread
   const processoId = selectedCard.id;
-  if (!processoId) {
-    alert("Processo sem ID. Recarregue a página.");
+
+  if (processoId == null) {
+    alert("Processo sem ID válido. Não é possível abrir o chat.");
+    console.error("selectedCard.id ausente ou inválido:", selectedCard);
     return;
   }
 
-  try {
-    // usa o MESMO endpoint que o guest
-    const res = await fetch(api(`/api/chat/threads/processo/${processoId}`), {
-      method: "POST"
-    });
+  // Redireciona para a página de chat, passando o ID do processo
+  // A página chat.html vai lidar com a lógica de thread
+  window.location.href = `chat.html?processoId=${processoId}`;
+}
 
-    if (!res.ok) {
-      console.error("Erro ao criar/obter thread de chat:", res.status, res.statusText);
-      alert("Não foi possível abrir o chat para este processo.");
+// BOTÃO INSPECT - lupa: ir para repository-doc do processo selecionado
+if (pInspect) {
+  pInspect.addEventListener("click", () => {
+    if (!selectedCard || !selectedCard.codigo) {
+      alert("Nenhum processo selecionado ou processo sem código.");
       return;
     }
 
-    const thread = await res.json();
+    const codigo = selectedCard.codigo;
+    // abre a página de documentos do processo pelo
+    window.location.href = `repository-doc.html?id=${encodeURIComponent(codigo)}`;
+  });
+}
 
-    // interna abre a mesma thread vinculada ao processo
-    window.location.href = `chat.html?threadId=${thread.id}`;
-  } catch (err) {
-    console.error("Erro ao abrir chat a partir do card:", err);
-    alert("Erro ao abrir o chat. Tente novamente.");
-  }
+// BOTÃO INSPECT - docs
+const pInspectDocs = document.getElementById('pInspectDocs');
+
+if (pInspectDocs) {
+  pInspectDocs.addEventListener("click", () => {
+    if (!selectedCard || !selectedCard.codigo) {
+      alert("Nenhum processo selecionado ou processo sem código.");
+      return;
+    }
+
+    const codigo = selectedCard.codigo;
+    // abre a página de documentos do processo
+    window.location.href = `repository-doc.html?id=${encodeURIComponent(codigo)}`;
+  });
+}
+
+// BOTÃO DOWNLOAD DOCS
+const pDownloadDocs = document.getElementById('pDownloadDocs');
+
+if (pDownloadDocs) {
+  pDownloadDocs.addEventListener("click", async () => {
+    if (!selectedCard || !selectedCard.codigo) {
+      alert("Nenhum processo selecionado ou processo sem código.");
+      return;
+    }
+
+    const codigo = selectedCard.codigo;
+
+    try {
+      // Busca a lista de arquivos do processo
+      const resp = await fetch(api(`/api/processos/${codigo}/arquivos`));
+      if (!resp.ok) {
+        alert("Erro ao carregar documentos do processo.");
+        return;
+      }
+
+      const docs = await resp.json();
+
+      if (!Array.isArray(docs) || docs.length === 0) {
+        alert("Nenhum documento encontrado para este processo.");
+        return;
+      }
+
+      // Se só tem 1 arquivo, baixa direto
+      if (docs.length === 1) {
+        window.location.href = api(`/api/processos/download/${docs[0].id}`);
+        return;
+      }
+
+      // Se tem vários, pergunta qual baixar
+      const lista = docs
+        .map((d, i) => `${i + 1} - ${d.nomeArquivo}`)
+        .join("\n");
+
+      const escolha = prompt(
+        `Arquivos deste processo:\n${lista}\n\nDigite o número do arquivo que deseja baixar:`
+      );
+
+      const index = Number(escolha) - 1;
+      if (isNaN(index) || index < 0 || index >= docs.length) {
+        return; // usuário cancelou ou digitou algo inválido
+      }
+
+      const docEscolhido = docs[index];
+      window.location.href = api(`/api/processos/download/${docEscolhido.id}`);
+
+    } catch (err) {
+      console.error("Erro ao buscar/baixar documentos:", err);
+      alert("Erro ao buscar documentos. Tente novamente.");
+    }
+  });
 }
 
 // BOTÃO "+" DO POPOVER ABRE INPUT DE E-MAIL
@@ -322,20 +396,18 @@ function renderBoard() {
     processos = [];
   }
 
-  processos.forEach(proc => {
-    // assegura campos mínimos
-    if (!proc.id) proc.id = (proc.codigo || Math.random().toString(36).slice(2,9));
-    if (!proc.codigo) proc.codigo = proc.id;
+processos.forEach(proc => {
+  // NÃO inventar id; ele deve vir do backend.
+  // Apenas garante que exista um código para exibir.
+  if (!proc.codigo) {
+    proc.codigo = proc.id || Math.random().toString(36).slice(2,9);
+  }
 
-    const key = laneKeyFor(proc);
-    // se a lane existir e for do tipo atualmente visível -> anexa
-    if (lanes[key]) {
-      lanes[key].appendChild(createCard(proc));
-    } else {
-      // se não existirem, opcionalmente logamos pra debug
-      // console.info("Lane não encontrada para", key, proc);
-    }
-  });
+  const key = laneKeyFor(proc);
+  if (lanes[key]) {
+    lanes[key].appendChild(createCard(proc));
+  }
+});
 
   // atualiza visibilidade das lanes conforme currentType
   updateLaneVisibility();
@@ -395,6 +467,72 @@ window.addEventListener('storage', (ev) => {
     renderBoard();
   }
 });
+
+// ======================================
+//  EXCLUIR CARD
+// ======================================
+const docsMenuBtn = document.getElementById('docsMenuBtn');
+const docsMenu = document.getElementById('docsMenu');
+const mDelete = document.getElementById('mDelete');
+
+// Abre/fecha o menu ao clicar no botão ⋯
+if (docsMenuBtn && docsMenu) {
+  docsMenuBtn.addEventListener('click', (e) => {
+    e.stopPropagation(); // evita fechar o popover
+    docsMenu.hidden = !docsMenu.hidden;
+  });
+}
+
+// Fecha o menu ao clicar fora
+document.addEventListener('click', (e) => {
+  if (docsMenu && !docsMenu.contains(e.target) && e.target !== docsMenuBtn) {
+    docsMenu.hidden = true;
+  }
+});
+
+// EXCLUIR CARD
+if (mDelete) {
+  mDelete.addEventListener('click', async () => {
+    if (!selectedCard) {
+      alert("Nenhum processo selecionado.");
+      return;
+    }
+
+    const confirma = confirm(`Tem certeza que deseja excluir o processo "${selectedCard.codigo}"?`);
+    if (!confirma) return;
+
+    try {
+      // Chama o backend para excluir o processo
+      const resp = await fetch(api(`/api/processos/${selectedCard.id}`), {
+        method: 'DELETE'
+      });
+
+      if (!resp.ok) {
+        alert("Erro ao excluir o processo no servidor.");
+        console.error("Erro DELETE:", resp.status, resp.statusText);
+        return;
+      }
+
+      // Remove do localStorage
+      let processos = JSON.parse(localStorage.getItem("processos") || "[]");
+      processos = processos.filter(p => p.id !== selectedCard.id);
+      localStorage.setItem("processos", JSON.stringify(processos));
+
+      // Fecha o popover e re-renderiza o board
+      popover.hidden = true;
+      docsMenu.hidden = true;
+      selectedCard = null;
+
+      renderBoard();
+
+      alert("Processo excluído com sucesso!");
+
+    } catch (err) {
+      console.error("Erro ao excluir processo:", err);
+      alert("Erro ao excluir o processo. Tente novamente.");
+    }
+  });
+}
 
 // inicializa
 renderBoard();

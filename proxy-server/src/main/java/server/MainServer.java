@@ -8,6 +8,10 @@ import server.handler.StaticFileHandler;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 
+/*
+Responsável: Nando Balzaneli
+*/
+
 public class MainServer {
     public static void main(String[] args) {
         try {

@@ -1,6 +1,7 @@
 package com.comexapp.repository;
 
 /*
+Responsável: Laura Pereira
 A interface UsuarioRepository é um repositório Spring Data JPA para a entidade Usuario.
 Ela fornece operações padrão de CRUD e métodos customizados, incluindo:
 - Busca de um usuário pelo email

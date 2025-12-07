@@ -1,6 +1,7 @@
 package com.comexapp.model;
 
 /* 
+Responsável: Juliana Prado
 A classe ProcessoArquivo.java representa um arquivo associado a um processo no sistema.
 Ela armazena informações do arquivo, como dados binários, nome, tipo e data de criação,
 e mantém o relacionamento com a entidade Processo.

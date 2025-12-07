@@ -1,3 +1,4 @@
+//Responsável: Juliana Prado
 // nav.js — injeta o menu.html + ativa o item da sidebar + botão Sair
 
 // Carrega o menu.html no ponto de montagem

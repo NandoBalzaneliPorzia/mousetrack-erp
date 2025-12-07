@@ -1,6 +1,7 @@
 package com.comexapp.model;
 
 /*
+Responsável: Juliana Prado
 A classe Processo.java representa a entidade "Processo" no banco de dados.
 Ela encapsula informações básicas do processo, como título, tipo, modal,
 observações, data de criação, código único, responsável, e seu relacionamento

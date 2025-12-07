@@ -1,3 +1,4 @@
+//Responsável: Juliana Prado
 // ======================
 //  LÓGICA DA PÁGINA DE ACESSO
 // ======================

@@ -1,6 +1,7 @@
 package com.comexapp.DTO;
 
 /*
+Responsável: Eduardo Sanvido
 A classe ProcessoArquivoDTO.java é um DTO (Data Transfer Object) usado para 
 representar informações de arquivos associados a um processo. Contém os dados 
 principais do arquivo sem carregar o conteúdo binário (LOB), facilitando a 

@@ -1,6 +1,7 @@
 package com.comexapp.DTO;
 
 /*
+Responsável: Ana Beatriz Maranho
 A classe ShippingInstructionDTO.java é um DTO (Data Transfer Object) usado
 para transportar informações de uma Instrução de Embarque (Shipping Instruction)
 entre camadas da aplicação, como do frontend para o backend ou entre serviços.

@@ -1,6 +1,7 @@
 package com.comexapp.DTO;
 
 /*
+Responsável: Laura Pereira
 A classe AtualizarPerfilDTO.java é um objeto de transferência de dados (DTO)
 utilizado para receber informações de atualização do perfil do usuário. 
 Contém campos para telefone, nova senha e confirmação da senha, garantindo 

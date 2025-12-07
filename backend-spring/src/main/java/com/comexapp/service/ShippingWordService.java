@@ -1,6 +1,7 @@
 package com.comexapp.service;
 
 /*
+Responsável: Ana Beatriz Maranho
 A classe ShippingWordService.java gera um documento Word (.docx) contendo
 informações de instruções de embarque (Shipping Instructions). Utiliza Apache POI
 para criar o documento, adicionando título, tabela de dados e rodapé, e retorna

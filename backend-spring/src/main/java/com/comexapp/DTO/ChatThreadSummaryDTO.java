@@ -1,6 +1,7 @@
 package com.comexapp.DTO;
 
 /*
+Responsável: Nando Balzaneli
 A classe ChatThreadSummaryDTO.java é um DTO (Data Transfer Object) usado para 
 resumir informações de um tópico de chat (thread) que será exibido na lista de 
 conversas do frontend. Contém dados essenciais como:

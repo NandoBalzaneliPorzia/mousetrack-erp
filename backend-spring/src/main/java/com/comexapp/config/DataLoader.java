@@ -1,6 +1,7 @@
 package com.comexapp.config;
 
 /*
+Responsável: Juliana Prado
 A classe DataLoader.java é responsável por executar ações durante a inicialização
 da aplicação Spring Boot. Seu objetivo principal é garantir que um usuário de teste
 padrão (admin) exista no banco de dados, criando-o caso ainda não tenha sido criado.

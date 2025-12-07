@@ -1,6 +1,7 @@
 package com.comexapp.controller;
 
 /*
+Responsável: Ana Beatriz Maranho
 A classe EmailController.java é um controlador REST que gerencia o envio 
 de e-mails na aplicação. Ele recebe requisições HTTP, repassa os dados 
 para o EmailService e retorna uma confirmação de sucesso.

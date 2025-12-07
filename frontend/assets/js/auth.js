@@ -1,3 +1,4 @@
+//Responsável: Laura Pereira
 // auth.js
 
 // Verifica se o usuário está logado

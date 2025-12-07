@@ -1,3 +1,4 @@
+//Responsável: Nando Balzaneli
 // -------------------- MODO GUEST --------------------
 const params = new URLSearchParams(window.location.search);
 

@@ -1,6 +1,7 @@
 package com.comexapp.service;
 
 /*
+Responsável: Laura Pereira
 A classe AuthService.java é responsável por gerenciar a autenticação de usuários.
 Ela fornece métodos para:
 - Buscar um usuário pelo email

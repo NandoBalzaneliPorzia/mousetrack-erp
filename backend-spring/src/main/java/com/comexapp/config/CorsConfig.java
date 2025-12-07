@@ -1,6 +1,7 @@
 package com.comexapp.config;
 
 /*
+Responsável: Nando Balzaneli
 A classe CorsConfig.java é responsável por configurar o CORS (Cross-Origin Resource Sharing)
 na aplicação Spring Boot. Ela define quais origens podem acessar a API, quais métodos HTTP
 são permitidos, quais cabeçalhos podem ser usados, e permite o envio de credenciais.
