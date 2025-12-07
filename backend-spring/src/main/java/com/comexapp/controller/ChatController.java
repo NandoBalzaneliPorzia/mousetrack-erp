@@ -149,32 +149,36 @@ public class ChatController {
     // Cria ou retorna a thread de chat associada a um processo
     // Se a thread já existir para o processo, apenas retorna ela
     // Se não existir, cria uma nova thread com título baseado no código do processo
-    @PostMapping("/threads/processo/{processoId}")
-    public ResponseEntity<ChatThread> criarOuObterThreadDoProcesso(@PathVariable Long processoId) {
+@PostMapping("/threads/processo/{processoId}")
+public ResponseEntity<ChatThread> criarOuObterThreadDoProcesso(@PathVariable Long processoId) {
 
-        Processo processo = processoRepository.findById(processoId).orElse(null);
-        if (processo == null) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        ChatThread existente = threadRepo.findFirstByProcessoId(processoId);
-        if (existente != null) {
-            return ResponseEntity.ok(existente);
-        }
-
-        ChatThread novo = new ChatThread();
-        novo.setProcesso(processo);
-        novo.setTitulo(processo.getCodigo() + " - " + processo.getTitulo());
-
-        ChatThread salvo = threadRepo.save(novo);
-
-        // Mensagem automática
-        ChatMessage msg = new ChatMessage();
-        msg.setThread(salvo);
-        msg.setConteudo("Olá! Nossa equipe já pode ver suas mensagens.");
-        msg.setAutorGuest("Sistema");
-        messageRepo.save(msg);
-
-        return ResponseEntity.ok(salvo);
+    Processo processo = processoRepository.findById(processoId).orElse(null);
+    if (processo == null) {
+        return ResponseEntity.badRequest().build();
     }
+
+    ChatThread existente = threadRepo.findFirstByProcessoId(processoId);
+    if (existente != null) {
+        return ResponseEntity.ok(existente);
+    }
+
+    ChatThread novo = new ChatThread();
+    novo.setProcesso(processo);
+    
+    // ✅ GARANTE QUE TITULO NUNCA SEJA NULL
+    String codigo = processo.getCodigo() != null ? processo.getCodigo() : "SEM-CODIGO";
+    String titulo = processo.getTitulo() != null ? processo.getTitulo() : "Sem título";
+    novo.setTitulo(codigo + " - " + titulo);
+
+    ChatThread salvo = threadRepo.save(novo);
+
+    // Mensagem automática
+    ChatMessage msg = new ChatMessage();
+    msg.setThread(salvo);
+    msg.setConteudo("Olá! Nossa equipe já pode ver suas mensagens.");
+    msg.setAutorGuest("Sistema");
+    messageRepo.save(msg);
+
+    return ResponseEntity.ok(salvo);
+}
 }
