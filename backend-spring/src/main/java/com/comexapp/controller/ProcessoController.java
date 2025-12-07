@@ -142,6 +142,26 @@ public class ProcessoController {
     }
 
     // ================================
+    //   EXCLUIR PROCESSO POR ID
+    // ================================
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletarProcesso(@PathVariable Long id) {
+        // Verifica se o processo existe
+        if (!repository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        try {
+            // Exclui o processo (arquivos relacionados serão excluídos em cascata se configurado)
+            repository.deleteById(id);
+            return ResponseEntity.noContent().build(); // 204 No Content
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    // ================================
     //   LISTAR ARQUIVOS DO PROCESSO (SEM LOB)
     // ================================
     @GetMapping("/{codigo}/arquivos")
