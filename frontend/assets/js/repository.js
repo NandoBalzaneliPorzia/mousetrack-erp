@@ -32,6 +32,10 @@ async function carregarProcessos() {
       return;
     }
     const lista = await resp.json();
+    
+    // ✅ SALVA NO LOCALSTORAGE COM O ID DO BANCO
+    localStorage.setItem("processos", JSON.stringify(lista));
+    
     tbody.innerHTML = "";
 
     if (!Array.isArray(lista) || lista.length === 0) {

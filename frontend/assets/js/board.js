@@ -177,26 +177,26 @@ async function handleOpenChatFromCard() {
 
   // id do processo no banco (é o que o backend espera)
   const processoId = selectedCard.id;
-  if (!processoId) {
+
+  if (processoId == null) {
     alert("Processo sem ID. Recarregue a página.");
+    console.error("selectedCard.id ausente:", selectedCard);
     return;
   }
 
   try {
-    // usa o MESMO endpoint que o guest
     const res = await fetch(api(`/api/chat/threads/processo/${processoId}`), {
       method: "POST"
     });
 
     if (!res.ok) {
-      console.error("Erro ao criar/obter thread de chat:", res.status, res.statusText);
+      const errorText = await res.text().catch(() => "");
+      console.error("Erro ao criar/obter thread de chat:", res.status, res.statusText, errorText);
       alert("Não foi possível abrir o chat para este processo.");
       return;
     }
 
     const thread = await res.json();
-
-    // interna abre a mesma thread vinculada ao processo
     window.location.href = `chat.html?threadId=${thread.id}`;
   } catch (err) {
     console.error("Erro ao abrir chat a partir do card:", err);
@@ -409,17 +409,18 @@ function renderBoard() {
     processos = [];
   }
 
-  processos.forEach(proc => {
-    // assegura campos mínimos
-    if (!proc.id) proc.id = (proc.codigo || Math.random().toString(36).slice(2,9));
-    if (!proc.codigo) proc.codigo = proc.id;
+processos.forEach(proc => {
+  // NÃO inventar id; ele deve vir do backend.
+  // Apenas garante que exista um código para exibir.
+  if (!proc.codigo) {
+    proc.codigo = proc.id || Math.random().toString(36).slice(2,9);
+  }
 
-    const key = laneKeyFor(proc);
-    // se a lane existir e for do tipo atualmente visível -> anexa
-    if (lanes[key]) {
-      lanes[key].appendChild(createCard(proc));
-    }
-  });
+  const key = laneKeyFor(proc);
+  if (lanes[key]) {
+    lanes[key].appendChild(createCard(proc));
+  }
+});
 
   // atualiza visibilidade das lanes conforme currentType
   updateLaneVisibility();
