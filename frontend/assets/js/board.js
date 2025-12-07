@@ -175,33 +175,19 @@ async function handleOpenChatFromCard() {
     return;
   }
 
-  // id do processo no banco (é o que o backend espera)
+  // Usamos o ID do processo para passar para a página de chat
+  // A página chat.html será responsável por criar/obter a thread
   const processoId = selectedCard.id;
 
   if (processoId == null) {
-    alert("Processo sem ID. Recarregue a página.");
-    console.error("selectedCard.id ausente:", selectedCard);
+    alert("Processo sem ID válido. Não é possível abrir o chat.");
+    console.error("selectedCard.id ausente ou inválido:", selectedCard);
     return;
   }
 
-  try {
-    const res = await fetch(api(`/api/chat/threads/processo/${processoId}`), {
-      method: "POST"
-    });
-
-    if (!res.ok) {
-      const errorText = await res.text().catch(() => "");
-      console.error("Erro ao criar/obter thread de chat:", res.status, res.statusText, errorText);
-      alert("Não foi possível abrir o chat para este processo.");
-      return;
-    }
-
-    const thread = await res.json();
-    window.location.href = `chat.html?threadId=${thread.id}`;
-  } catch (err) {
-    console.error("Erro ao abrir chat a partir do card:", err);
-    alert("Erro ao abrir o chat. Tente novamente.");
-  }
+  // Redireciona para a página de chat, passando o ID do processo
+  // A página chat.html vai lidar com a lógica de thread
+  window.location.href = `chat.html?processoId=${processoId}`;
 }
 
 // BOTÃO INSPECT - lupa: ir para repository-doc do processo selecionado
