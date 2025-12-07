@@ -1,6 +1,7 @@
 package com.comexapp.repository;
 
 /*
+Responsável: Nando Balzaneli
 A interface ChatThreadRepository é um repositório Spring Data JPA para a 
 entidade ChatThread. Fornece métodos para persistência e consultas de threads
 de chat, incluindo a busca de uma thread por ID de processo.

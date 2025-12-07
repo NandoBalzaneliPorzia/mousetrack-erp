@@ -1,6 +1,7 @@
 package com.comexapp.model;
 
 /*
+Responsável: Juliana Prado
 A classe Cliente.java representa a entidade 'Cliente' no banco de dados.
 Ela mapeia a tabela 'clientes' e define os atributos principais de um cliente:
 - id: chave primária

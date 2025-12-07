@@ -1,6 +1,7 @@
 package com.comexapp.controller;
 
 /*
+Responsável: Laura Pereira
 A classe AuthController.java é um controlador REST responsável por gerenciar
 as requisições de autenticação no sistema.
 

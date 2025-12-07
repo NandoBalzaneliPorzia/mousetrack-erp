@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Responsável: Nando Balzaneli
  * Handler responsável por redirecionar todas as requisições /api/*
  * para o backend (ex: http://localhost:8080/api/*),
  * ou responder com dados simulados (mock) se o backend não existir.

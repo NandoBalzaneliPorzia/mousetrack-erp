@@ -1,6 +1,7 @@
 package com.comexapp.config;
 
 /*
+Responsável: Juliana Prado
 A classe SecurityBeans.java fornece configurações de segurança específicas
 para a aplicação Spring Boot. Atualmente, define um bean de PasswordEncoder
 usando o algoritmo BCrypt, permitindo codificação segura de senhas antes de

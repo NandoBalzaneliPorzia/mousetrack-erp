@@ -1,3 +1,4 @@
+//Responsável: Eduardo Sanvido
 // assets/js/board.js
 // ======================================
 // CONFIG

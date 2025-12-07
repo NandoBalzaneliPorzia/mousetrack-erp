@@ -3,6 +3,7 @@ package com.comexapp.DTO;
 import java.time.LocalDate;
 
 /*
+Responsável: Ana Beatriz Maranho
 A classe EventoRastreioDTO.java é um DTO (Data Transfer Object) que representa 
 um evento de rastreio de um processo ou envio. Contém os campos:
 - key: identificador ou código do evento

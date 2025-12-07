@@ -1,3 +1,4 @@
+//Responsável: Ana Beatriz Maranho
 // Função utilitária para formatar data (aaaa-mm-dd → dd/mm/aaaa)
 function formatDate(dateStr) {
   if (!dateStr) return "00/00/0000";

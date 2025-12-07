@@ -1,3 +1,4 @@
+--Responsável: Juliana Prado
 USE moussetrack;
 INSERT INTO usuarios (
   cliente_id,

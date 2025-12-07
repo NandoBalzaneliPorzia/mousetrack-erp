@@ -1,6 +1,7 @@
 package com.comexapp.controller;
 
 /*
+Responsável: Ana Beatriz Maranho
 A classe ShippingController.java é um controlador REST responsável por gerenciar 
 operações relacionadas a instruções de embarque (shipping instructions). 
 Ela recebe requisições HTTP contendo dados de shipping, gera um documento Word 

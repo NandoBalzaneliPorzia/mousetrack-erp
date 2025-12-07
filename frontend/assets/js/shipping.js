@@ -1,3 +1,4 @@
+//Responsável: Ana Beatriz Maranho
 // Seleção de elementos
 
 const guestAccess = new URLSearchParams(location.search).get("processoId");

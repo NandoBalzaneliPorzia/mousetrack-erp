@@ -1,6 +1,7 @@
 package server.handler;
 
 /*
+Responsável: Nando Balzaneli
 A classe RootHandler.java verifica se o servidor está funcionando corretamennte, 
 retornando uma mensagem JSON para qualquer requisição 
 */

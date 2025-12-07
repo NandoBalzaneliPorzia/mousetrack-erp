@@ -1,6 +1,7 @@
 package com.comexapp.repository;
 
 /*
+Responsável: Laura Pereira
 A interface ProcessoRepository é um repositório Spring Data JPA para a entidade Processo.
 Ela fornece operações padrão de CRUD e métodos customizados, incluindo:
 - Busca de um processo pelo código único

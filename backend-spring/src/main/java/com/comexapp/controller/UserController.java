@@ -1,6 +1,7 @@
 package com.comexapp.controller;
 
 /*
+Responsável: Juliana Prado
 A classe UserController.java é um controlador REST responsável por gerenciar
 usuários na aplicação. Ele fornece endpoints para criar novos usuários,
 atualizar telefone e senha, além de um endpoint de teste para verificar

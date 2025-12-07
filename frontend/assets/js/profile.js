@@ -1,3 +1,4 @@
+//Responsável: Laura Pereira
 // profile.js
 document.addEventListener('DOMContentLoaded', () => {
   // bloqueia a página se não estiver logado

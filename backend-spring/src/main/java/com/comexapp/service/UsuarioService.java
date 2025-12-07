@@ -1,6 +1,7 @@
 package com.comexapp.service;
 
 /*
+Responsável: Laura Pereira
 A classe UsuarioService.java gerencia operações relacionadas a usuários, 
 incluindo atualização de senhas e geração de senhas aleatórias seguras. 
 Utiliza SecureRandom para criar senhas com caracteres alfanuméricos e 

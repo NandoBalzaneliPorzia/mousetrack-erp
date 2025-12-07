@@ -1,6 +1,7 @@
 package com.comexapp.model;
 
 /*
+Responsável: Juliana Prado
 A enumeração TipoUsuario.java define os tipos de usuários disponíveis no sistema ComexApp.
 Cada valor representa um papel específico com permissões e funcionalidades distintas:
 

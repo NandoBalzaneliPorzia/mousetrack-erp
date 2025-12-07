@@ -1,6 +1,7 @@
 package com.comexapp.DTO;
 
 /*
+Responsável: Eduardo Sanvido
 A classe ProcessoResponseDTO.java é um DTO (Data Transfer Object) usado para
 retornar informações de um processo ao frontend. Ela encapsula dados essenciais
 do processo, incluindo:

@@ -1,6 +1,7 @@
 package com.comexapp.DTO;
 
 /*
+Responsável: Ana Beatriz Maranho
 A classe EmailRequestDTO.java é um DTO (Data Transfer Object) utilizado para 
 representar os dados necessários ao envio de um e-mail. Contém os campos:
 - para: endereço de e-mail do destinatário

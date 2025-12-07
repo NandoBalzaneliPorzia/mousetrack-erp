@@ -1,3 +1,4 @@
+//Responsável: Laura Pereira
 // -------------------------------
 // VARIÁVEIS DO FILTRO
 // -------------------------------

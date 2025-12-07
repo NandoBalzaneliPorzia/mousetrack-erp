@@ -1,3 +1,4 @@
+//Responsável: Laura Pereira
 // assets/js/login.js
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('loginForm');

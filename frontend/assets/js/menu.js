@@ -1,3 +1,4 @@
+//Responsável: Juliana Prado
 document.addEventListener("DOMContentLoaded", () => {
   // Mapeamento dos ícones e suas páginas
   const links = {

@@ -1,6 +1,7 @@
 package com.comexapp.model;
 
 /*
+Responsável: Nando Balzaneli
 A classe ChatMessage.java representa uma mensagem de chat no sistema.
 Esta entidade é persistida no banco de dados e contém informações como:
 - ID da mensagem

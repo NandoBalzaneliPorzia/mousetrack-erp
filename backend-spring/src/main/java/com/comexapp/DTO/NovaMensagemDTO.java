@@ -1,6 +1,7 @@
 package com.comexapp.DTO;
 
 /*
+Responsável: Nando Balzaneli
 DTO usado ao enviar nova mensagem no chat.
 Suporta:
 - usuário autenticado: autorId + conteudo

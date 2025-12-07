@@ -1,6 +1,7 @@
 package com.comexapp.repository;
 
 /*
+Responsável: Laura Pereira
 A interface ClienteRepository é um repositório Spring Data JPA para a entidade Cliente.
 Permite realizar operações CRUD no banco de dados, como salvar, buscar, atualizar e deletar clientes.
 */

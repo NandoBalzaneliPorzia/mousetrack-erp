@@ -1,6 +1,7 @@
 package com.comexapp.controller;
 
 /*
+Responsável: Ana Beatriz Maranho
 A classe ClienteController.java é um controlador REST responsável por gerenciar
 as operações CRUD (Create, Read, Update, Delete) da entidade Cliente.
 

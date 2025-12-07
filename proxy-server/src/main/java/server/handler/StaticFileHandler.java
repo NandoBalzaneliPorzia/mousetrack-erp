@@ -2,6 +2,7 @@
 package server.handler;
 
 /*
+Responsável: Nando Balzaneli
 A classe StaticFileHandler.java é responsável por servir arquivos 
 estáticos (HTML, CSS, JS, imagens, etc.). Implementa HttpHandler 
 para processar requisições HTTP de arquivos

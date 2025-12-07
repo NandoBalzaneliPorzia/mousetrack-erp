@@ -1,6 +1,7 @@
 package com.comexapp.controller;
 
 /*
+Responsável: Nando Balzaneli
 A classe ChatController.java é um controlador REST responsável por gerenciar
 as funcionalidades de chat da aplicação.
 

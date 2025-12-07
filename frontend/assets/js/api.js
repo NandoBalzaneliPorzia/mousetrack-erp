@@ -1,3 +1,4 @@
+//Responsável: Laura Pereira
 // -------------------- BASE DA API --------------------
 (function () {
   const isLocal = location.hostname === "localhost" || location.hostname.startsWith("127.");

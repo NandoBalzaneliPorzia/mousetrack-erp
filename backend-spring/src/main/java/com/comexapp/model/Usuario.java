@@ -1,6 +1,7 @@
 package com.comexapp.model;
 
 /*
+Responsável: Juliana Prado
 A classe Usuario.java representa a entidade 'Usuario' no banco de dados.
 Ela mapeia a tabela 'usuarios' e define os atributos de um usuário,
 como ID, email, senha (hash), nome, telefone, tipo de usuário,

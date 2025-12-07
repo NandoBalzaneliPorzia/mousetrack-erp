@@ -1,6 +1,7 @@
 package com.comexapp.model;
 
 /*
+Responsável: Nando Balzaneli
 A classe ChatThread.java representa uma thread de chat dentro do sistema.
 Cada thread está associada a um processo e contém informações como:
 - título da thread
