@@ -220,26 +220,57 @@ body{
 
 /* bolhas */
 
-.chat-bubble{
-  max-width:60%;
-  padding:10px 14px;
-  border-radius:16px;
-  font-size:13px;
-  line-height:1.4;
+.chat-bubble {
+  max-width: 70%;
+  padding: 10px 14px;
+  border-radius: 16px;
+  font-size: 13px;
+  line-height: 1.4;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
-.chat-bubble.them{
-  align-self:flex-start;
-  background:#E6F3EE;
-  color:var(--chat-ink);
+.chat-bubble p {
+  margin: 0;
+  word-wrap: break-word;
 }
 
-.chat-bubble.me{
-  align-self:flex-end;
-  background:var(--chat-accent);
-  color:#fff;
+.chat-bubble .time {
+  font-size: 10px;
+  opacity: 0.7;
+  text-align: right;
 }
 
+/* mensagem recebida */
+.chat-bubble.them {
+  align-self: flex-start;
+  background: #E3F1EB;
+  color: var(--chat-ink);
+}
+
+/* minha mensagem */
+.chat-bubble.me {
+  align-self: flex-end;
+  background: var(--chat-accent);
+  color: #fff;
+}
+
+/* animação leve */
+.chat-bubble {
+  animation: msgFade 0.25s ease-in-out;
+}
+
+@keyframes msgFade {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 /* input */
 
 .chat-input{
