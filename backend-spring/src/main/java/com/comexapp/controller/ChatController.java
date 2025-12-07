@@ -153,6 +153,7 @@ public class ChatController {
     public ResponseEntity<ChatThread> criarOuObterThreadDoProcesso(@PathVariable Long processoId) {
 
         Processo processo = processoRepository.findById(processoId).orElse(null);
+
         if (processo == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -162,19 +163,27 @@ public class ChatController {
             return ResponseEntity.ok(existente);
         }
 
+        Usuario criador = null;
+        try {
+            if (processo.getResponsavel() != null && !processo.getResponsavel().isBlank()) {
+                criador = usuarioRepo.findByEmail(processo.getResponsavel()).orElse(null);
+            }
+        } catch (Exception e) {
+            System.out.println("⚠ Erro ao buscar responsável do processo: " + e.getMessage());
+        }
+
+        System.out.println("Responsável encontrado? " + (criador != null));
+
         ChatThread novo = new ChatThread();
         novo.setProcesso(processo);
         novo.setTitulo(processo.getCodigo() + " - " + processo.getTitulo());
 
+        if (criador != null) {
+            novo.getUsuarios().add(criador);
+        }
+
         ChatThread salvo = threadRepo.save(novo);
-
-        // Mensagem automática
-        ChatMessage msg = new ChatMessage();
-        msg.setThread(salvo);
-        msg.setConteudo("Olá! Nossa equipe já pode ver suas mensagens.");
-        msg.setAutorGuest("Sistema");
-        messageRepo.save(msg);
-
         return ResponseEntity.ok(salvo);
     }
+
 }
