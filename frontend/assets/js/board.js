@@ -467,5 +467,71 @@ window.addEventListener('storage', (ev) => {
   }
 });
 
+// ======================================
+//  EXCLUIR CARD
+// ======================================
+const docsMenuBtn = document.getElementById('docsMenuBtn');
+const docsMenu = document.getElementById('docsMenu');
+const mDelete = document.getElementById('mDelete');
+
+// Abre/fecha o menu ao clicar no botão ⋯
+if (docsMenuBtn && docsMenu) {
+  docsMenuBtn.addEventListener('click', (e) => {
+    e.stopPropagation(); // evita fechar o popover
+    docsMenu.hidden = !docsMenu.hidden;
+  });
+}
+
+// Fecha o menu ao clicar fora
+document.addEventListener('click', (e) => {
+  if (docsMenu && !docsMenu.contains(e.target) && e.target !== docsMenuBtn) {
+    docsMenu.hidden = true;
+  }
+});
+
+// EXCLUIR CARD
+if (mDelete) {
+  mDelete.addEventListener('click', async () => {
+    if (!selectedCard) {
+      alert("Nenhum processo selecionado.");
+      return;
+    }
+
+    const confirma = confirm(`Tem certeza que deseja excluir o processo "${selectedCard.codigo}"?`);
+    if (!confirma) return;
+
+    try {
+      // Chama o backend para excluir o processo
+      const resp = await fetch(api(`/api/processos/${selectedCard.id}`), {
+        method: 'DELETE'
+      });
+
+      if (!resp.ok) {
+        alert("Erro ao excluir o processo no servidor.");
+        console.error("Erro DELETE:", resp.status, resp.statusText);
+        return;
+      }
+
+      // Remove do localStorage
+      let processos = JSON.parse(localStorage.getItem("processos") || "[]");
+      processos = processos.filter(p => p.id !== selectedCard.id);
+      localStorage.setItem("processos", JSON.stringify(processos));
+
+      // Fecha o popover e re-renderiza o board
+      popover.hidden = true;
+      docsMenu.hidden = true;
+      selectedCard = null;
+
+      renderBoard();
+
+      alert("Processo excluído com sucesso!");
+
+    } catch (err) {
+      console.error("Erro ao excluir processo:", err);
+      alert("Erro ao excluir o processo. Tente novamente.");
+    }
+  });
+}
+
 // inicializa
 renderBoard();
