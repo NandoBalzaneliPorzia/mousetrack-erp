@@ -1,7 +1,5 @@
 /* -----------------------------------------------------------
- *  CHAT FICTÍCIO — MODO APRESENTAÇÃO
  *  Responsável: Nando Balzaneli
- *  🚨 Nenhuma chamada ao backend — apenas simulação visual
  * ----------------------------------------------------------- */
 
 console.log("⚠ Modo apresentação: Chat fictício ativo!");
